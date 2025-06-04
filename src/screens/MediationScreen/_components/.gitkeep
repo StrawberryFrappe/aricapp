@@ -1,1 +1,1 @@
-# This file keeps this directory in git even when empty
+# This file ensures the _components directory is created and tracked by git.
