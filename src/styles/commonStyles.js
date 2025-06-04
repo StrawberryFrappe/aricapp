@@ -8,50 +8,50 @@ import { StyleSheet } from 'react-native';
 
 // Color palette - Dark Theme with Techie Vibes (Base Palette Preserved)
 export const colors = {
-  // Base Palette (Flag-Derived) - Adapted for Dark Theme
-  primary: '#7BCFF3',          // Cyber Blue - Main interactive elements (was Sky Blue)
-  secondary: '#FFDB17',        // Electric Yellow - Secondary actions or highlights
-  accent: '#4D3089',           // Deep Purple - Accents, buttons, highlights (was primary)
-  highlight: '#F7AEC4',        // Neon Pink - Special highlights, notifications
-  background: '#0A0A0F',       // Deep Space Black - Main app background
+  // Sober, Elegant, Modern, Non-Binary Coded Palette
+  primary: '#6C5DD3',          // Muted Violet (modern, non-binary, elegant)
+  secondary: '#F5A623',        // Muted Amber (warm, inclusive, not gendered)
+  accent: '#2D9CDB',           // Muted Blue (modern, fresh, not gendered)
+  highlight: '#F2994A',        // Muted Orange (for highlights, not too flashy)
+  background: '#181A20',       // Deep Charcoal (sober, elegant, modern)
 
-  // Adapted Primary & Related - Dark Theme
-  primaryLight: '#A3E0FF',     // Light Cyber Blue - For tags, less emphasized primary elements
-  primaryDark: '#2B8CB8',      // Darker Blue - For pressed states, depth
+  // Light and dark variants
+  primaryLight: '#A393F7',     // Light Violet
+  primaryDark: '#4834A6',      // Deep Violet
 
-  // Dark Theme Text Colors
-  surface: '#1A1A2E',          // Dark Navy Surface - Background for cards, inputs
-  surfaceLight: '#16213E',     // Lighter Surface - Alternative card backgrounds
-  textPrimary: '#E8E8E8',      // Light Gray - Default text color (high contrast)
-  textSecondary: '#B0B0B0',    // Medium Gray - Subdued text, placeholders
-  textMuted: '#6A6A6A',        // Darker Gray - More subdued text, disabled text
-  white: '#FFFFFF',            // Pure white - For high emphasis text
-  black: '#000000',            // Pure black - For shadows, deep backgrounds
+  // Text and surface
+  surface: '#23242B',          // Slightly lighter than background for cards
+  surfaceLight: '#262833',     // For subtle contrast
+  textPrimary: '#F2F2F2',      // Almost white, high contrast
+  textSecondary: '#BDBDBD',    // Muted gray for secondary text
+  textMuted: '#828282',        // Even more muted for placeholders
+  white: '#FFFFFF',            // For icons, highlights
+  black: '#000000',            // For shadows
 
-  // Dark Theme Border & Separator Colors
-  borderLight: '#2A2A3E',      // Dark Purple-Gray - Subtle borders, dividers
-  borderDefault: '#3A3A5E',    // Medium Purple-Gray - More prominent borders
-  borderBright: '#4A4A7E',     // Brighter Border - For focus states, active elements
+  // Borders and separators
+  borderLight: '#35363C',      // Subtle border
+  borderDefault: '#44454B',    // More prominent border
+  borderBright: '#6C5DD3',     // Use primary for focus/active
 
-  // Dark Theme State & Semantic Colors
-  disabledBackground: '#1E1E1E', // Very Dark Gray - Background for disabled elements
-  disabledText: '#4A4A4A',     // Dark Gray - Text color for disabled elements
-  error: '#FF4444',            // Bright Red - Error messages, destructive actions
-  success: '#00FF88',          // Bright Green - Success states, confirmations
-  warning: '#FFAA00',          // Orange Warning - Warning states
-  
-  // Semantic Colors - Enhanced for Dark Theme
-  semanticBlue: '#4A90E2',     // Tech Blue - Specific use (e.g., public mediation cards)
-  semanticOrange: '#FF8C42',   // Tech Orange - Specific use (e.g., private mediation cards)
-  semanticPurple: '#8B5CF6',   // Tech Purple - Additional semantic color
-  
-  // Matrix/Hacker Theme Accents
-  matrix: '#00FF41',           // Matrix Green - For special tech indicators
-  neon: '#FF0080',            // Hot Pink - For ultra-bright highlights
-  
-  // Legacy aliases - Updated for dark theme
-  border: '#3A3A5E',           // Alias for borderDefault
-  tagBackground: '#A3E0FF',    // Alias for primaryLight
+  // State & semantic
+  disabledBackground: '#23242B', // Slightly lighter than bg
+  disabledText: '#828282',     // Muted gray
+  error: '#EB5757',            // Muted red
+  success: '#27AE60',          // Muted green
+  warning: '#F2C94C',          // Muted yellow
+
+  // Semantic (for cards, tags, etc.)
+  semanticBlue: '#56CCF2',     // Soft blue
+  semanticOrange: '#F2994A',   // Soft orange
+  semanticPurple: '#BB6BD9',   // Soft purple
+
+  // Modern accent
+  teal: '#43E6C2',             // Modern teal accent
+  pink: '#EB6F92',             // Muted pink accent
+
+  // Legacy aliases
+  border: '#44454B',           // Alias for borderDefault
+  tagBackground: '#A393F7',    // Alias for primaryLight
 };
 
 // Common style objects

@@ -146,7 +146,7 @@ const Calendar = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.white,
+        backgroundColor: colors.background,
         paddingHorizontal: spacing.lg, // Keep horizontal padding for stable width
         alignSelf: 'stretch',
     },
