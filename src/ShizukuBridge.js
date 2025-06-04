@@ -9,6 +9,11 @@ export function initializeShizuku() {
   if (Platform.OS !== 'android') {
     return Promise.reject(new Error('Shizuku is only supported on Android'));
   }
+  
+  if (!ShizukuModule) {
+    return Promise.reject(new Error('ShizukuModule is not available. Make sure the native module is properly linked.'));
+  }
+  
   return ShizukuModule.initialize();
 }
 
@@ -21,5 +26,10 @@ export function forceStopApp(packageName) {
   if (Platform.OS !== 'android') {
     return Promise.reject(new Error('Shizuku is only supported on Android'));
   }
+  
+  if (!ShizukuModule) {
+    return Promise.reject(new Error('ShizukuModule is not available. Make sure the native module is properly linked.'));
+  }
+  
   return ShizukuModule.forceStopApp(packageName);
 }

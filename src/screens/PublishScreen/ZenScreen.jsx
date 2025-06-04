@@ -29,16 +29,20 @@ const ZenScreen = ({ navigation }) => {
     }, 1000);
     return () => clearInterval(id);
   }, [isRunning]);
-
   // Trigger Shizuku force-stop when timer finishes
   useEffect(() => {
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
       forceStopApp('com.strawberryfrappe.aricapp')
-        .catch(err => console.error('forceStopApp error', err));
+        .then(() => {
+          console.log('App force-stopped successfully');
+        })
+        .catch(err => {
+          console.error('forceStopApp error', err);
+          // Timer still completes even if force stop fails
+        });
     }
   }, [timeLeft]);
-
   // Start handler: init Shizuku then begin countdown
   const handleStart = () => {
     initializeShizuku()
@@ -47,7 +51,12 @@ const ZenScreen = ({ navigation }) => {
         setTimeLeft(getDuration());
         setIsRunning(true);
       })
-      .catch(err => console.warn('initializeShizuku error', err));
+      .catch(err => {
+        console.warn('initializeShizuku error', err);
+        // Still allow the timer to run even if Shizuku fails
+        setTimeLeft(getDuration());
+        setIsRunning(true);
+      });
   };
 
   return (
@@ -69,7 +78,7 @@ const ZenScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        
+
         {/* Time picker for duration */}
         {!isRunning && (
           <TimePicker

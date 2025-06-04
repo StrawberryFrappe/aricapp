@@ -35,7 +35,7 @@ function AppWrapper() {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <NavigationContainer onStateChange={() => {}}>
-        <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+        <View style={{flex: 1, backgroundColor: colors.background, marginBottom: 82}}>
           <MainStack.Navigator screenOptions={{ headerShown: false }}>
           <MainStack.Screen name="HomeScreen" component={HomeScreen} />
           <MainStack.Screen name="SearchScreen" component={SearchScreen} />
@@ -44,8 +44,8 @@ function AppWrapper() {
           <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
           <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
           <MainStack.Screen name="ExtendedEvent" component={ExtendedEvent} />
-        </MainStack.Navigator>
-        </SafeAreaView>
+          </MainStack.Navigator>
+        </View>
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <NavigationBar  />
         </View>
