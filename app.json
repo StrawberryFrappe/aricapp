@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "aricaApp",
-    "slug": "aricaApp",
+    "name": "aricApp",
+    "slug": "aricapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,17 +13,24 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.strawberryfrappe.aricapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.strawberryfrappe.aricapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2ec94918-7b2c-4922-9832-b404a1ffec75"
+      }
     }
   }
 }
