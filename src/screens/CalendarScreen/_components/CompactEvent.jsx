@@ -3,18 +3,18 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, spacing } from '../../../styles/commonStyles';
 
-const CompactEvent = () => {
+const CompactEvent = ({ title, time, date, description, location, hours }) => {
     const navigation = useNavigation();
 
     const handlePress = () => {
         navigation.navigate('ExtendedEvent', {
             event: {
-                title: 'Festival del Ñoqui',
-                time: '18:00',
-                date: '29 June',
-                description: 'A celebration of the traditional ñoqui dish, featuring live music, cooking workshops, and a variety of ñoqui recipes from around the world. Join us for a night of delicious food and cultural festivities.',
-                location: 'Plaza Italia, Buenos Aires, Argentina',
-                hours: { start: '18:00', end: '23:00' },
+                title,
+                time,
+                date,
+                description,
+                location,
+                hours,
             },
         });
     };
