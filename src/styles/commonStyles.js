@@ -8,11 +8,11 @@ import { StyleSheet } from 'react-native';
 
 // Color palette - Dark Theme with Techie Vibes (Base Palette Preserved)
 export const colors = {
-  // Sober, Elegant, Modern, Non-Binary Coded Palette
+  // Sober, Elegant, Modern, Non-Binary & Pansexual Coded Palette
   primary: '#6C5DD3',          // Muted Violet (modern, non-binary, elegant)
-  secondary: '#F5A623',        // Muted Amber (warm, inclusive, not gendered)
-  accent: '#2D9CDB',           // Muted Blue (modern, fresh, not gendered)
-  highlight: '#F2994A',        // Muted Orange (for highlights, not too flashy)
+  secondary: '#F5A623',        // Muted Amber (warm, inclusive)
+  accent: '#2D9CDB',           // Muted Blue (modern, fresh)
+  highlight: '#F2994A',        // Muted Orange (for highlights)
   background: '#181A20',       // Deep Charcoal (sober, elegant, modern)
 
   // Light and dark variants
@@ -40,10 +40,11 @@ export const colors = {
   success: '#27AE60',          // Muted green
   warning: '#F2C94C',          // Muted yellow
 
-  // Semantic (for cards, tags, etc.)
-  semanticBlue: '#56CCF2',     // Soft blue
-  semanticOrange: '#F2994A',   // Soft orange
-  semanticPurple: '#BB6BD9',   // Soft purple
+  // Pansexual-coded semantic colors
+  semanticPink: '#FF6CB7',     // Pansexual Pink (for cards, tags, etc.)
+  semanticYellow: '#FFD952',   // Pansexual Yellow (for cards, tags, etc.)
+  semanticBlue: '#3ECFFF',     // Pansexual Blue (for cards, tags, etc.)
+  semanticPurple: '#BB6BD9',   // Soft purple (for harmony)
 
   // Modern accent
   teal: '#43E6C2',             // Modern teal accent

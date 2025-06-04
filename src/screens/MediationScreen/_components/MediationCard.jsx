@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.semanticBlue, // Tech blue background for public mediations
   },
   privateCard: {
-    backgroundColor: colors.semanticOrange, // Tech orange background for private mediations
+    backgroundColor: colors.semanticPurple, // Tech orange background for private mediations
   },
   title: {
     ...commonStyles.bodyText,
