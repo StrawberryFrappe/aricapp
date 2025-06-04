@@ -18,8 +18,8 @@ const NavigationBar = () => {
 
   const tabs = [
     { name: 'Inicio', icon: '🏠', screen: 'HomeScreen' },
-    { name: 'Buscar', icon: '🔍', screen: 'SearchScreen' },
-    { name: 'Publicar', icon: '+', isCentral: true, screen: 'PublishScreen' },
+    { name: 'TODO', icon: '📔', screen: 'SearchScreen' },
+    { name: 'Zen', icon: '🆘', isCentral: true, screen: 'PublishScreen' },
     { name: 'Mediacion', icon: '🔨', screen: 'MediationScreen' },
     { name: 'Perfil', icon: '👤', screen: 'ProfileScreen' },
   ];
