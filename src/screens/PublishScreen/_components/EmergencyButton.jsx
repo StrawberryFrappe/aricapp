@@ -13,7 +13,7 @@ const EmergencyButton = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#B71C1C',
+    backgroundColor: colors.error,
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 20,
@@ -26,9 +26,8 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 24,
     marginBottom: 5,
-  },
-  buttonText: {
-    color: 'black',
+  },  buttonText: {
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',

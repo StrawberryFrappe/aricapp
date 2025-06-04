@@ -97,15 +97,14 @@ const styles = StyleSheet.create({
   },
   centralIcon: {
     ...commonStyles.iconLarge,
-  },
-  tabLabel: {
+  },  tabLabel: {
     fontSize: 12,
-    color: colors.black,
+    color: colors.textSecondary,
     marginTop: spacing.xs,
   },
   centralLabel: {
     fontSize: 12,
-    color: colors.black,
+    color: colors.textSecondary,
     marginTop: spacing.md,
   },
   activeTab: {

@@ -25,7 +25,7 @@ const ConflictMessage = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.surface,
     padding: 15,
     marginHorizontal: 20,
     marginVertical: 10,

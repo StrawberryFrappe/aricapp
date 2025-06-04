@@ -14,14 +14,15 @@ const PresentationSection = ({ text }) => {
 const styles = StyleSheet.create({
   container: {
     padding: spacing.md,
+    paddingHorizontal: spacing.lg,
     backgroundColor: commonStyles.card.backgroundColor, // Use card background
-    margin: spacing.md, // Use card margin
-    borderRadius: commonStyles.card.borderRadius, // Use card border radius
     ...commonStyles.shadowSmall, // Use a shadow
   },
   title: {
     marginBottom: spacing.sm,
-  }
+  },
+  bodyText: {
+  },
 });
 
 export default PresentationSection; 

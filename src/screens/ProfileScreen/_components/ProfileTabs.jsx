@@ -27,13 +27,12 @@ const ProfileTabs = ({ tabs, onTabChange }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
+const styles = StyleSheet.create({  container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
   },
   tabItem: {
     flex: 1,

@@ -17,16 +17,15 @@ const ActionButtons = ({ onPhotoPress, onPublishPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
+const styles = StyleSheet.create({  container: {
     ...commonStyles.rowCenter,
     ...commonStyles.spaceBetween,
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: colors.white,
-  },  photoButton: {
+    backgroundColor: colors.surface,
+  },photoButton: {
     ...commonStyles.rowCenter,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.surface,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   publishButton: {
-    backgroundColor: '#BDBDBD',
+    backgroundColor: colors.primary,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,

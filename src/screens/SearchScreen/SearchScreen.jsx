@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { commonStyles } from '../../styles/commonStyles';
+import { commonStyles, colors } from '../../styles/commonStyles';
 import SearchComponent from './_components/SearchComponent';
 
 /**
@@ -21,7 +21,7 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
 });
 

@@ -121,9 +121,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignSelf: 'flex-end',
     marginLeft: '20%',
-  },
-  otherMessage: {
-    backgroundColor: '#F0F0F0',
+  },  otherMessage: {
+    backgroundColor: colors.surface,
     alignSelf: 'flex-start',
   },
   messageText: {

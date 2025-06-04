@@ -63,10 +63,9 @@ const styles = StyleSheet.create({
   label: {
     ...commonStyles.smallText,
     marginBottom: 8,
-  },
-  inputContainer: {
+  },  inputContainer: {
     ...commonStyles.rowCenter,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.surface,
     borderRadius: 25,
     paddingHorizontal: 15,
     paddingVertical: 8,

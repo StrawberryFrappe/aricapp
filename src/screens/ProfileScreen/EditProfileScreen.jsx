@@ -113,7 +113,7 @@ const EditProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -149,9 +149,8 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.medium,
     alignItems: 'center',
     marginHorizontal: spacing.sm,
-  },
-  deleteButton: {
-    backgroundColor: 'red', // Use a red color for delete
+  },  deleteButton: {
+    backgroundColor: colors.error, // Use error color for delete
   },
   saveButton: {
     backgroundColor: colors.primary, // Use primary color for save

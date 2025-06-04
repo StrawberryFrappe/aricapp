@@ -6,42 +6,52 @@ import { StyleSheet } from 'react-native';
  * It helps maintain consistency and reduces code duplication.
  */
 
-// Color palette - Updated with Flag-Derived Palette
+// Color palette - Dark Theme with Techie Vibes (Base Palette Preserved)
 export const colors = {
-  // Base Palette (Flag-Derived)
-  primary: '#4D3089',          // Deep Purple - Main interactive elements
-  secondary: '#FFDB17',        // Yellow - Secondary actions or highlights
-  accent: '#7BCFF3',           // Sky Blue - Accents, informational elements
-  highlight: '#F7AEC4',        // Pastel Pink - Special highlights (replaces old highlight)
-  background: '#FFFFFF',        // White - Main app background (unchanged)
+  // Base Palette (Flag-Derived) - Adapted for Dark Theme
+  primary: '#7BCFF3',          // Cyber Blue - Main interactive elements (was Sky Blue)
+  secondary: '#FFDB17',        // Electric Yellow - Secondary actions or highlights
+  accent: '#4D3089',           // Deep Purple - Accents, buttons, highlights (was primary)
+  highlight: '#F7AEC4',        // Neon Pink - Special highlights, notifications
+  background: '#0A0A0F',       // Deep Space Black - Main app background
 
-  // Adapted Primary & Related
-  primaryLight: '#9B85C7',      // Lighter Purple - For tags, less emphasized primary elements
+  // Adapted Primary & Related - Dark Theme
+  primaryLight: '#A3E0FF',     // Light Cyber Blue - For tags, less emphasized primary elements
+  primaryDark: '#2B8CB8',      // Darker Blue - For pressed states, depth
 
-  // Adapted Neutral & Text Colors
-  surface: '#F5F3F9',           // Very Light Lavender Gray - Background for cards, inputs
-  textPrimary: '#212121',       // Near Black - Default text color
-  textSecondary: '#757575',     // Medium Gray - Subdued text, placeholders
-  textMuted: '#BDBDBD',         // Light Gray - More subdued text
-  white: '#FFFFFF',             // Pure white (unchanged)
-  black: '#000000',             // Pure black (unchanged for shadows or strong emphasis)
+  // Dark Theme Text Colors
+  surface: '#1A1A2E',          // Dark Navy Surface - Background for cards, inputs
+  surfaceLight: '#16213E',     // Lighter Surface - Alternative card backgrounds
+  textPrimary: '#E8E8E8',      // Light Gray - Default text color (high contrast)
+  textSecondary: '#B0B0B0',    // Medium Gray - Subdued text, placeholders
+  textMuted: '#6A6A6A',        // Darker Gray - More subdued text, disabled text
+  white: '#FFFFFF',            // Pure white - For high emphasis text
+  black: '#000000',            // Pure black - For shadows, deep backgrounds
 
-  // Adapted Border & Separator Colors
-  borderLight: '#DCDAE3',       // Light Purple-Gray - Standard light borders, dividers
-  borderDefault: '#BDB0D6',     // Muted Purple-Gray - More prominent borders
+  // Dark Theme Border & Separator Colors
+  borderLight: '#2A2A3E',      // Dark Purple-Gray - Subtle borders, dividers
+  borderDefault: '#3A3A5E',    // Medium Purple-Gray - More prominent borders
+  borderBright: '#4A4A7E',     // Brighter Border - For focus states, active elements
 
-  // Adapted State & Semantic Colors
-  disabledBackground: '#EEEEEE',// Light Gray - Background for disabled elements
-  disabledText: '#BDBDBD',      // Medium Gray - Text color for disabled elements
-  error: '#E53935',             // Material Design Red 600 - Destructive actions, error messages
+  // Dark Theme State & Semantic Colors
+  disabledBackground: '#1E1E1E', // Very Dark Gray - Background for disabled elements
+  disabledText: '#4A4A4A',     // Dark Gray - Text color for disabled elements
+  error: '#FF4444',            // Bright Red - Error messages, destructive actions
+  success: '#00FF88',          // Bright Green - Success states, confirmations
+  warning: '#FFAA00',          // Orange Warning - Warning states
   
-  semanticBlue: '#A9D9F5',      // Harmonizing Blue - Specific use (e.g., public mediation cards)
-  semanticOrange: '#FFB74D',   // Harmonizing Orange - Specific use (e.g., private mediation cards)
+  // Semantic Colors - Enhanced for Dark Theme
+  semanticBlue: '#4A90E2',     // Tech Blue - Specific use (e.g., public mediation cards)
+  semanticOrange: '#FF8C42',   // Tech Orange - Specific use (e.g., private mediation cards)
+  semanticPurple: '#8B5CF6',   // Tech Purple - Additional semantic color
   
-  // Legacy aliases - values will reflect the new definitions above
-  border: '#BDB0D6',            // Alias for new borderDefault
-  tagBackground: '#9B85C7',     // Alias for new primaryLight
-  // Note: The original 'highlight: #007AFF' is now part of the base palette.
+  // Matrix/Hacker Theme Accents
+  matrix: '#00FF41',           // Matrix Green - For special tech indicators
+  neon: '#FF0080',            // Hot Pink - For ultra-bright highlights
+  
+  // Legacy aliases - Updated for dark theme
+  border: '#3A3A5E',           // Alias for borderDefault
+  tagBackground: '#A3E0FF',    // Alias for primaryLight
 };
 
 // Common style objects
@@ -52,41 +62,79 @@ export const commonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  // Card styles
+    // Card styles
   card: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
     borderRadius: 8,
     padding: 15,
     margin: 10,
     shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
 
-  // Shadow styles
+  // Enhanced card for dark theme
+  cardTech: {
+    backgroundColor: colors.surfaceLight,
+    borderRadius: 12,
+    padding: 15,
+    margin: 10,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.borderBright,
+  },
+  // Shadow styles - Enhanced for dark theme
   shadowSmall: {
-    shadowColor: colors.black,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 3,
+    elevation: 4,
   },
 
   shadowMedium: {
-    shadowColor: colors.black,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+
+  shadowLarge: {
+    shadowColor: colors.accent,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+
+  // Neon glow effect for techie vibes
+  neonGlow: {
+    shadowColor: colors.matrix,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 15,
   },
 
   // Text styles
@@ -109,20 +157,31 @@ export const commonStyles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
-
-  // Icon styles
+  // Icon styles - Enhanced for dark theme
   iconSmall: {
     fontSize: 16,
+    color: colors.textSecondary,
   },
 
   iconMedium: {
     fontSize: 20,
-    color: colors.black,
+    color: colors.textPrimary,
   },
 
   iconLarge: {
     fontSize: 30,
-    color: colors.black,
+    color: colors.primary,
+  },
+
+  // Tech-style icons
+  iconTech: {
+    fontSize: 24,
+    color: colors.matrix,
+  },
+
+  iconNeon: {
+    fontSize: 28,
+    color: colors.neon,
   },
 
   // Avatar styles
@@ -203,21 +262,25 @@ export const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-
-  // Navigation styles
+  // Navigation styles - Dark theme
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+    borderTopWidth: 2,
+    borderTopColor: colors.borderBright,
     height: 80,
     paddingHorizontal: 10,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
   },
 
   // Icon container styles
@@ -232,11 +295,61 @@ export const commonStyles = StyleSheet.create({
     height: 30,
     marginBottom: 2,
   },
-
   iconContainerLarge: {
     width: 60,
     height: 60,
     backgroundColor: colors.primary,
+  },
+
+  // Tech-themed additions for dark theme
+  techContainer: {
+    backgroundColor: colors.background,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
+
+  glassEffect: {
+    backgroundColor: 'rgba(123, 207, 243, 0.1)', // Semi-transparent primary
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(123, 207, 243, 0.3)',
+    backdropFilter: 'blur(10px)',
+  },
+
+  matrixText: {
+    color: colors.matrix,
+    fontSize: 16,
+    fontFamily: 'monospace',
+    fontWeight: 'bold',
+  },
+
+  neonBorder: {
+    borderWidth: 2,
+    borderColor: colors.neon,
+    borderRadius: 8,
+  },
+
+  techButton: {
+    backgroundColor: colors.accent,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+
+  techButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

@@ -42,9 +42,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white,
         padding: spacing.lg,
-    },
-    eventCard: {
-        backgroundColor: '#A5D6A7',
+    },    eventCard: {
+        backgroundColor: colors.semanticBlue,
         flexDirection: 'row',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     expandedContent: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.surface,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         padding: spacing.lg,
@@ -87,9 +86,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: spacing.md,
-    },
-    responseButton: {
-        backgroundColor: '#A5D6A7',
+    },    responseButton: {
+        backgroundColor: colors.semanticBlue,
         borderRadius: 5,
         paddingVertical: spacing.sm,
         paddingHorizontal: spacing.md,

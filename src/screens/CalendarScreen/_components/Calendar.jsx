@@ -219,10 +219,9 @@ const styles = StyleSheet.create({
     todayContainer: {
         backgroundColor: colors.highlight,
         borderRadius: 50,
-    },
-    todayOutline: {
+    },    todayOutline: {
         borderWidth: 2,
-        borderColor: '#007AFF',
+        borderColor: colors.primary,
         borderRadius: 20, // Ensures the outline is round
     },
     selectedDayContainer: {

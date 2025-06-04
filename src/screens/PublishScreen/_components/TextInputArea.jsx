@@ -33,8 +33,7 @@ const TextInputArea = ({ value, onChangeText, placeholder }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: colors.white,
+    paddingVertical: 15
   },  textInput: {
     minHeight: 72, // Approximately 3 lines (24px line height * 3)
     maxHeight: 120, // Maximum height to prevent excessive growth
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
     color: colors.textPrimary,
-    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,

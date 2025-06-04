@@ -56,29 +56,27 @@ const SearchComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   searchBarContainer: {
     marginBottom: 16,
-  },
-  searchInput: {
-    backgroundColor: '#F5F5F5',
+  },  searchInput: {
+    backgroundColor: colors.surface,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
     color: colors.textPrimary,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.borderLight,
   },
   tabsContainer: {
     flexDirection: 'row',
     gap: 8,
   },
   tab: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: colors.surfaceLight,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,

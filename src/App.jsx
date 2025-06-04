@@ -17,6 +17,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { colors } from './styles/commonStyles';
 
 /**
  * Main App Component
@@ -32,7 +33,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 const MainStack = createNativeStackNavigator();
 function AppWrapper() {
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <NavigationContainer onStateChange={() => {}}>
         <MainStack.Navigator screenOptions={{ headerShown: false }}>
           <MainStack.Screen name="HomeScreen" component={HomeScreen} />
@@ -49,7 +50,6 @@ function AppWrapper() {
         
       </NavigationContainer>
     </SafeAreaView>
-    
   );
 }
 
@@ -89,17 +89,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   textLight: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#000000',
+    color: colors.textPrimary,
   },
   textDark: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.textSecondary,
   },
 });
 
