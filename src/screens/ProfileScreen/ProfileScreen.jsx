@@ -4,7 +4,7 @@ import ProfileHeader from './_components/ProfileHeader';
 import PresentationSection from './_components/PresentationSection';
 import ProfileTabs from './_components/ProfileTabs';
 import Post from '../../components/Post';
-import commonStyles from '../../styles/commonStyles';
+import {commonStyles, colors} from '../../styles/commonStyles';
 
 /**
  * ProfileScreen Component
@@ -62,7 +62,7 @@ const ProfileScreen = () => {
   const renderContent = () => {
     if (activeTab === 'Publicaciones') {
       return (
-        <View>
+        <View style={styles.contentContainer}>
           {publicationsData.map((post) => (
             <Post key={post.id} {...post} />
           ))}
@@ -100,6 +100,7 @@ const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
+    backgroundColor: colors.background,
     flex: 1,
     paddingBottom: 80, // Add padding to avoid content being hidden by navigation if any
   },

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     ...commonStyles.rowCenter,
     paddingVertical: 15,
     paddingHorizontal: 20,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },  backButton: {
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 24,
-    color: colors.black,
+    color: colors.white,
     fontWeight: 'bold',
   },
   headerTitle: {

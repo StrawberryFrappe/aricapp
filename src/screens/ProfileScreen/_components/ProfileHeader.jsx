@@ -37,12 +37,11 @@ const ProfileHeader = ({ avatarUrl, name, publications, likes }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
+const styles = StyleSheet.create({  container: {
     flexDirection: 'row',
     alignItems: 'top',
     padding: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
   },
   avatarContainer: {
     marginRight: spacing.md,

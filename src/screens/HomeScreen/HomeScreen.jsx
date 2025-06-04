@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { commonStyles } from '../../styles/commonStyles';
+import { commonStyles, colors } from '../../styles/commonStyles';
 import MyWeek from './_components/MyWeek';
 import Post from '../../components/Post';
 
@@ -30,6 +30,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     ...commonStyles.centeredContainer,
+    backgroundColor: colors.background,
   },
   text: {
     ...commonStyles.titleText,

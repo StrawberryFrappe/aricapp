@@ -149,13 +149,12 @@ const MyWeek = () => {
 const styles = StyleSheet.create({
     // MAIN CONTAINER
     weekCardContainer: {
-        backgroundColor: colors.white,
+        backgroundColor: colors.surface,
         borderRadius: 15,
         padding: spacing.xl,
-        marginHorizontal: spacing.sm,
-        marginVertical: spacing.md,
+        marginHorizontal: spacing.sm,        marginVertical: spacing.md,
         borderWidth: 2,
-        borderColor: '#E8E8E8',
+        borderColor: colors.borderLight,
         width: '95%',
         alignSelf: 'center',
         ...commonStyles.shadowSmall,
@@ -219,11 +218,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    
-    // DAY CIRCLE MODIFIER STATES
+      // DAY CIRCLE MODIFIER STATES
     todayCircle: {
         borderWidth: 2,
-        borderColor: '#007AFF',
+        borderColor: colors.primary,
     },
     selectedDayCircle: {
         backgroundColor: colors.primary,
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
     
     // DAY NUMBER TEXT MODIFIER STATES
     todayNumber: {
-        color: '#007AFF',
+        color: colors.primary,
         fontWeight: 'bold',
     },
     selectedDayNumber: {

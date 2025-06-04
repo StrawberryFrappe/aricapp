@@ -6,42 +6,53 @@ import { StyleSheet } from 'react-native';
  * It helps maintain consistency and reduces code duplication.
  */
 
-// Color palette - Updated with Flag-Derived Palette
+// Color palette - Dark Theme with Techie Vibes (Base Palette Preserved)
 export const colors = {
-  // Base Palette (Flag-Derived)
-  primary: '#4D3089',          // Deep Purple - Main interactive elements
-  secondary: '#FFDB17',        // Yellow - Secondary actions or highlights
-  accent: '#7BCFF3',           // Sky Blue - Accents, informational elements
-  highlight: '#F7AEC4',        // Pastel Pink - Special highlights (replaces old highlight)
-  background: '#FFFFFF',        // White - Main app background (unchanged)
+  // Sober, Elegant, Modern, Non-Binary & Pansexual Coded Palette
+  primary: '#6C5DD3',          // Muted Violet (modern, non-binary, elegant)
+  secondary: '#F5A623',        // Muted Amber (warm, inclusive)
+  accent: '#2D9CDB',           // Muted Blue (modern, fresh)
+  highlight: '#F2994A',        // Muted Orange (for highlights)
+  background: '#181A20',       // Deep Charcoal (sober, elegant, modern)
 
-  // Adapted Primary & Related
-  primaryLight: '#9B85C7',      // Lighter Purple - For tags, less emphasized primary elements
+  // Light and dark variants
+  primaryLight: '#A393F7',     // Light Violet
+  primaryDark: '#4834A6',      // Deep Violet
 
-  // Adapted Neutral & Text Colors
-  surface: '#F5F3F9',           // Very Light Lavender Gray - Background for cards, inputs
-  textPrimary: '#212121',       // Near Black - Default text color
-  textSecondary: '#757575',     // Medium Gray - Subdued text, placeholders
-  textMuted: '#BDBDBD',         // Light Gray - More subdued text
-  white: '#FFFFFF',             // Pure white (unchanged)
-  black: '#000000',             // Pure black (unchanged for shadows or strong emphasis)
+  // Text and surface
+  surface: '#23242B',          // Slightly lighter than background for cards
+  surfaceLight: '#262833',     // For subtle contrast
+  textPrimary: '#F2F2F2',      // Almost white, high contrast
+  textSecondary: '#BDBDBD',    // Muted gray for secondary text
+  textMuted: '#828282',        // Even more muted for placeholders
+  white: '#FFFFFF',            // For icons, highlights
+  black: '#000000',            // For shadows
 
-  // Adapted Border & Separator Colors
-  borderLight: '#DCDAE3',       // Light Purple-Gray - Standard light borders, dividers
-  borderDefault: '#BDB0D6',     // Muted Purple-Gray - More prominent borders
+  // Borders and separators
+  borderLight: '#35363C',      // Subtle border
+  borderDefault: '#44454B',    // More prominent border
+  borderBright: '#6C5DD3',     // Use primary for focus/active
 
-  // Adapted State & Semantic Colors
-  disabledBackground: '#EEEEEE',// Light Gray - Background for disabled elements
-  disabledText: '#BDBDBD',      // Medium Gray - Text color for disabled elements
-  error: '#E53935',             // Material Design Red 600 - Destructive actions, error messages
-  
-  semanticBlue: '#A9D9F5',      // Harmonizing Blue - Specific use (e.g., public mediation cards)
-  semanticOrange: '#FFB74D',   // Harmonizing Orange - Specific use (e.g., private mediation cards)
-  
-  // Legacy aliases - values will reflect the new definitions above
-  border: '#BDB0D6',            // Alias for new borderDefault
-  tagBackground: '#9B85C7',     // Alias for new primaryLight
-  // Note: The original 'highlight: #007AFF' is now part of the base palette.
+  // State & semantic
+  disabledBackground: '#23242B', // Slightly lighter than bg
+  disabledText: '#828282',     // Muted gray
+  error: '#EB5757',            // Muted red
+  success: '#27AE60',          // Muted green
+  warning: '#F2C94C',          // Muted yellow
+
+  // Pansexual-coded semantic colors
+  semanticPink: '#FF6CB7',     // Pansexual Pink (for cards, tags, etc.)
+  semanticYellow: '#FFD952',   // Pansexual Yellow (for cards, tags, etc.)
+  semanticBlue: '#3ECFFF',     // Pansexual Blue (for cards, tags, etc.)
+  semanticPurple: '#BB6BD9',   // Soft purple (for harmony)
+
+  // Modern accent
+  teal: '#43E6C2',             // Modern teal accent
+  pink: '#EB6F92',             // Muted pink accent
+
+  // Legacy aliases
+  border: '#44454B',           // Alias for borderDefault
+  tagBackground: '#A393F7',    // Alias for primaryLight
 };
 
 // Common style objects
@@ -52,41 +63,79 @@ export const commonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  // Card styles
+    // Card styles
   card: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
     borderRadius: 8,
     padding: 15,
     margin: 10,
     shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
 
-  // Shadow styles
+  // Enhanced card for dark theme
+  cardTech: {
+    backgroundColor: colors.surfaceLight,
+    borderRadius: 12,
+    padding: 15,
+    margin: 10,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.borderBright,
+  },
+  // Shadow styles - Enhanced for dark theme
   shadowSmall: {
-    shadowColor: colors.black,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 3,
+    elevation: 4,
   },
 
   shadowMedium: {
-    shadowColor: colors.black,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+
+  shadowLarge: {
+    shadowColor: colors.accent,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+
+  // Neon glow effect for techie vibes
+  neonGlow: {
+    shadowColor: colors.matrix,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 15,
   },
 
   // Text styles
@@ -109,20 +158,31 @@ export const commonStyles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
-
-  // Icon styles
+  // Icon styles - Enhanced for dark theme
   iconSmall: {
     fontSize: 16,
+    color: colors.textSecondary,
   },
 
   iconMedium: {
     fontSize: 20,
-    color: colors.black,
+    color: colors.textPrimary,
   },
 
   iconLarge: {
     fontSize: 30,
-    color: colors.black,
+    color: colors.primary,
+  },
+
+  // Tech-style icons
+  iconTech: {
+    fontSize: 24,
+    color: colors.matrix,
+  },
+
+  iconNeon: {
+    fontSize: 28,
+    color: colors.neon,
   },
 
   // Avatar styles
@@ -203,21 +263,25 @@ export const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-
-  // Navigation styles
+  // Navigation styles - Dark theme
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    backgroundColor: colors.surface,
+    borderTopWidth: 2,
+    borderTopColor: colors.borderBright,
     height: 80,
     paddingHorizontal: 10,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
   },
 
   // Icon container styles
@@ -232,11 +296,61 @@ export const commonStyles = StyleSheet.create({
     height: 30,
     marginBottom: 2,
   },
-
   iconContainerLarge: {
     width: 60,
     height: 60,
     backgroundColor: colors.primary,
+  },
+
+  // Tech-themed additions for dark theme
+  techContainer: {
+    backgroundColor: colors.background,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
+
+  glassEffect: {
+    backgroundColor: 'rgba(123, 207, 243, 0.1)', // Semi-transparent primary
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(123, 207, 243, 0.3)',
+    backdropFilter: 'blur(10px)',
+  },
+
+  matrixText: {
+    color: colors.matrix,
+    fontSize: 16,
+    fontFamily: 'monospace',
+    fontWeight: 'bold',
+  },
+
+  neonBorder: {
+    borderWidth: 2,
+    borderColor: colors.neon,
+    borderRadius: 8,
+  },
+
+  techButton: {
+    backgroundColor: colors.accent,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+
+  techButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

@@ -35,9 +35,8 @@ const CompactEvent = ({ title, time, date, description, location, hours }) => {
 const styles = StyleSheet.create({
     container: {
         marginVertical: spacing.sm,
-    },
-    eventCard: {
-        backgroundColor: '#A5D6A7',
+    },    eventCard: {
+        backgroundColor: colors.semanticBlue,
         borderRadius: 10,
         padding: spacing.lg,
         flexDirection: 'row',

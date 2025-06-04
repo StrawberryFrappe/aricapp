@@ -64,12 +64,11 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     marginHorizontal: 20,
-  },
-  publicCard: {
-    backgroundColor: '#B8D8E8', // Light blue background for public mediations
+  },  publicCard: {
+    backgroundColor: colors.semanticBlue, // Tech blue background for public mediations
   },
   privateCard: {
-    backgroundColor: '#FFE0B3', // Light orange background for private mediations
+    backgroundColor: colors.semanticPurple, // Tech orange background for private mediations
   },
   title: {
     ...commonStyles.bodyText,
