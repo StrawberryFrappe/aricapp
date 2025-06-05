@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Switch, TouchableOpacity, ScrollView, SafeAreaView, Platform } from 'react-native';
+import { View, Text, TextInput, Switch, TouchableOpacity, ScrollView, SafeAreaView, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { commonStyles, colors, spacing } from '../styles/commonStyles';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 
 const CreateTask = ({ visible, onClose }) => {
+  const { styles, colors } = useThemedStyles(createStyles);
   const [title, setTitle] = useState('');
   const [allDay, setAllDay] = useState(false);
   const [strictMode, setStrictMode] = useState(false);
@@ -169,11 +170,11 @@ const CreateTask = ({ visible, onClose }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flex: 1,
     backgroundColor: colors.surface,
-    paddingTop: spacing.md,
+    paddingTop: 16,
   },
   scrollViewContent: {
     flex: 1,
@@ -184,10 +185,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderLight,
     borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     flex: 1,
-    marginRight: spacing.md,
+    marginRight: 16,
   },
   classPickerText: {
     flex: 1,
@@ -205,8 +206,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   classListItem: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
   classListItemText: {
     fontSize: 16,
@@ -216,56 +217,56 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.md,
-    marginBottom: spacing.md,
+    paddingHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
   },
   titleInput: {
     flex: 1,
     fontSize: 22,
     color: colors.textPrimary,
-    marginVertical: spacing.md,
+    marginVertical: 16,
   },
   separator: {
     height: 1,
     backgroundColor: colors.borderLight,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,   // reduced spacing
+    marginHorizontal: 16,
+    marginVertical: 8,
   },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.sm,  // reduced spacing
-    paddingHorizontal: spacing.md,
-    marginVertical: spacing.xs,   // reduced spacing
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginVertical: 4,
   },
   itemText: {
     flex: 1,
-    marginLeft: spacing.sm,
+    marginLeft: 8,
     color: colors.textPrimary,
     fontSize: 16,
   },
   timeText: {
     color: colors.textPrimary,
-    marginLeft: spacing.sm,
+    marginLeft: 8,
     fontSize: 16,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: spacing.md,
-    paddingVertical: spacing.md,
+    padding: 16,
+    paddingVertical: 16,
   },
   cancelButton: {
-    padding: spacing.md,
+    padding: 16,
   },
   cancelText: {
     color: colors.textPrimary,
     fontSize: 16,
   },
   saveButton: {
-    padding: spacing.md,
+    padding: 16,
   },
   saveText: {
     color: colors.primary,
@@ -285,38 +286,61 @@ const styles = StyleSheet.create({
   },
   strictModeText: {
     color: colors.textPrimary,
-    marginRight: spacing.sm,
+    marginRight: 8,
     fontSize: 16,
   },
   dropdownBox: {
-    flexDirection: 'row', alignItems: 'center', borderWidth:1, borderColor:colors.borderLight,
-    borderRadius:8, paddingHorizontal:spacing.md, paddingVertical:spacing.sm,
-    flex:1, marginLeft:spacing.md
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    borderWidth: 1, 
+    borderColor: colors.borderLight,
+    borderRadius: 8, 
+    paddingHorizontal: 16, 
+    paddingVertical: 8,
+    flex: 1, 
+    marginLeft: 16
   },
-  dropdownText: { flex:1, color:colors.textPrimary, fontSize:16 },
+  dropdownText: { 
+    flex: 1, 
+    color: colors.textPrimary, 
+    fontSize: 16 
+  },
   dropdownList: {
     position: 'absolute',
     zIndex: 999,
     backgroundColor: colors.surfaceLight,
-    marginHorizontal: spacing.md,
+    marginHorizontal: 16,
     borderRadius: 8,
     overflow: 'hidden',
   },
-  dropdownItem: { paddingVertical:spacing.sm, paddingHorizontal:spacing.md },
-  dropdownItemText: { fontSize:16, color:colors.textPrimary },
-  fieldContainer: { flex:1, position: 'relative' },
-  fieldLabel: { fontSize:14, color:colors.textSecondary, marginBottom:spacing.xs },
+  dropdownItem: { 
+    paddingVertical: 8, 
+    paddingHorizontal: 16 
+  },
+  dropdownItemText: { 
+    fontSize: 16, 
+    color: colors.textPrimary 
+  },
+  fieldContainer: { 
+    flex: 1, 
+    position: 'relative' 
+  },
+  fieldLabel: { 
+    fontSize: 14, 
+    color: colors.textSecondary, 
+    marginBottom: 4 
+  },
   rangeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,    // reduced spacing
+    paddingHorizontal: 16,
+    marginBottom: 8,
   },
   rangeItem: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: spacing.xs,  // slight vertical padding
+    paddingVertical: 4,
   },
 });
 

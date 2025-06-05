@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-
-import { commonStyles, colors, spacing, borderRadius } from '../styles/commonStyles';
+import { View, Text, Image } from 'react-native';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 import UserTag from './UserTag';
 
 
@@ -16,6 +15,8 @@ import UserTag from './UserTag';
  */
 
 const Post = () => {
+  const { styles } = useThemedStyles(createStyles);
+  
   return (
     <View style={styles.card}>
       {/* Header */}
@@ -54,20 +55,32 @@ const Post = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   card: {
-    ...commonStyles.card,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   icon: {
-    ...commonStyles.iconSmall,
-    marginLeft: spacing.sm,
+    fontSize: 16,
+    marginLeft: 8,
   },
   tagsContainer: {
-    ...commonStyles.row,
-    marginBottom: spacing.md,
+    flexDirection: 'row',
+    marginBottom: 16,
   },
   tag: {
-    ...commonStyles.tag,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
   },
   tagAnuncios: {
     backgroundColor: colors.tagBackground,
@@ -76,30 +89,38 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tagBackground,
   },
   tagText: {
-    ...commonStyles.tagText,
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.textSecondary,
   },
   postText: {
-    ...commonStyles.bodyText,
-    marginBottom: spacing.md,
+    fontSize: 16,
+    lineHeight: 24,
+    color: colors.textPrimary,
+    marginBottom: 16,
   },
   mainImage: {
     width: 'auto',
     height: 200,
-    borderRadius: borderRadius.small,
-    marginBottom: spacing.md,
+    borderRadius: 8,
+    marginBottom: 16,
     resizeMode: 'contain',
   },
   footer: {
-    ...commonStyles.rowCenter,
-    ...commonStyles.topBorder,
-    paddingTop: spacing.md,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 16,
   },
   footerItem: {
-    ...commonStyles.rowCenter,
-    marginRight: spacing.xl,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 24,
   },
   footerText: {
-    marginLeft: spacing.sm,
+    marginLeft: 8,
     fontSize: 14,
     color: colors.textPrimary,
   }

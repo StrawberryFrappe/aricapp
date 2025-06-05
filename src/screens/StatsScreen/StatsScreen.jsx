@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../styles/commonStyles';
+import { View } from 'react-native';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const StatsScreen = () => {
+  const { styles } = useThemedStyles(createStyles);
   return <View style={styles.container} />;
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flex: 1,
     backgroundColor: colors.background,

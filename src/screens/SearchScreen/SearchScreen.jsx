@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { commonStyles, colors } from '../../styles/commonStyles';
+import { View, Text } from 'react-native';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import SearchComponent from './_components/SearchComponent';
 
 /**
@@ -11,6 +11,7 @@ import SearchComponent from './_components/SearchComponent';
  * @returns {JSX.Element}
  */
 const SearchScreen = () => {
+  const { styles } = useThemedStyles(createStyles);
   return (
     <View style={styles.container}>
       <SearchComponent />
@@ -18,7 +19,7 @@ const SearchScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flex: 1,
     backgroundColor: colors.background,
