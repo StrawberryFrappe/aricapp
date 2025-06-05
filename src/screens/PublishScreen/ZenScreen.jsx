@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     height: 69,
     borderRadius: 69,
     borderWidth: 2,
+    backgroundColor: colors.surface,
     borderColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: colors.primary,
-    borderRadius: 5,
+    borderRadius: 15,
   },
   startButtonText: {
     color: colors.textOnPrimary || '#fff',

@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   wheel: {
     width: 60,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: colors.surface,
     borderRadius: 8,
     overflow: 'hidden',
   },
