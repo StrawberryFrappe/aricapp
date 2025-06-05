@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen/HomeScreen.jsx';
 import SearchScreen from './screens/SearchScreen/SearchScreen.jsx';
-import PublishScreen from './screens/PublishScreen/PublishScreen.jsx';
+import ZenScreen from './screens/PublishScreen/ZenScreen.jsx';
 import MediationScreen from './screens/MediationScreen/MediationScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen.jsx';
 import CalendarScreen from './screens/CalendarScreen/CalendarScreen.jsx';
@@ -35,20 +35,25 @@ function AppWrapper() {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <NavigationContainer onStateChange={() => {}}>
-        <MainStack.Navigator screenOptions={{ headerShown: false }}>
+        <View style={{flex: 1, backgroundColor: colors.background, marginBottom: 82}}>
+          <MainStack.Navigator screenOptions={{ headerShown: false }}>
           <MainStack.Screen name="HomeScreen" component={HomeScreen} />
           <MainStack.Screen name="SearchScreen" component={SearchScreen} />
-          <MainStack.Screen name="PublishScreen" component={PublishScreen} />
+          <MainStack.Screen name="PublishScreen" component={ZenScreen} />
           <MainStack.Screen name="MediationScreen" component={MediationStackScreen} />
           <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
           <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
           <MainStack.Screen name="ExtendedEvent" component={ExtendedEvent} />
-        </MainStack.Navigator>
-        <View>
+          </MainStack.Navigator>
+        </View>
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <NavigationBar  />
         </View>
         
+        
+        
       </NavigationContainer>
+      
     </SafeAreaView>
   );
 }

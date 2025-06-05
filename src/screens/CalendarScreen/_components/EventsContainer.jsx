@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { colors, spacing } from '../../../styles/commonStyles';
-import CompactEvent from './CompactEvent';
+import CompactEvent from '../../../components/CompactEvent';
 
 const EventsContainer = () => {
     // Sample events data from the image

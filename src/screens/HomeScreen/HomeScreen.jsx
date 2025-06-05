@@ -20,9 +20,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>HomeScreen</Text>
-      <MyWeek />
-      <Post></Post>
+      
     </View>
   );
 };

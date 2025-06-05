@@ -3,6 +3,20 @@
     "name": "aricapp",
     "slug": "aricapp",
     "version": "1.0.0",
-    "platforms": ["ios", "android"]
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "package": "com.strawberryfrappe.aricapp"
+    },
+    "plugins": [
+      "expo-dev-client"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2ec94918-7b2c-4922-9832-b404a1ffec75"
+      }
+    }
   }
 }
