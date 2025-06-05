@@ -20,7 +20,7 @@ const NavigationBar = () => {
     { name: 'Calendar', icon: '📅', screen: 'CalendarScreen' },
     { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'PublishScreen' },
     { name: 'Data', icon: '📈', screen: 'StatsScreen' },
-    { name: 'Settings', icon: '⚙️', screen: 'ProfileScreen' },
+    { name: 'Settings', icon: '⚙️', screen: 'SettingsScreen' },
   ];
 
   const handlePress = (ScreenButton) => {

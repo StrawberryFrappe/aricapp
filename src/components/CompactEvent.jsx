@@ -7,7 +7,7 @@ const CompactEvent = ({ title, time, date, description, location, hours }) => {
     const navigation = useNavigation();
 
     const handlePress = () => {
-        navigation.navigate('ExtendedEvent', {
+        navigation.navigate('CreateTask', {
             event: {
                 title,
                 time,

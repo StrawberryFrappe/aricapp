@@ -5,7 +5,7 @@ import HomeScreen from './screens/HomeScreen/HomeScreen.jsx';
 import SearchScreen from './screens/SearchScreen/SearchScreen.jsx';
 import ZenScreen from './screens/PublishScreen/ZenScreen.jsx';
 import StatsScreen from './screens/StatsScreen/StatsScreen.jsx';
-import ProfileScreen from './screens/ProfileScreen/ProfileScreen.jsx';
+import SettingsScreen from './screens/ProfileScreen/SettingsScreen.jsx'; // Now contains SettingsScreen
 import CalendarScreen from './screens/CalendarScreen/CalendarScreen.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
 import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
@@ -40,7 +40,7 @@ function AppWrapper() {  return (
             <MainStack.Screen name="SearchScreen" component={SearchScreen} />
             <MainStack.Screen name="PublishScreen" component={ZenScreen} />
             <MainStack.Screen name="StatsScreen" component={StatsStackScreen} />
-            <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
+            <MainStack.Screen name="SettingsScreen" component={SettingsStackScreen} />
             <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
             <MainStack.Screen name="CreateTask" component={CreateTask} />
           </MainStack.Navigator>
@@ -75,13 +75,13 @@ function StatsStackScreen() {
 }
 
 // Define the stack navigators for Profile
-const ProfileStack = createNativeStackNavigator();
-function ProfileStackScreen() {
+const SettingsStack = createNativeStackNavigator();
+function SettingsStackScreen() {
   return (
-    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProfileStack.Screen name="ProfileStackScreen" component={ProfileScreen} />
-      <ProfileStack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-    </ProfileStack.Navigator>
+    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+      <SettingsStack.Screen name="ProfileStackScreen" component={SettingsScreen} />
+      <SettingsStack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+    </SettingsStack.Navigator>
   );
 }
 
