@@ -11,7 +11,6 @@ import NavigationBar from './components/NavigationBar.jsx';
 import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
 import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
 import CreateTask from './components/CreateTask.jsx';
-import { ThemeProvider } from './context/ThemeContext';
 
 import {
   StyleSheet,
@@ -58,9 +57,7 @@ function AppWrapper() {  return (
 function App() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <AppWrapper />
-      </ThemeProvider>
+      <AppWrapper />
     </SafeAreaProvider>
   );
 }
