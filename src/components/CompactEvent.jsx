@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { colors, spacing } from '../styles/commonStyles';
 
 const CompactEvent = ({ title, time, date, description, location, hours }) => {
     const navigation = useNavigation();

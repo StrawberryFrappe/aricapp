@@ -17,11 +17,11 @@ const NavigationBar = () => {
   const navigation = useNavigation();
 
   const tabs = [
-    { name: 'Inicio', icon: '🏠', screen: 'HomeScreen' },
-    { name: 'TODO', icon: '📔', screen: 'SearchScreen' },
-    { name: 'Zen', icon: '🆘', isCentral: true, screen: 'PublishScreen' },
-    { name: 'Mediacion', icon: '🔨', screen: 'MediationScreen' },
-    { name: 'Perfil', icon: '👤', screen: 'ProfileScreen' },
+    { name: 'Today', icon: '🏠', screen: 'HomeScreen' },
+    { name: 'TODO', icon: '📅', screen: 'CalendarScreen' },
+    { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'PublishScreen' },
+    { name: 'Data', icon: '📈', screen: 'MediationScreen' },
+    { name: 'Settings', icon: '⚙️', screen: 'ProfileScreen' },
   ];
 
   const handlePress = (ScreenButton) => {
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
   },
   centralIcon: {
     ...commonStyles.iconLarge,
+    color: colors.semanticYellow,
   },  tabLabel: {
     fontSize: 12,
     color: colors.textSecondary,
