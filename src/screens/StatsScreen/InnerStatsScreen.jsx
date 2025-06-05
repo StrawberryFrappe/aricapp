@@ -7,15 +7,15 @@ import ChatMessage from './_components/ChatMessage';
 import ChatInput from './_components/ChatInput';
 
 /**
- * InnerMediationScreen Component
- * This component displays the chat interface for a specific mediation discussion.
- * It shows the conflict description, chat messages, and input area.
+ * InnerStatsScreen Component
+ * This component displays the detailed view for specific statistics.
+ * It shows the statistic description, data visualizations, and interaction area.
  * 
- * @function InnerMediationScreen
+ * @function InnerStatsScreen
  * @returns {JSX.Element}
  */
 
-const InnerMediationScreen = () => {
+const InnerStatsScreen = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -74,12 +74,12 @@ const InnerMediationScreen = () => {
       style={styles.container} 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ChatHeader title="Discussion de UserFullName" />
+      <ChatHeader title="Estadísticas Detalladas" />
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ConflictMessage 
-          title="Conflicto con el vecino de al lado:"
-          description="no me trato muy bien y me sintió mal :c"
+          title="Análisis estadístico:"
+          description="Datos detallados de tus métricas y progreso"
         />
         
         {messages.map((message) => (
@@ -114,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InnerMediationScreen;
+export default InnerStatsScreen;

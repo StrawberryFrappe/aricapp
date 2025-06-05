@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen/HomeScreen.jsx';
 import SearchScreen from './screens/SearchScreen/SearchScreen.jsx';
 import ZenScreen from './screens/PublishScreen/ZenScreen.jsx';
-import MediationScreen from './screens/MediationScreen/MediationScreen.jsx';
+import StatsScreen from './screens/StatsScreen/StatsScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen.jsx';
 import CalendarScreen from './screens/CalendarScreen/CalendarScreen.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
-import InnerMediationScreen from './screens/MediationScreen/InnerMediationScreen.jsx'
+import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
 import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
 import CreateTask from './components/CreateTask.jsx';
 
@@ -31,19 +31,18 @@ import { colors } from './styles/commonStyles';
 
 // Define the main stack navigator for the app
 const MainStack = createNativeStackNavigator();
-function AppWrapper() {
-  return (
+function AppWrapper() {  return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <NavigationContainer onStateChange={() => {}}>
         <View style={{flex: 1, backgroundColor: colors.background, marginBottom: 82}}>
           <MainStack.Navigator screenOptions={{ headerShown: false }}>
-          <MainStack.Screen name="HomeScreen" component={HomeScreen} />
-          <MainStack.Screen name="SearchScreen" component={SearchScreen} />
-          <MainStack.Screen name="PublishScreen" component={ZenScreen} />
-          <MainStack.Screen name="MediationScreen" component={MediationStackScreen} />
-          <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
-          <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
-          <MainStack.Screen name="CreateTask" component={CreateTask} />
+            <MainStack.Screen name="HomeScreen" component={HomeScreen} />
+            <MainStack.Screen name="SearchScreen" component={SearchScreen} />
+            <MainStack.Screen name="PublishScreen" component={ZenScreen} />
+            <MainStack.Screen name="StatsScreen" component={StatsStackScreen} />
+            <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
+            <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
+            <MainStack.Screen name="CreateTask" component={CreateTask} />
           </MainStack.Navigator>
         </View>
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
@@ -64,14 +63,14 @@ function App() {
 }
 
 
-// Define the stack navigators for Mediation
-const MediationStack = createNativeStackNavigator();
-function MediationStackScreen() {
+// Define the stack navigators for Stats
+const StatsStack = createNativeStackNavigator();
+function StatsStackScreen() {
   return (
-    <MediationStack.Navigator screenOptions={{ headerShown: false }}>
-      <MediationStack.Screen name="MediationStackScreen" component={MediationScreen} />
-      <MediationStack.Screen name="InnerMediationScreen" component={InnerMediationScreen} />
-    </MediationStack.Navigator>
+    <StatsStack.Navigator screenOptions={{ headerShown: false }}>
+      <StatsStack.Screen name="StatsStackScreen" component={StatsScreen} />
+      <StatsStack.Screen name="InnerStatsScreen" component={InnerStatsScreen} />
+    </StatsStack.Navigator>
   );
 }
 

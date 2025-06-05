@@ -58,13 +58,13 @@ const MediationCard = ({ variant = 'public', title = '', participants, unreadCou
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
+const styles = StyleSheet.create({  card: {
     borderRadius: 8,
     padding: 15,
     marginBottom: 10,
     marginHorizontal: 20,
-  },  publicCard: {
+  },
+  publicCard: {
     backgroundColor: colors.semanticBlue, // Tech blue background for public mediations
   },
   privateCard: {

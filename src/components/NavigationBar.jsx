@@ -15,12 +15,11 @@ import { commonStyles, colors, spacing } from '../styles/commonStyles';
 const NavigationBar = () => {
   const [activeTab, setActiveTab] = useState('Inicio');
   const navigation = useNavigation();
-
   const tabs = [
     { name: 'Today', icon: '🏠', screen: 'HomeScreen' },
     { name: 'Calendar', icon: '📅', screen: 'CalendarScreen' },
     { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'PublishScreen' },
-    { name: 'Data', icon: '📈', screen: 'MediationScreen' },
+    { name: 'Data', icon: '📈', screen: 'StatsScreen' },
     { name: 'Settings', icon: '⚙️', screen: 'ProfileScreen' },
   ];
 
