@@ -18,7 +18,7 @@ const NavigationBar = () => {
 
   const tabs = [
     { name: 'Today', icon: '🏠', screen: 'HomeScreen' },
-    { name: 'TODO', icon: '📅', screen: 'CalendarScreen' },
+    { name: 'Calendar', icon: '📅', screen: 'CalendarScreen' },
     { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'PublishScreen' },
     { name: 'Data', icon: '📈', screen: 'MediationScreen' },
     { name: 'Settings', icon: '⚙️', screen: 'ProfileScreen' },

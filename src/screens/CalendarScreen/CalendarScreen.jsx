@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-na
 import { commonStyles, colors, spacing } from '../../styles/commonStyles';
 import Calendar from './_components/Calendar';
 import EventsContainer from './_components/EventsContainer';
+import { useNavigation } from '@react-navigation/native';
 
 /**
  * Calendar Screen Component
@@ -14,31 +15,31 @@ import EventsContainer from './_components/EventsContainer';
  * @returns {JSX.Element} Complete calendar interface with month view and events
  */
 const CalendarScreen = () => {
+  const navigation = useNavigation();
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.eventsHeader}>
-        <Text style={styles.eventsTitle}>
-          Calendario de <Text style={styles.eventsHighlight}>Eventos</Text>
-        </Text>
-      </View>
+    <>
+      <SafeAreaView style={styles.safeArea}>
+        
+        <View style={styles.container}>
+          {/* Main Calendar Component */}
+          <View style={styles.calendarSection}>
+            <Calendar />
+          </View>
+            {/* Events Section */}
+          <View style={styles.eventsSection}>
+            <EventsContainer />
+            <TouchableOpacity style={styles.createEventContainer} onPress={() => navigation.navigate('CreateTask')}>
+              <Text style={{...commonStyles.iconLarge, color: colors.semanticYellow}}>+</Text>
+            </TouchableOpacity>
+          </View>
 
-      <View style={styles.container}>
-        {/* Main Calendar Component */}
-        <View style={styles.calendarSection}>
-          <Calendar />
-        </View>
-          {/* Events Section */}
-        <View style={styles.eventsSection}>
-          <EventsContainer />
-          <TouchableOpacity style={styles.createEventContainer}>
-            <Text style={{...commonStyles.iconLarge}}>+</Text>
-          </TouchableOpacity>
         </View>
 
-      </View>
-
-      
-    </SafeAreaView>
+        
+      </SafeAreaView>
+      {/* No modal here; navigation pushes CreateTask screen */}
+    </>
   );
 };
 

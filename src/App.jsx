@@ -10,7 +10,7 @@ import CalendarScreen from './screens/CalendarScreen/CalendarScreen.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
 import InnerMediationScreen from './screens/MediationScreen/InnerMediationScreen.jsx'
 import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
-import ExtendedEvent from './screens/CalendarScreen/_components/ExtendedEvent.jsx';
+import CreateTask from './components/CreateTask.jsx';
 
 import {
   StyleSheet,
@@ -43,15 +43,12 @@ function AppWrapper() {
           <MainStack.Screen name="MediationScreen" component={MediationStackScreen} />
           <MainStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
           <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
-          <MainStack.Screen name="ExtendedEvent" component={ExtendedEvent} />
+          <MainStack.Screen name="CreateTask" component={CreateTask} />
           </MainStack.Navigator>
         </View>
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <NavigationBar  />
         </View>
-        
-        
-        
       </NavigationContainer>
       
     </SafeAreaView>

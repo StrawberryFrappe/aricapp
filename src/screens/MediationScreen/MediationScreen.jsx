@@ -17,38 +17,7 @@ import MediationCard from './_components/MediationCard';
  */
 
 const MediationScreen = () => {
-  const navigation = useNavigation();
-
-  const goToInnerMediation = () => {
-    navigation.navigate("InnerMediationScreen");
-  };
-
-  // Sample data - in a real app, this would come from an API or state management
-  const publicMediations = [
-    {
-      id: 1,
-      title: "Cambien las luminarias en las calles.",
-      participants: 20,
-    },
-    {
-      id: 2,
-      title: "Cambien las luminarias en las calles.",
-      participants: 20,
-    },
-  ];
-
-  const privateMediations = [
-    {
-      id: 1,
-      unreadCount: 2,
-      message: "Perrito esta comiendose las flores del jardin.",
-      conversation: "Conversando con @username",
-    },
-  ];
-
-  // Create simple icons using Text (in a real app, you might use icon libraries like react-native-vector-icons)
-  const UsersIcon = () => <Text style={styles.icon}>👥</Text>;
-  const ChatIcon = () => <Text style={styles.icon}>💬</Text>;
+  
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

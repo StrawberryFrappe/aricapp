@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import MyWeek from './_components/MyWeek';
 import Post from '../../components/Post';
+import TodaySchedule from './_components/TodaySchedule';
 
 /** 
  * Home Screen Component
@@ -16,11 +17,10 @@ import Post from '../../components/Post';
 
 
 const HomeScreen = () => {
-  
-
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      
+      <TodaySchedule onAdd={() => navigation.navigate('CreateTask')} />
     </View>
   );
 };
