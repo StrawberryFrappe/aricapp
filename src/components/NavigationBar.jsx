@@ -1,7 +1,8 @@
 import React, { act, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { commonStyles, colors, spacing } from '../styles/commonStyles';
+import { spacing } from '../styles/commonStyles';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 /**
  * NavigationBar Component
@@ -15,6 +16,8 @@ import { commonStyles, colors, spacing } from '../styles/commonStyles';
 const NavigationBar = () => {
   const [activeTab, setActiveTab] = useState('Inicio');
   const navigation = useNavigation();
+  const { styles, colors } = useThemedStyles(createStyles);
+  
   const tabs = [
     { name: 'Today', icon: '🏠', screen: 'HomeScreen' },
     { name: 'Calendar', icon: '📅', screen: 'CalendarScreen' },
