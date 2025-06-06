@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal } from 'react-native';
-import { useThemedStyles } from '../../hooks/useThemedStyles';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal } from 'react-native';
+import { commonStyles, colors } from '../../styles/commonStyles';
 import TimePicker from '../../components/TimePicker';
 
 /**
@@ -12,7 +12,6 @@ import TimePicker from '../../components/TimePicker';
  */
 
 const ZenScreen = ({ navigation }) => {
-  const { styles, colors } = useThemedStyles(createStyles);
   const scale = 1.33;
   // Zen Mode timer state
   const [hours, setHours] = useState(0);
@@ -178,7 +177,7 @@ const ZenScreen = ({ navigation }) => {
   );
 };
 
-const createStyles = (colors) => ({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -225,7 +224,7 @@ const createStyles = (colors) => ({
     alignItems:'center',
   },
   modalText: {
-    color: colors.textPrimary,
+    color: '#fff',
     fontSize: 16,
     marginBottom: 10,
   },
@@ -236,7 +235,7 @@ const createStyles = (colors) => ({
   },
   timeInput: {
     width: 50,
-    color: colors.textPrimary,
+    color: '#fff',
     borderColor: colors.textSecondary,
     marginHorizontal: 5,
   },
@@ -246,7 +245,7 @@ const createStyles = (colors) => ({
     width:80,
     marginVertical:10,
     textAlign:'center',
-    color: colors.textPrimary,
+    color:'#fff',
   },
   formButton: {
     backgroundColor: colors.primary,
@@ -263,7 +262,7 @@ const createStyles = (colors) => ({
     borderRadius: 15,
   },
   startButtonText: {
-    color: colors.textOnPrimary || colors.white,
+    color: colors.textOnPrimary || '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

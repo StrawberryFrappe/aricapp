@@ -13,6 +13,7 @@ import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
 import CreateTask from './components/CreateTask.jsx';
 import { ThemeProvider } from './context/ThemeContext';
 import { useThemedStyles } from './hooks/useThemedStyles';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import {
   View,
@@ -32,7 +33,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // Define the main stack navigator for the app
 const MainStack = createNativeStackNavigator();
 function AppWrapper() {
-  const { styles } = useThemedStyles(createStyles);
+  const { styles } = useThemedStyles();
   
   return (
     <SafeAreaView style={[styles.container, {flex: 1}]}>
@@ -61,7 +62,9 @@ function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AppWrapper />
+        <ErrorBoundary>
+          <AppWrapper />
+        </ErrorBoundary>
       </ThemeProvider>
     </SafeAreaProvider>
   );
@@ -89,21 +92,5 @@ function SettingsStackScreen() {
     </SettingsStack.Navigator>
   );
 }
-
-const createStyles = (colors) => ({
-  container: {
-    backgroundColor: colors.background,
-  },
-  textLight: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  textDark: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-});
 
 export default App;
