@@ -6,13 +6,10 @@ import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icon
 
 const CreateTask = ({ visible, onClose }) => {
   const [title, setTitle] = useState('');
-  const [allDay, setAllDay] = useState(false);
   const [strictMode, setStrictMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState('Travel');
   const [showClassList, setShowClassList] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  
   const [selectedReminder, setSelectedReminder] = useState('10 minutes before');
   const [showReminderList, setShowReminderList] = useState(false);
   const [selectedRepeat, setSelectedRepeat] = useState("Doesn't repeat");
@@ -26,9 +23,7 @@ const CreateTask = ({ visible, onClose }) => {
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
   const now = new Date();
-  const monthName = now.toLocaleString('default', { month: 'short' }).toUpperCase();
-  const dayNumber = now.getDate();
-  const dayName = now.toLocaleString('default', { weekday: 'short' });
+  
 
   return (
     <SafeAreaView style={styles.container}>
