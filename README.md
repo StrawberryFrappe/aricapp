@@ -1,3 +1,58 @@
+# AricaApp
+
+## Project Maintenance
+
+### Troubleshooting Build Issues
+
+If you encounter bundling errors, dependency conflicts, or caching issues:
+
+#### Quick Fix (Cache Issues)
+```bash
+npm run clean:cache
+```
+
+#### Full Reset (Dependency Issues)
+```bash
+npm run reset
+```
+
+#### Manual Cleanup
+```bash
+npm run clean
+```
+
+#### Android-specific Issues
+```bash
+npm run clean:android
+```
+
+### Common Issues
+
+1. **Metro bundler errors** - Usually cache related
+   - Solution: `npm run clean:cache`
+
+2. **Dependency conflicts** - Mixed package managers or corrupted node_modules
+   - Solution: `npm run reset`
+
+3. **Android build failures** - Stale build artifacts
+   - Solution: `npm run clean:android`
+
+4. **Hermes parser errors** - Corrupted dependencies
+   - Solution: `npm run clean && npm install`
+
+### Files to Never Commit
+
+The `.gitignore` is configured to exclude:
+- `node_modules/`
+- `android/build/`, `android/.gradle/`
+- `.expo/`, `metro-cache/`
+- `*.jsbundle`, `*.bundle`
+- `hs_err_pid*.log`, `replay_pid*.log`
+
+If you see these files in git status, they should be ignored.
+
+---
+
 # AricaApp Shizuku Integration
 
 This guide explains how to eject from Expo or set up a custom dev client and integrate Shizuku to force-stop other Android apps.

@@ -11,13 +11,14 @@ import NavigationBar from './components/NavigationBar.jsx';
 import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
 import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
 import CreateTask from './components/CreateTask.jsx';
+import { ThemeProvider } from './context/ThemeContext';
+import { useThemedStyles } from './hooks/useThemedStyles';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import {
-  StyleSheet,
   View,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from './styles/commonStyles';
 
 /**
  * Main App Component
@@ -31,10 +32,13 @@ import { colors } from './styles/commonStyles';
 
 // Define the main stack navigator for the app
 const MainStack = createNativeStackNavigator();
-function AppWrapper() {  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+function AppWrapper() {
+  const { styles } = useThemedStyles();
+  
+  return (
+    <SafeAreaView style={[styles.container, {flex: 1}]}>
       <NavigationContainer onStateChange={() => {}}>
-        <View style={{flex: 1, backgroundColor: colors.background, marginBottom: 82}}>
+        <View style={[styles.container, {flex: 1, marginBottom: 82}]}>
           <MainStack.Navigator screenOptions={{ headerShown: false }}>
             <MainStack.Screen name="HomeScreen" component={HomeScreen} />
             <MainStack.Screen name="SearchScreen" component={SearchScreen} />
@@ -57,7 +61,11 @@ function AppWrapper() {  return (
 function App() {
   return (
     <SafeAreaProvider>
-      <AppWrapper />
+      <ThemeProvider>
+        <ErrorBoundary>
+          <AppWrapper />
+        </ErrorBoundary>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
@@ -84,24 +92,5 @@ function SettingsStackScreen() {
     </SettingsStack.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-  },
-  textLight: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  textDark: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-});
 
 export default App;

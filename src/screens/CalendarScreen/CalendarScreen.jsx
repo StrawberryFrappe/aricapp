@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { commonStyles, colors, spacing } from '../../styles/commonStyles';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import Calendar from './_components/Calendar';
 import EventsContainer from './_components/EventsContainer';
 import { useNavigation } from '@react-navigation/native';
@@ -16,21 +16,25 @@ import { useNavigation } from '@react-navigation/native';
  */
 const CalendarScreen = () => {
   const navigation = useNavigation();
+  const { colors } = useThemedStyles();
 
   return (
     <>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[localStyles.safeArea, { backgroundColor: colors.background }]}>
         
-        <View style={styles.container}>
+        <View style={[localStyles.container, { backgroundColor: colors.background }]}>
           {/* Main Calendar Component */}
-          <View style={styles.calendarSection}>
+          <View style={localStyles.calendarSection}>
             <Calendar />
           </View>
             {/* Events Section */}
-          <View style={styles.eventsSection}>
+          <View style={localStyles.eventsSection}>
             <EventsContainer />
-            <TouchableOpacity style={styles.createEventContainer} onPress={() => navigation.navigate('CreateTask')}>
-              <Text style={{...commonStyles.iconLarge, color: colors.semanticYellow}}>+</Text>
+            <TouchableOpacity 
+              style={[localStyles.createEventContainer, { backgroundColor: colors.primary, shadowColor: colors.primary }]} 
+              onPress={() => navigation.navigate('CreateTask')}
+            >
+              <Text style={[localStyles.createEventIcon, { color: colors.semanticYellow }]}>+</Text>
             </TouchableOpacity>
           </View>
 
@@ -43,52 +47,37 @@ const CalendarScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   createEventContainer: {
-    ...commonStyles.iconContainer,
-    ...commonStyles.iconContainerLarge,
-    ...commonStyles.shadowMedium,
-    alignSelf: 'flex-end',
-    marginRight: spacing.md,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
-  centralLabel: {
-    fontSize: 12,
-    color: colors.black,
-    marginTop: spacing.md,
+  createEventIcon: {
+    fontSize: 30,
+    fontWeight: 'bold',
   },
   safeArea: {
     flex: 1,
-    backgroundColor: colors.background,
   },  
   container: {
-    // ensure the container hugs the content vertically
     flex: 1,
-    backgroundColor: colors.background,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 16,
   },  
   calendarSection: {
-    // compress vertically to fit content
     flexDirection: 'column',
-    
   },
   eventsSection: {
     flex: 1,
-  },  eventsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-
-    marginBottom: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    
-  },
-  eventsTitle: {
-    fontSize: 27,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  eventsHighlight: {
-    color: colors.primary,
   },
 });
 

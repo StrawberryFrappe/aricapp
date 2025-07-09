@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { commonStyles, colors } from '../../styles/commonStyles';
-import MyWeek from './_components/MyWeek';
-import Post from '../../components/Post';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import TodaySchedule from './_components/TodaySchedule';
 
 /** 
@@ -18,20 +16,20 @@ import TodaySchedule from './_components/TodaySchedule';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { styles, colors } = useThemedStyles();
+  
   return (
-    <View style={styles.container}>
+    <View style={[localStyles.container, { backgroundColor: colors.background }]}>
       <TodaySchedule onAdd={() => navigation.navigate('CreateTask')} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    ...commonStyles.centeredContainer,
-    backgroundColor: colors.background,
-  },
-  text: {
-    ...commonStyles.titleText,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

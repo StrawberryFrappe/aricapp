@@ -9,14 +9,18 @@
     "web": "expo start --web",
     "build:android": "expo build:android",
     "prebuild": "expo prebuild",
-    "prebuild:clean": "expo prebuild --clean"
+    "prebuild:clean": "expo prebuild --clean",
+    "clean": "powershell.exe -ExecutionPolicy Bypass -File ./scripts/clean.ps1",
+    "clean:cache": "npx expo start --clear",
+    "clean:android": "cd android && ./gradlew clean",
+    "reset": "npm run clean && npm run prebuild:clean"
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "^8.4.1",
     "@react-native-picker/picker": "2.11.0",
     "@react-navigation/native": "^7.1.9",
     "@react-navigation/native-stack": "^7.3.13",
-    "babel-preset-expo": "~13.1.11",
+    "clear": "^0.1.0",
     "expo": "~53.0.9",
     "expo-dev-client": "~5.1.8",
     "expo-splash-screen": "^0.30.8",
