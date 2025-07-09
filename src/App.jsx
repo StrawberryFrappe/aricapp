@@ -2,14 +2,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen/HomeScreen.jsx';
-import SearchScreen from './screens/SearchScreen/SearchScreen.jsx';
-import ZenScreen from './screens/PublishScreen/ZenScreen.jsx';
+import ZenScreen from './screens/ZenScreen/ZenScreen.jsx';
 import StatsScreen from './screens/StatsScreen/StatsScreen.jsx';
-import SettingsScreen from './screens/ProfileScreen/SettingsScreen.jsx'; // Now contains SettingsScreen
+import SettingsScreen from './screens/SettingsScreen/SettingsScreen.jsx'; // Now contains SettingsScreen
 import CalendarScreen from './screens/CalendarScreen/CalendarScreen.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
-import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
-import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
+
 import CreateTask from './components/CreateTask.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import { useThemedStyles } from './hooks/useThemedStyles';
@@ -41,8 +39,7 @@ function AppWrapper() {
         <View style={[styles.container, {flex: 1, marginBottom: 82}]}>
           <MainStack.Navigator screenOptions={{ headerShown: false }}>
             <MainStack.Screen name="HomeScreen" component={HomeScreen} />
-            <MainStack.Screen name="SearchScreen" component={SearchScreen} />
-            <MainStack.Screen name="PublishScreen" component={ZenScreen} />
+            <MainStack.Screen name="ZenScreen" component={ZenScreen} />
             <MainStack.Screen name="StatsScreen" component={StatsStackScreen} />
             <MainStack.Screen name="SettingsScreen" component={SettingsStackScreen} />
             <MainStack.Screen name="CalendarScreen" component={CalendarScreen} />
@@ -77,7 +74,6 @@ function StatsStackScreen() {
   return (
     <StatsStack.Navigator screenOptions={{ headerShown: false }}>
       <StatsStack.Screen name="StatsStackScreen" component={StatsScreen} />
-      <StatsStack.Screen name="InnerStatsScreen" component={InnerStatsScreen} />
     </StatsStack.Navigator>
   );
 }
@@ -87,8 +83,7 @@ const SettingsStack = createNativeStackNavigator();
 function SettingsStackScreen() {
   return (
     <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
-      <SettingsStack.Screen name="ProfileStackScreen" component={SettingsScreen} />
-      <SettingsStack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+      <SettingsStack.Screen name="SettingsStackScreen" component={SettingsScreen} />
     </SettingsStack.Navigator>
   );
 }

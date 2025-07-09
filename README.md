@@ -158,10 +158,8 @@ android {
   export function forceStopApp(packageName) { ... }
   ```
 
-- **ExampleForceStopButton.jsx** (`src/components/ExampleForceStopButton.jsx`)
-  - Calls `initializeShizuku()` on mount.
-  - Renders a button to `forceStopApp('com.example.target')`.
-  - Shows modal prompt for non-rooted devices.
+- **Productivity Components** (Task creation, calendar events, productivity tracking)
+  - Integrates with the core productivity features of the app.
 
 ## 5. Rooted Devices
 - `initialize` checks `Shizuku.hasRootPermission()`, calls `Shizuku.startV2(context)`.

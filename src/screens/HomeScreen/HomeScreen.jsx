@@ -6,8 +6,8 @@ import TodaySchedule from './_components/TodaySchedule';
 
 /** 
  * Home Screen Component
- * This component serves as a placeholder for the Home screen in the app.
- * It includes a button to navigate to the Calendar screen and displays a Post component.
+ * This component serves as the main home screen for the productivity app.
+ * It displays the daily schedule and allows navigation to task creation.
  * 
  * @function HomeScreen
  * @returns {JSX.Element}

@@ -32,7 +32,7 @@ const NavigationBar = () => {
   const tabs = [
     { name: 'Today', icon: '🏠', screen: 'HomeScreen' },
     { name: 'Calendar', icon: '📅', screen: 'CalendarScreen' },
-    { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'PublishScreen' },
+    { name: 'Focus', icon: 'ඞ', isCentral: true, screen: 'ZenScreen' },
     { name: 'Data', icon: '📈', screen: 'StatsScreen' },
     { name: 'Settings', icon: '⚙️', screen: 'SettingsScreen' },
   ];

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext.jsx';
-import { useThemedStyles } from '../../../hooks/useThemedStyles';
+import { useThemedStyles } from '../../../hooks/useThemedStyles.js';
 
 /**
  * ThemeSelector Component

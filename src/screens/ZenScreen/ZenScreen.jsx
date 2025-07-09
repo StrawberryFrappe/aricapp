@@ -4,10 +4,10 @@ import { commonStyles, colors } from '../../styles/commonStyles';
 import TimePicker from '../../components/TimePicker';
 
 /**
- * PublishScreen Component
- * This component allows users to create and publish new posts
+ * ZenScreen Component
+ * This component provides a focus/meditation interface for productivity enhancement.
  *
- * @function PublishScreen
+ * @function ZenScreen
  * @returns {JSX.Element}
  */
 
