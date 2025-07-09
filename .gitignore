@@ -51,7 +51,24 @@ hs_err_pid*.log
 replay_pid*.log
 
 # Android build and generated files
-android/
+android/.gradle/
+android/build/
+android/app/build/
+android/app/release/
+android/app/debug/
+android/local.properties
+android/keystore.properties
+android/gradle/
+android/gradlew
+android/gradlew.bat
+
+# Keep custom native modules and configurations
+!android/app/src/main/java/com/strawberryfrappe/AppBlocking*.java
+!android/app/src/main/java/com/strawberryfrappe/BlockingForegroundService.java
+!android/app/src/main/AndroidManifest.xml
+!android/app/src/main/res/xml/accessibility_service_config.xml
+!android/app/src/main/res/values/strings.xml
+
 replay_pid*.log
 
 # Android lint
@@ -262,10 +279,12 @@ android/build/
 android/.gradle/
 android/app/release/
 android/app/debug/
-android/gradle/
-android/gradlew
-android/gradlew.bat
 android/local.properties
+
+# Keep important Android source files
+!android/app/src/main/
+!android/app/build.gradle
+!android/settings.gradle
 
 # iOS (if you have it)
 ios/build/
@@ -277,6 +296,10 @@ ios/DerivedData/
 # Generated files
 src/assets/generated/
 *.generated.*
+
+# App-blocking feature documentation and tests
+!test-app-blocking.js
+!APP_BLOCKING_IMPLEMENTATION.md
 
 # Temporary files
 .tmp/
