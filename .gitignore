@@ -50,6 +50,10 @@ local.properties
 hs_err_pid*.log
 replay_pid*.log
 
+# Android build and generated files
+android/
+replay_pid*.log
+
 # Android lint
 lint-report.html
 lint-report_files/

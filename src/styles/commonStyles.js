@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from './themes';
 
 /**
  * Common Styles
@@ -6,57 +7,8 @@ import { StyleSheet } from 'react-native';
  * It helps maintain consistency and reduces code duplication.
  */
 
-// Color palette - Dark Theme with Techie Vibes (Base Palette Preserved)
-export const colors = {
-  // Sober, Elegant, Modern, Non-Binary & Pansexual Coded Palette
-  primary: '#6C5DD3',          // Muted Violet (modern, non-binary, elegant)
-  secondary: '#F5A623',        // Muted Amber (warm, inclusive)
-  accent: '#2D9CDB',           // Muted Blue (modern, fresh)
-  highlight: '#F2994A',        // Muted Orange (for highlights)
-  background: '#181A20',       // Deep Charcoal (sober, elegant, modern)
-
-  // Light and dark variants
-  primaryLight: '#A393F7',     // Light Violet
-  primaryDark: '#4834A6',      // Deep Violet
-
-  // Text and surface
-  surface: '#23242B',          // Slightly lighter than background for cards
-  surfaceLight: '#262833',     // For subtle contrast
-  textPrimary: '#F2F2F2',      // Almost white, high contrast
-  textSecondary: '#BDBDBD',    // Muted gray for secondary text
-  textMuted: '#828282',        // Even more muted for placeholders
-  white: '#FFFFFF',            // For icons, highlights
-  black: '#000000',            // For shadows
-
-  // Borders and separators
-  borderLight: '#35363C',      // Subtle border
-  borderDefault: '#44454B',    // More prominent border
-  borderBright: '#6C5DD3',     // Use primary for focus/active
-
-  // State & semantic
-  disabledBackground: '#23242B', // Slightly lighter than bg
-  disabledText: '#828282',     // Muted gray
-  error: '#EB5757',            // Muted red
-  success: '#27AE60',          // Muted green
-  warning: '#F2C94C',          // Muted yellow
-
-  // Pansexual-coded semantic colors
-  semanticPink: '#FF6CB7',     // Pansexual Pink (for cards, tags, etc.)
-  semanticYellow: '#FFD952',   // Pansexual Yellow (for cards, tags, etc.)
-  semanticBlue: '#3ECFFF',     // Pansexual Blue (for cards, tags, etc.)
-  semanticPurple: '#BB6BD9',   // Soft purple (for harmony)
-
-  // Modern accent
-  teal: '#43E6C2',             // Modern teal accent
-  pink: '#EB6F92',             // Muted pink accent
-
-  // Legacy aliases
-  border: '#44454B',           // Alias for borderDefault
-  tagBackground: '#A393F7',    // Alias for primaryLight
-};
-
-// Common style objects
-export const commonStyles = StyleSheet.create({
+// Function to create styles with custom colors
+export const createStyles = (themeColors) => StyleSheet.create({
   // Container styles
   centeredContainer: {
     flex: 1,
@@ -65,36 +17,37 @@ export const commonStyles = StyleSheet.create({
   },
     // Card styles
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
     borderRadius: 8,
     padding: 15,
     margin: 10,
-    shadowColor: colors.black,
+    shadowColor: themeColors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 8,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: themeColors.borderLight,
   },
 
   // Enhanced card for dark theme
   cardTech: {
-    backgroundColor: colors.surfaceLight,
+    backgroundColor: themeColors.surfaceLight,
     borderRadius: 12,
     padding: 15,
     margin: 10,
-    shadowColor: colors.primary,
+    shadowColor: themeColors.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 10,
     borderWidth: 1,
-    borderColor: colors.borderBright,
+    borderColor: themeColors.borderBright,
   },
+
   // Shadow styles - Enhanced for dark theme
   shadowSmall: {
-    shadowColor: colors.primary,
+    shadowColor: themeColors.primary,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -105,7 +58,7 @@ export const commonStyles = StyleSheet.create({
   },
 
   shadowMedium: {
-    shadowColor: colors.primary,
+    shadowColor: themeColors.primary,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -116,7 +69,7 @@ export const commonStyles = StyleSheet.create({
   },
 
   shadowLarge: {
-    shadowColor: colors.accent,
+    shadowColor: themeColors.accent,
     shadowOffset: {
       width: 0,
       height: 6,
@@ -128,7 +81,7 @@ export const commonStyles = StyleSheet.create({
 
   // Neon glow effect for techie vibes
   neonGlow: {
-    shadowColor: colors.matrix,
+    shadowColor: themeColors.matrix || themeColors.accent,
     shadowOffset: {
       width: 0,
       height: 0,
@@ -141,48 +94,49 @@ export const commonStyles = StyleSheet.create({
   // Text styles
   titleText: {
     fontSize: 20,
-    color: colors.textPrimary,
+    color: themeColors.textPrimary,
   },
 
   bodyText: {
     fontSize: 14,
-    color: colors.textPrimary,
+    color: themeColors.textPrimary,
     lineHeight: 20,
   },
 
   smallText: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: themeColors.textSecondary,
   },
 
   boldText: {
     fontWeight: 'bold',
   },
+
   // Icon styles - Enhanced for dark theme
   iconSmall: {
     fontSize: 16,
-    color: colors.textSecondary,
+    color: themeColors.textSecondary,
   },
 
   iconMedium: {
     fontSize: 20,
-    color: colors.textPrimary,
+    color: themeColors.textPrimary,
   },
 
   iconLarge: {
     fontSize: 30,
-    color: colors.primary,
+    color: themeColors.primary,
   },
 
   // Tech-style icons
   iconTech: {
     fontSize: 24,
-    color: colors.matrix,
+    color: themeColors.matrix || themeColors.primary,
   },
 
   iconNeon: {
     fontSize: 28,
-    color: colors.neon,
+    color: themeColors.neon || themeColors.accent,
   },
 
   // Avatar styles
@@ -191,6 +145,7 @@ export const commonStyles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+
   avatarBig: {
     width: 150,
     height: 150,
@@ -199,16 +154,15 @@ export const commonStyles = StyleSheet.create({
 
   // Button and interactive elements
   activeBackground: {
-    backgroundColor: colors.primary,
+    backgroundColor: themeColors.primary,
     borderRadius: 15,
   },
 
   // Border styles
   topBorder: {
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: themeColors.border,
   },
-  
 
   // Layout helpers
   row: {
@@ -255,29 +209,30 @@ export const commonStyles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     marginRight: 5,
-    backgroundColor: colors.tagBackground,
+    backgroundColor: themeColors.tagBackground,
   },
 
   tagText: {
-    color: colors.textPrimary,
+    color: themeColors.textPrimary,
     fontWeight: 'bold',
     fontSize: 12,
   },
+
   // Navigation styles - Dark theme
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
     borderTopWidth: 2,
-    borderTopColor: colors.borderBright,
+    borderTopColor: themeColors.borderBright,
     height: 80,
     paddingHorizontal: 10,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    shadowColor: colors.primary,
+    shadowColor: themeColors.primary,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -296,19 +251,20 @@ export const commonStyles = StyleSheet.create({
     height: 30,
     marginBottom: 2,
   },
+
   iconContainerLarge: {
     width: 60,
     height: 60,
-    backgroundColor: colors.primary,
+    backgroundColor: themeColors.primary,
   },
 
   // Tech-themed additions for dark theme
   techContainer: {
-    backgroundColor: colors.background,
+    backgroundColor: themeColors.background,
     borderRadius: 16,
     padding: 20,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: themeColors.primary,
   },
 
   glassEffect: {
@@ -320,7 +276,7 @@ export const commonStyles = StyleSheet.create({
   },
 
   matrixText: {
-    color: colors.matrix,
+    color: themeColors.matrix || themeColors.primary,
     fontSize: 16,
     fontFamily: 'monospace',
     fontWeight: 'bold',
@@ -328,18 +284,18 @@ export const commonStyles = StyleSheet.create({
 
   neonBorder: {
     borderWidth: 2,
-    borderColor: colors.neon,
+    borderColor: themeColors.neon || themeColors.accent,
     borderRadius: 8,
   },
 
   techButton: {
-    backgroundColor: colors.accent,
+    backgroundColor: themeColors.accent,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: colors.primary,
-    shadowColor: colors.primary,
+    borderColor: themeColors.primary,
+    shadowColor: themeColors.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 6,
@@ -347,12 +303,21 @@ export const commonStyles = StyleSheet.create({
   },
 
   techButtonText: {
-    color: colors.white,
+    color: themeColors.white,
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
+  // Container styles
+  container: {
+    flex: 1,
+    backgroundColor: themeColors.background,
+  },
 });
+
+// Create backward-compatible commonStyles using default colors
+export const commonStyles = createStyles(colors);
 
 // Commonly used spacing values
 export const spacing = {
@@ -371,4 +336,5 @@ export const borderRadius = {
   large: 20,
 };
 
-export default commonStyles;
+// Re-export colors for backward compatibility
+export { colors };

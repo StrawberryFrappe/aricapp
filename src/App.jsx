@@ -11,7 +11,7 @@ import NavigationBar from './components/NavigationBar.jsx';
 import InnerStatsScreen from './screens/StatsScreen/InnerStatsScreen.jsx'
 import EditProfileScreen from './screens/ProfileScreen/EditProfileScreen.jsx';
 import CreateTask from './components/CreateTask.jsx';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import { useThemedStyles } from './hooks/useThemedStyles';
 import ErrorBoundary from './components/ErrorBoundary';
 
