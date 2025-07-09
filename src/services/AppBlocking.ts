@@ -13,10 +13,10 @@ interface AppBlockingInterface {
 
   /**
    * Start app blocking for specified duration and apps
-   * @param durationMinutes - Duration to block apps in minutes
+   * @param durationSeconds - Duration to block apps in seconds
    * @param blockedApps - Array of package names to block
    */
-  startBlocking(durationMinutes: number, blockedApps: string[]): Promise<boolean>;
+  startBlocking(durationSeconds: number, blockedApps: string[]): Promise<boolean>;
 
   /**
    * Stop app blocking immediately

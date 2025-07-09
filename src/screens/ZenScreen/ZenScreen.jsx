@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Alert, AppState } from 'react-native';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import TimePicker from '../../components/TimePicker';
 import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
@@ -43,6 +43,28 @@ const ZenScreen = ({ navigation }) => {
     checkAccessibilityStatus();
     checkBlockingStatus();
   }, []);
+
+  // Monitor app state changes to update blocking status when app comes to foreground
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === 'active') {
+        // App came to foreground, check blocking status
+        checkBlockingStatus();
+        // If timer ended while app was in background, update accordingly
+        if (isRunning && startTimeRef.current && totalDurationRef.current > 0) {
+          const now = Date.now();
+          const elapsed = Math.floor((now - startTimeRef.current) / 1000);
+          if (elapsed >= totalDurationRef.current) {
+            handleTimerEnd();
+          }
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    return () => subscription?.remove();
+  }, [isRunning]); // Re-subscribe when timer state changes
 
   // Check accessibility service status
   const checkAccessibilityStatus = async () => {
@@ -113,8 +135,7 @@ const ZenScreen = ({ navigation }) => {
     // Start app blocking if accessibility is enabled
     if (isAccessibilityEnabled) {
       try {
-        const durationMinutes = Math.ceil(duration / 60); // Convert to minutes, round up
-        await AppBlocking.startBlocking(durationMinutes, DEFAULT_BLOCKED_APPS);
+        await AppBlocking.startBlocking(duration, DEFAULT_BLOCKED_APPS);
         setBlockingActive(true);
       } catch (error) {
         console.warn('Failed to start app blocking:', error);

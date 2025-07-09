@@ -72,9 +72,24 @@ public class AppBlockingAccessibilityService extends AccessibilityService {
      * Check if blocking session is currently active
      */
     private boolean isBlockingActive() {
-        // Reload end time in case it was updated
+        // Always reload end time to ensure we have the latest value
         loadBlockingEndTime();
-        return blockingEndTime > System.currentTimeMillis();
+        
+        // If no end time is set, blocking is not active
+        if (blockingEndTime <= 0) {
+            return false;
+        }
+        
+        // Check if current time has passed the end time
+        long currentTime = System.currentTimeMillis();
+        boolean isActive = blockingEndTime > currentTime;
+        
+        // If blocking has expired, clear the data
+        if (!isActive) {
+            clearBlockingData();
+        }
+        
+        return isActive;
     }
 
     /**
@@ -94,5 +109,15 @@ public class AppBlockingAccessibilityService extends AccessibilityService {
     private void loadBlockingEndTime() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         blockingEndTime = prefs.getLong(KEY_BLOCKING_END_TIME, 0);
+    }
+
+    /**
+     * Clear blocking data when session expires
+     */
+    private void clearBlockingData() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+        blockingEndTime = 0;
+        blockedApps.clear();
     }
 }

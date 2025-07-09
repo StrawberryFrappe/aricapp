@@ -92,7 +92,7 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
      * Start app blocking for specified duration and apps
      */
     @ReactMethod
-    public void startBlocking(int durationMinutes, ReadableArray blockedApps, Promise promise) {
+    public void startBlocking(int durationSeconds, ReadableArray blockedApps, Promise promise) {
         try {
             if (!isAccessibilityServiceEnabled()) {
                 promise.reject("ACCESSIBILITY_DISABLED", "Accessibility service not enabled");
@@ -108,13 +108,13 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
             // Save blocked apps list
             saveBlockedApps(appPackages);
             
-            // Calculate end time
-            long endTime = System.currentTimeMillis() + (durationMinutes * 60 * 1000L);
+            // Calculate end time using seconds
+            long endTime = System.currentTimeMillis() + (durationSeconds * 1000L);
             saveBlockingEndTime(endTime);
 
             // Start foreground service
             Intent serviceIntent = new Intent(reactContext, BlockingForegroundService.class);
-            serviceIntent.putExtra("duration_minutes", durationMinutes);
+            serviceIntent.putExtra("duration_minutes", (int) Math.ceil(durationSeconds / 60.0)); // For notification display
             serviceIntent.putExtra("end_time", endTime);
             reactContext.startForegroundService(serviceIntent);
 

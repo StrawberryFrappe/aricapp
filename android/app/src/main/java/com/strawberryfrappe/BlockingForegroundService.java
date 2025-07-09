@@ -26,6 +26,7 @@ public class BlockingForegroundService extends Service {
     
     private Handler handler = new Handler();
     private Runnable endBlockingRunnable;
+    private Runnable notificationUpdateRunnable;
     private long endTime = 0;
     private int durationMinutes = 0;
 
@@ -55,6 +56,9 @@ public class BlockingForegroundService extends Service {
             
             // Schedule automatic stop when timer ends
             scheduleAutoStop();
+            
+            // Start periodic notification updates
+            startNotificationUpdates();
         }
         
         // Service should restart if killed
@@ -71,6 +75,9 @@ public class BlockingForegroundService extends Service {
         super.onDestroy();
         if (endBlockingRunnable != null) {
             handler.removeCallbacks(endBlockingRunnable);
+        }
+        if (notificationUpdateRunnable != null) {
+            handler.removeCallbacks(notificationUpdateRunnable);
         }
         clearBlockingData();
     }
@@ -107,11 +114,24 @@ public class BlockingForegroundService extends Service {
         );
 
         long remainingTime = Math.max(0, endTime - System.currentTimeMillis());
-        int remainingMinutes = (int) (remainingTime / (60 * 1000));
         
-        String contentText = remainingMinutes > 0 
-            ? String.format("Focus session active - %d min remaining", remainingMinutes)
-            : "Focus session ending...";
+        String contentText;
+        if (remainingTime <= 0) {
+            contentText = "Focus session ending...";
+        } else {
+            int totalSeconds = (int) (remainingTime / 1000);
+            int hours = totalSeconds / 3600;
+            int minutes = (totalSeconds % 3600) / 60;
+            int seconds = totalSeconds % 60;
+            
+            if (hours > 0) {
+                contentText = String.format("Focus session active - %dh %dm remaining", hours, minutes);
+            } else if (minutes > 0) {
+                contentText = String.format("Focus session active - %dm %ds remaining", minutes, seconds);
+            } else {
+                contentText = String.format("Focus session active - %ds remaining", seconds);
+            }
+        }
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("🧘 Focus Mode Active")
@@ -137,14 +157,56 @@ public class BlockingForegroundService extends Service {
             endBlockingRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    // Clear blocking data before stopping service
+                    clearBlockingData();
                     stopSelf();
                 }
             };
             handler.postDelayed(endBlockingRunnable, delay);
         } else {
             // Timer already ended, stop immediately
+            clearBlockingData();
             stopSelf();
         }
+    }
+
+    /**
+     * Start periodic notification updates to show remaining time
+     */
+    private void startNotificationUpdates() {
+        if (notificationUpdateRunnable != null) {
+            handler.removeCallbacks(notificationUpdateRunnable);
+        }
+        
+        notificationUpdateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Check if timer has ended
+                if (endTime <= System.currentTimeMillis()) {
+                    // Timer ended, clear data and stop service
+                    clearBlockingData();
+                    stopSelf();
+                    return;
+                }
+                
+                // Update notification with current remaining time
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (manager != null) {
+                    manager.notify(NOTIFICATION_ID, createNotification());
+                }
+                
+                // Schedule next update more frequently for better responsiveness
+                long remainingTime = Math.max(0, endTime - System.currentTimeMillis());
+                if (remainingTime < 60000) { // Less than 1 minute remaining
+                    handler.postDelayed(this, 1000); // Update every second
+                } else {
+                    handler.postDelayed(this, 5000); // Update every 5 seconds for longer durations
+                }
+            }
+        };
+        
+        // Start updates immediately
+        handler.post(notificationUpdateRunnable);
     }
 
     /**
