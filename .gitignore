@@ -46,6 +46,15 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# Android error logs and crash dumps
+hs_err_pid*.log
+replay_pid*.log
+
+# Android lint
+lint-report.html
+lint-report_files/
+lint-results.xml
+
 # React Native specific
 *.jsbundle
 *.bundle
@@ -55,6 +64,18 @@ react-native-packager-cache-*/
 tmp/
 .expo/
 .expo-shared/
+
+# Metro bundler cache and temp files
+.metro-cache/
+metro-cache/
+.metro-health-check*
+.metro-health-check-*/
+
+# Hermes bytecode
+*.hbc
+
+# React Native debugger
+.vscode/launchReactNative.js
 
 # node.js
 #
@@ -66,9 +87,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Package manager locks (keep one, ignore others)
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+# We're using npm, so keep package-lock.json and ignore others
+yarn.lock
+pnpm-lock.yaml
 
 # Runtime data
 pids
@@ -257,6 +278,9 @@ src/assets/generated/
 .tmp/
 temp/
 tmp/
+
+# Keep scripts directory but ignore logs
+scripts/*.log
 
 # OS generated files
 Thumbs.db
