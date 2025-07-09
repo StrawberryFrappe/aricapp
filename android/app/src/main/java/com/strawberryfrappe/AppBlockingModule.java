@@ -205,76 +205,106 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getInstalledApps(Promise promise) {
         try {
+            android.util.Log.d("AppBlocking", "=== Starting getInstalledApps ===");
+            
             PackageManager pm = reactContext.getPackageManager();
             List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_META_DATA);
             WritableArray appList = Arguments.createArray();
             
             String currentPackage = reactContext.getPackageName();
+            android.util.Log.d("AppBlocking", "Current package (to exclude): " + currentPackage);
+            android.util.Log.d("AppBlocking", "Total packages found: " + packages.size());
+            
+            int processedCount = 0;
+            int skippedOwnApp = 0;
+            int skippedInvalidNames = 0;
+            int skippedSystemApps = 0;
+            int addedToList = 0;
+            int errorCount = 0;
             
             for (PackageInfo packageInfo : packages) {
-                // Skip our own app
-                if (packageInfo.packageName.equals(currentPackage)) {
+                processedCount++;
+                String packageName = packageInfo.packageName;
+                
+                // Skip our own app only
+                if (packageName.equals(currentPackage)) {
+                    skippedOwnApp++;
+                    android.util.Log.d("AppBlocking", "Skipped own app: " + packageName);
                     continue;
                 }
                 
                 try {
-                    ApplicationInfo appInfo = pm.getApplicationInfo(packageInfo.packageName, 0);
+                    ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
                     String appName = pm.getApplicationLabel(appInfo).toString();
+                    
+                    android.util.Log.v("AppBlocking", "Processing: " + packageName + " -> " + appName);
                     
                     // Skip apps with empty or very short names
                     if (appName == null || appName.trim().length() < 2) {
+                        skippedInvalidNames++;
+                        android.util.Log.v("AppBlocking", "Skipped invalid name: " + packageName + " (name: '" + appName + "')");
                         continue;
                     }
                     
-                    // Skip phone-specific system apps that shouldn't be blocked
-                    if (isPhoneSystemApp(packageInfo.packageName, appName)) {
+                    // Use comprehensive filtering logic
+                    if (shouldFilterApp(packageName, appName, appInfo)) {
+                        skippedSystemApps++;
+                        android.util.Log.v("AppBlocking", "Filtered out: " + packageName + " (" + appName + ")");
                         continue;
                     }
                     
-                    // For non-system apps, check if they have a launch intent
-                    // For system apps, be more permissive (some useful apps might not have main launch intents)
-                    boolean isSystemApp = (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-                    if (!isSystemApp) {
-                        Intent launchIntent = pm.getLaunchIntentForPackage(packageInfo.packageName);
-                        if (launchIntent == null) {
-                            // Log popular apps that are being filtered out
-                            if (packageInfo.packageName.contains("youtube") || 
-                                packageInfo.packageName.contains("instagram") || 
-                                packageInfo.packageName.contains("discord") ||
-                                packageInfo.packageName.contains("facebook") ||
-                                packageInfo.packageName.contains("twitter")) {
-                                android.util.Log.d("AppBlocking", "Excluding popular app (no launch intent): " + appName + " (" + packageInfo.packageName + ")");
-                            }
-                            continue;
-                        }
+                    // Only include apps that have launch intents (user-launchable apps)
+                    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+                    if (launchIntent == null) {
+                        skippedSystemApps++;
+                        android.util.Log.v("AppBlocking", "No launch intent: " + packageName + " (" + appName + ")");
+                        continue;
                     }
+                    
+                    // Include user apps and blockable system apps
+                    android.util.Log.v("AppBlocking", "Including app: " + packageName + " (" + appName + ")");
                     
                     // Get app icon as base64
-                    String iconBase64 = getAppIconBase64(pm, packageInfo.packageName);
+                    String iconBase64 = getAppIconBase64(pm, packageName);
                     
                     WritableMap appMap = Arguments.createMap();
-                    appMap.putString("packageName", packageInfo.packageName);
+                    appMap.putString("packageName", packageName);
                     appMap.putString("appName", appName);
                     appMap.putString("icon", iconBase64);
                     
-                    // Log popular apps being included
-                    if (packageInfo.packageName.contains("youtube") || 
-                        packageInfo.packageName.contains("instagram") || 
-                        packageInfo.packageName.contains("discord") ||
-                        packageInfo.packageName.contains("facebook") ||
-                        packageInfo.packageName.contains("twitter")) {
-                        android.util.Log.d("AppBlocking", "Including popular app: " + appName + " (" + packageInfo.packageName + ")");
+                    appList.pushMap(appMap);
+                    addedToList++;
+                    
+                    // Log some popular apps if found
+                    if (packageName.contains("youtube") || packageName.contains("instagram") || 
+                        packageName.contains("discord") || packageName.contains("facebook") ||
+                        packageName.contains("twitter") || packageName.contains("snapchat") ||
+                        packageName.contains("tiktok") || packageName.contains("musically") ||
+                        packageName.contains("reddit") || packageName.contains("whatsapp") ||
+                        packageName.contains("spotify") || packageName.contains("netflix") ||
+                        packageName.contains("chrome") || packageName.contains("browser")) {
+                        android.util.Log.i("AppBlocking", "FOUND POPULAR APP: " + packageName + " (" + appName + ")");
                     }
                     
-                    appList.pushMap(appMap);
                 } catch (Exception e) {
-                    // Skip apps that can't be processed
+                    errorCount++;
+                    android.util.Log.w("AppBlocking", "Error processing " + packageName + ": " + e.getMessage());
                     continue;
                 }
             }
             
+            android.util.Log.d("AppBlocking", "=== getInstalledApps Summary ===");
+            android.util.Log.d("AppBlocking", "Total processed: " + processedCount);
+            android.util.Log.d("AppBlocking", "Skipped own app: " + skippedOwnApp);
+            android.util.Log.d("AppBlocking", "Skipped invalid names: " + skippedInvalidNames);
+            android.util.Log.d("AppBlocking", "Skipped system apps: " + skippedSystemApps);
+            android.util.Log.d("AppBlocking", "Processing errors: " + errorCount);
+            android.util.Log.d("AppBlocking", "Added to list: " + addedToList);
+            android.util.Log.d("AppBlocking", "Final app list size: " + appList.size());
+            
             promise.resolve(appList);
         } catch (Exception e) {
+            android.util.Log.e("AppBlocking", "getInstalledApps failed: " + e.getMessage(), e);
             promise.reject("GET_APPS_ERROR", e.getMessage());
         }
     }
@@ -354,7 +384,7 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
                     appInfo.putBoolean("isInstalled", true);
                     appInfo.putBoolean("hasLaunchIntent", launchIntent != null);
                     appInfo.putBoolean("isSystemApp", isSystemApp);
-                    appInfo.putBoolean("wouldBeFiltered", isPhoneSystemApp(packageName, appName));
+                    appInfo.putBoolean("wouldBeFiltered", shouldFilterApp(packageName, appName, appInfo_detail));
                     
                 } catch (PackageManager.NameNotFoundException e) {
                     appInfo.putBoolean("isInstalled", false);
@@ -397,7 +427,7 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
                         
                         result.putBoolean("hasLaunchIntent", launchIntent != null);
                         result.putBoolean("isSystemApp", isSystemApp);
-                        result.putBoolean("wouldBeFiltered", isPhoneSystemApp(packageName, appName));
+                        result.putBoolean("wouldBeFiltered", shouldFilterApp(packageName, appName, appInfo));
                         
                         results.pushMap(result);
                     }
@@ -441,7 +471,7 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
                         
                         result.putBoolean("hasLaunchIntent", launchIntent != null);
                         result.putBoolean("isSystemApp", isSystemApp);
-                        result.putBoolean("wouldBeFiltered", isPhoneSystemApp(packageName, appName));
+                        result.putBoolean("wouldBeFiltered", shouldFilterApp(packageName, appName, appInfo));
                         
                         results.pushMap(result);
                     }
@@ -454,6 +484,107 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
             promise.resolve(results);
         } catch (Exception e) {
             promise.reject("SEARCH_ERROR", e.getMessage());
+        }
+    }
+
+    /**
+     * Comprehensive debug method to analyze all installed apps and filtering
+     */
+    @ReactMethod
+    public void debugAppFiltering(Promise promise) {
+        try {
+            android.util.Log.d("AppBlocking", "=== DEBUG APP FILTERING ===");
+            
+            PackageManager pm = reactContext.getPackageManager();
+            List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_META_DATA);
+            WritableArray debugResults = Arguments.createArray();
+            
+            String currentPackage = reactContext.getPackageName();
+            android.util.Log.d("AppBlocking", "Current package: " + currentPackage);
+            android.util.Log.d("AppBlocking", "Total packages: " + packages.size());
+            
+            int totalApps = 0;
+            int userApps = 0;
+            int systemApps = 0;
+            int phoneSystemApps = 0;
+            int validNameApps = 0;
+            int finalIncluded = 0;
+            
+            for (PackageInfo packageInfo : packages) {
+                totalApps++;
+                String packageName = packageInfo.packageName;
+                
+                try {
+                    ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+                    String appName = pm.getApplicationLabel(appInfo).toString();
+                    boolean isSystemApp = (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+                    boolean shouldFilter = shouldFilterApp(packageName, appName, appInfo);
+                    boolean hasValidName = appName != null && appName.trim().length() >= 2;
+                    boolean isOwnApp = packageName.equals(currentPackage);
+                    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+                    boolean hasLaunchIntent = launchIntent != null;
+                    
+                    if (isSystemApp) systemApps++;
+                    else userApps++;
+                    
+                    if (shouldFilter) phoneSystemApps++;
+                    if (hasValidName) validNameApps++;
+                    
+                    // Current filtering logic - matches the updated getInstalledApps logic
+                    boolean shouldInclude = !isOwnApp && hasValidName && !shouldFilter && hasLaunchIntent;
+                    if (shouldInclude) finalIncluded++;
+                    
+                    // Log popular apps specifically
+                    if (packageName.contains("youtube") || packageName.contains("instagram") || 
+                        packageName.contains("discord") || packageName.contains("facebook") ||
+                        packageName.contains("twitter") || packageName.contains("snapchat") ||
+                        packageName.contains("tiktok") || packageName.contains("musically") ||
+                        packageName.contains("reddit") || packageName.contains("whatsapp") ||
+                        packageName.contains("spotify") || packageName.contains("netflix")) {
+                        
+                        android.util.Log.i("AppBlocking", String.format(
+                            "POPULAR APP: %s (%s) - System:%b, Filtered:%b, ValidName:%b, Launch:%b, Include:%b",
+                            packageName, appName, isSystemApp, shouldFilter, hasValidName, hasLaunchIntent, shouldInclude
+                        ));
+                        
+                        WritableMap debugApp = Arguments.createMap();
+                        debugApp.putString("packageName", packageName);
+                        debugApp.putString("appName", appName);
+                        debugApp.putBoolean("isSystemApp", isSystemApp);
+                        debugApp.putBoolean("isFiltered", shouldFilter);
+                        debugApp.putBoolean("hasValidName", hasValidName);
+                        debugApp.putBoolean("hasLaunchIntent", hasLaunchIntent);
+                        debugApp.putBoolean("shouldInclude", shouldInclude);
+                        debugApp.putBoolean("isOwnApp", isOwnApp);
+                        debugResults.pushMap(debugApp);
+                    }
+                    
+                } catch (Exception e) {
+                    android.util.Log.w("AppBlocking", "Error processing " + packageName + ": " + e.getMessage());
+                }
+            }
+            
+            android.util.Log.d("AppBlocking", "=== FILTERING SUMMARY ===");
+            android.util.Log.d("AppBlocking", "Total apps: " + totalApps);
+            android.util.Log.d("AppBlocking", "User apps: " + userApps);
+            android.util.Log.d("AppBlocking", "System apps: " + systemApps);
+            android.util.Log.d("AppBlocking", "Filtered apps: " + phoneSystemApps);
+            android.util.Log.d("AppBlocking", "Valid name apps: " + validNameApps);
+            android.util.Log.d("AppBlocking", "Final included: " + finalIncluded);
+            
+            WritableMap summary = Arguments.createMap();
+            summary.putInt("totalApps", totalApps);
+            summary.putInt("userApps", userApps);
+            summary.putInt("systemApps", systemApps);
+            summary.putInt("filteredApps", phoneSystemApps);
+            summary.putInt("validNameApps", validNameApps);
+            summary.putInt("finalIncluded", finalIncluded);
+            summary.putArray("popularApps", debugResults);
+            
+            promise.resolve(summary);
+        } catch (Exception e) {
+            android.util.Log.e("AppBlocking", "Debug filtering failed: " + e.getMessage(), e);
+            promise.reject("DEBUG_ERROR", e.getMessage());
         }
     }
 
@@ -484,61 +615,80 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Check if an app is a phone-specific system app that shouldn't be blocked
+     * Check if an app should be filtered out from the blocking list
+     * NEW APPROACH: Only include user-installed apps to dramatically improve performance
      */
-    private boolean isPhoneSystemApp(String packageName, String appName) {
-        // Common phone system apps that should be excluded
-        String[] phoneSystemPackages = {
-            "com.android.dialer",           // Phone/Dialer
-            "com.android.contacts",         // Contacts
-            "com.android.mms",              // Messages/SMS
-            "com.android.messaging",        // Messages
-            "com.google.android.dialer",    // Google Dialer
-            "com.google.android.contacts",  // Google Contacts
-            "com.samsung.android.dialer",   // Samsung Dialer
-            "com.samsung.android.messaging",// Samsung Messages
-            "com.samsung.android.contacts", // Samsung Contacts
-            "com.samsung.android.gallery3d",// Samsung Gallery
-            "com.sec.android.gallery3d",    // Samsung Gallery (alternative)
-            "com.android.emergency",        // Emergency
-            "com.android.phone",            // Phone service
-            "com.android.stk",              // SIM Toolkit
-            "com.android.settings",         // System Settings
-            "com.samsung.android.settings", // Samsung Settings
-            "com.android.systemui",         // System UI
-            "com.android.launcher",         // System Launcher
-            "com.android.launcher3",        // Launcher3
-            "com.samsung.android.launcher", // Samsung Launcher
-            "com.google.android.setupwizard", // Setup Wizard
-            "com.android.provision",        // Setup/Provision
-            "com.android.inputmethod",      // Input methods
-            "com.samsung.android.inputmethod", // Samsung Keyboard
-            "com.google.android.inputmethod",  // Google Keyboard
-        };
+    private boolean shouldFilterApp(String packageName, String appName, ApplicationInfo appInfo) {
+        // Check if it's a system app
+        boolean isSystemApp = (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
         
-        // Check against package name patterns
-        for (String systemPackage : phoneSystemPackages) {
-            if (packageName.equals(systemPackage) || packageName.startsWith(systemPackage + ".")) {
-                return true;
+        // Get launch intent to check if app is user-launchable
+        PackageManager pm = reactContext.getPackageManager();
+        Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+        boolean hasLaunchIntent = launchIntent != null;
+        
+        // RESTRICTIVE APPROACH: Filter out ALL system apps except for a few user-facing ones
+        // This dramatically reduces the list from ~248 apps to ~20-50 user apps
+        
+        if (isSystemApp) {
+            // Allow only specific well-known system apps that users might want to block
+            String[] allowedSystemApps = {
+                "com.android.chrome",           // Chrome browser
+                "com.google.android.youtube",   // YouTube (if system)
+                "com.android.vending",          // Google Play Store
+                "com.google.android.apps.docs", // Google Drive
+                "com.google.android.gm",        // Gmail
+                "com.google.android.apps.maps", // Google Maps
+                "com.google.android.calendar",  // Google Calendar
+                "com.google.android.apps.photos", // Google Photos
+                "com.samsung.android.calendar", // Samsung Calendar
+                "com.sec.android.app.camera",   // Samsung Camera
+                "com.samsung.android.video",    // Samsung Video Player
+                "com.sec.android.app.myfiles",  // Samsung My Files
+                "com.samsung.android.game.gamehome", // Samsung Gaming Hub
+                "com.samsung.android.game.gametools", // Samsung Game Booster
+                "com.sec.android.app.sbrowser", // Samsung Internet
+                "com.samsung.android.forest",   // Samsung Digital Wellbeing
+                "com.sec.android.app.clockpackage", // Samsung Clock
+                "com.sec.android.app.fm",       // Samsung Radio
+                "com.google.android.documentsui", // Files app
+                "com.samsung.android.lool",     // Samsung Device care
+            };
+            
+            boolean isAllowedSystemApp = false;
+            for (String allowedApp : allowedSystemApps) {
+                if (packageName.equals(allowedApp)) {
+                    isAllowedSystemApp = true;
+                    break;
+                }
+            }
+            
+            // Filter out ALL system apps unless they're in the allowed list
+            if (!isAllowedSystemApp) {
+                return true; // Filter out
             }
         }
         
-        // Additional checks for system-level apps by name
+        // Must have a launch intent (user-launchable)
+        if (!hasLaunchIntent) {
+            return true; // Filter out
+        }
+        
+        // Filter out apps with very short or invalid names
+        if (appName == null || appName.trim().length() < 2) {
+            return true; // Filter out
+        }
+        
+        // Filter out apps with system-like names even if they're not flagged as system apps
         String lowerAppName = appName.toLowerCase();
-        String[] systemAppNames = {
-            "phone", "dialer", "call", "contacts", "messages", "messaging", 
-            "sms", "settings", "launcher", "emergency", "setup", "provision",
-            "keyboard", "input method", "system ui", "gallery"
-        };
-        
-        for (String systemName : systemAppNames) {
-            if (lowerAppName.equals(systemName) || 
-                (lowerAppName.startsWith(systemName + " ") || lowerAppName.endsWith(" " + systemName))) {
-                return true;
-            }
+        if (lowerAppName.contains("test") || lowerAppName.contains("debug") ||
+            lowerAppName.contains("demo") || lowerAppName.contains("sample") ||
+            lowerAppName.startsWith("com.") || lowerAppName.contains("framework") ||
+            (lowerAppName.contains("service") && lowerAppName.length() < 20)) {
+            return true; // Filter out
         }
         
-        return false;
+        return false; // Include in list - this is a user app worth blocking
     }
 
     /**

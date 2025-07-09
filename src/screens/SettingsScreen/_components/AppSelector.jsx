@@ -259,36 +259,6 @@ const AppSelector = () => {
         <View style={localStyles.buttonContainer}>
           <TouchableOpacity
             style={[
-              localStyles.debugButton,
-              { 
-                backgroundColor: colors.secondary,
-                marginRight: 8,
-              }
-            ]}
-            onPress={debugPopularApps}
-          >
-            <Text style={[styles.smallText, { color: colors.textOnPrimary || '#fff', fontWeight: '600' }]}>
-              Debug
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
-              localStyles.debugButton,
-              { 
-                backgroundColor: colors.accent || colors.secondary,
-                marginRight: 8,
-              }
-            ]}
-            onPress={searchPopularApps}
-          >
-            <Text style={[styles.smallText, { color: colors.textOnPrimary || '#fff', fontWeight: '600' }]}>
-              Search
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
               localStyles.saveButton,
               { 
                 backgroundColor: colors.primary,

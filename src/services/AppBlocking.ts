@@ -69,6 +69,11 @@ interface AppBlockingInterface {
    * Find apps by package name keyword
    */
   findAppsByPackageKeyword(keyword: string): Promise<any[]>;
+
+  /**
+   * Debug comprehensive app filtering analysis
+   */
+  debugAppFiltering(): Promise<any>;
 }
 
 const { AppBlocking } = NativeModules;

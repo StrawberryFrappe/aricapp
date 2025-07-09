@@ -21,18 +21,18 @@ const SettingsScreen = () => {
       type: 'header',
     },
     {
-      id: 'appearance',
-      type: 'section',
-      title: 'Appearance',
-      subtitle: 'Theme and visual preferences',
-      component: 'theme',
-    },
-    {
       id: 'app-blocking',
       type: 'section',
       title: 'App Blocking',
       subtitle: 'Select apps to block during focus sessions',
       component: 'app-selector',
+    },
+    {
+      id: 'appearance',
+      type: 'section',
+      title: 'Appearance',
+      subtitle: 'Theme and visual preferences',
+      component: 'theme',
     },
     {
       id: 'spacer',
