@@ -1,0 +1,5 @@
+<resources>
+  <string name="app_name">aricapp</string>
+  <string name="expo_runtime_version">1.0.0</string>
+  <string name="accessibility_service_description">Enables app blocking during focus sessions to help maintain productivity. This service monitors which apps are opened and automatically returns you to the home screen when blocked apps are launched during active focus sessions.</string>
+</resources>
