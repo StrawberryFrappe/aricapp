@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -89,6 +92,19 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Check if notification permission is granted
+     */
+    @ReactMethod
+    public void areNotificationsEnabled(Promise promise) {
+        try {
+            boolean enabled = NotificationManagerCompat.from(reactContext).areNotificationsEnabled();
+            promise.resolve(enabled);
+        } catch (Exception e) {
+            promise.reject("NOTIFICATION_CHECK_ERROR", e.getMessage());
+        }
+    }
+
+    /**
      * Start app blocking for specified duration and apps
      */
     @ReactMethod
@@ -97,6 +113,11 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
             if (!isAccessibilityServiceEnabled()) {
                 promise.reject("ACCESSIBILITY_DISABLED", "Accessibility service not enabled");
                 return;
+            }
+
+            // Check notification permission and log warning if not granted
+            if (!NotificationManagerCompat.from(reactContext).areNotificationsEnabled()) {
+                android.util.Log.w("AppBlocking", "Notification permission not granted - progress notifications will not be visible");
             }
 
             // Convert ReadableArray to Set<String>

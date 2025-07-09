@@ -37,19 +37,23 @@ const ZenScreen = ({ navigation }) => {
   // App blocking state
   const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
   const [blockingActive, setBlockingActive] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Check accessibility status on mount
   useEffect(() => {
     checkAccessibilityStatus();
     checkBlockingStatus();
+    checkNotificationStatus();
   }, []);
 
   // Monitor app state changes to update blocking status when app comes to foreground
   useEffect(() => {
     const handleAppStateChange = (nextAppState) => {
       if (nextAppState === 'active') {
-        // App came to foreground, check blocking status
+        // App came to foreground, check all statuses
+        checkAccessibilityStatus();
         checkBlockingStatus();
+        checkNotificationStatus();
         // If timer ended while app was in background, update accordingly
         if (isRunning && startTimeRef.current && totalDurationRef.current > 0) {
           const now = Date.now();
@@ -83,6 +87,17 @@ const ZenScreen = ({ navigation }) => {
       setBlockingActive(active);
     } catch (error) {
       console.warn('Failed to check blocking status:', error);
+    }
+  };
+
+  // Check notification permission status
+  const checkNotificationStatus = async () => {
+    try {
+      const enabled = await AppBlocking.areNotificationsEnabled();
+      setNotificationsEnabled(enabled);
+    } catch (error) {
+      console.warn('Failed to check notification status:', error);
+      setNotificationsEnabled(false); // Assume disabled on error
     }
   };
 
@@ -207,7 +222,6 @@ const ZenScreen = ({ navigation }) => {
                 setTimeLeft(h * 3600 + m * 60 + s);
               }}
             />
-            
             
             {/* preset circles */}
             <View style={styles.presetsContainer}>
@@ -440,6 +454,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textSecondary,
     lineHeight: 18,
+  },
+  warningText: {
+    fontSize: 12,
+    color: '#FFA500',
+    marginTop: 4,
+    fontWeight: '500',
   },
   permissionButton: {
     marginTop: 12,

@@ -7,6 +7,11 @@ interface AppBlockingInterface {
   isAccessibilityEnabled(): Promise<boolean>;
 
   /**
+   * Check if notification permission is granted
+   */
+  areNotificationsEnabled(): Promise<boolean>;
+
+  /**
    * Open accessibility settings for user to enable the service
    */
   openAccessibilitySettings(): Promise<boolean>;

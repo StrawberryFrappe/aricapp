@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen/HomeScreen.jsx';
@@ -15,6 +15,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 import {
   View,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -56,6 +58,36 @@ function AppWrapper() {
 }
 
 function App() {
+  // Request notification permission on app startup for Android 13+
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+            {
+              title: 'Notification Permission',
+              message: 'This app needs notification permission to show focus session timers and app blocking status.',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            }
+          );
+          
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('Notification permission granted');
+          } else {
+            console.log('Notification permission denied');
+          }
+        } catch (err) {
+          console.warn('Error requesting notification permission:', err);
+        }
+      }
+    };
+
+    requestNotificationPermission();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
