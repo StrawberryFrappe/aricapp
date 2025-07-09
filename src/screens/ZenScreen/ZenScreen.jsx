@@ -38,12 +38,14 @@ const ZenScreen = ({ navigation }) => {
   const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
   const [blockingActive, setBlockingActive] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [selectedApps, setSelectedApps] = useState([]);
 
   // Check accessibility status on mount
   useEffect(() => {
     checkAccessibilityStatus();
     checkBlockingStatus();
     checkNotificationStatus();
+    loadSelectedApps();
   }, []);
 
   // Monitor app state changes to update blocking status when app comes to foreground
@@ -54,6 +56,7 @@ const ZenScreen = ({ navigation }) => {
         checkAccessibilityStatus();
         checkBlockingStatus();
         checkNotificationStatus();
+        loadSelectedApps(); // Refresh selected apps in case user changed them
         // If timer ended while app was in background, update accordingly
         if (isRunning && startTimeRef.current && totalDurationRef.current > 0) {
           const now = Date.now();
@@ -69,6 +72,15 @@ const ZenScreen = ({ navigation }) => {
     
     return () => subscription?.remove();
   }, [isRunning]); // Re-subscribe when timer state changes
+
+  // Listen for screen focus to refresh selected apps when coming back from settings
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadSelectedApps();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   // Check accessibility service status
   const checkAccessibilityStatus = async () => {
@@ -98,6 +110,17 @@ const ZenScreen = ({ navigation }) => {
     } catch (error) {
       console.warn('Failed to check notification status:', error);
       setNotificationsEnabled(false); // Assume disabled on error
+    }
+  };
+
+  // Load user's selected apps for blocking
+  const loadSelectedApps = async () => {
+    try {
+      const apps = await AppBlocking.getSelectedApps();
+      setSelectedApps(apps.length > 0 ? apps : DEFAULT_BLOCKED_APPS);
+    } catch (error) {
+      console.warn('Failed to load selected apps:', error);
+      setSelectedApps(DEFAULT_BLOCKED_APPS); // Fallback to defaults
     }
   };
 
@@ -150,7 +173,7 @@ const ZenScreen = ({ navigation }) => {
     // Start app blocking if accessibility is enabled
     if (isAccessibilityEnabled) {
       try {
-        await AppBlocking.startBlocking(duration, DEFAULT_BLOCKED_APPS);
+        await AppBlocking.startBlocking(duration, selectedApps);
         setBlockingActive(true);
       } catch (error) {
         console.warn('Failed to start app blocking:', error);

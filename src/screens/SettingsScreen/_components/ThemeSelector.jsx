@@ -69,6 +69,7 @@ const ThemeSelector = () => {
 const localStyles = StyleSheet.create({
   container: {
     padding: 20,
+    paddingTop: 0,
   },
   themesGrid: {
     flexDirection: 'row',

@@ -1,5 +1,11 @@
 import { NativeModules } from 'react-native';
 
+export interface InstalledApp {
+  packageName: string;
+  appName: string;
+  icon: string; // base64 encoded icon
+}
+
 interface AppBlockingInterface {
   /**
    * Check if accessibility service is enabled for app blocking
@@ -32,6 +38,37 @@ interface AppBlockingInterface {
    * Get current blocking status
    */
   getBlockingStatus(): Promise<boolean>;
+
+  /**
+   * Get list of installed apps that can be blocked
+   */
+  getInstalledApps(): Promise<InstalledApp[]>;
+
+  /**
+   * Save user's selected apps for blocking
+   * @param selectedApps - Array of package names to block during focus sessions
+   */
+  saveSelectedApps(selectedApps: string[]): Promise<boolean>;
+
+  /**
+   * Get user's selected apps for blocking
+   */
+  getSelectedApps(): Promise<string[]>;
+
+  /**
+   * Debug method to check popular apps status
+   */
+  checkPopularApps(): Promise<any[]>;
+
+  /**
+   * Search for apps by name to find actual package names
+   */
+  findAppsByName(searchName: string): Promise<any[]>;
+
+  /**
+   * Find apps by package name keyword
+   */
+  findAppsByPackageKeyword(keyword: string): Promise<any[]>;
 }
 
 const { AppBlocking } = NativeModules;
