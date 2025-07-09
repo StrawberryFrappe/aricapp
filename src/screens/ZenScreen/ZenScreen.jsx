@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Switch, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Alert } from 'react-native';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import TimePicker from '../../components/TimePicker';
 import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
@@ -30,9 +30,11 @@ const ZenScreen = ({ navigation }) => {
   const [isRunning, setIsRunning] = useState(false);
   // Track tap timestamps to detect emergency stop
   const tapTimestampsRef = useRef([]);
+  // Track start time and total duration for accurate timing when app is backgrounded
+  const startTimeRef = useRef(null);
+  const totalDurationRef = useRef(0);
 
   // App blocking state
-  const [appBlockingEnabled, setAppBlockingEnabled] = useState(false);
   const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
   const [blockingActive, setBlockingActive] = useState(false);
 
@@ -62,39 +64,33 @@ const ZenScreen = ({ navigation }) => {
     }
   };
 
-  // Handle app blocking toggle
-  const handleAppBlockingToggle = async (enabled) => {
-    if (enabled && !isAccessibilityEnabled) {
-      Alert.alert(
-        'Enable Accessibility Service',
-        'To use app blocking, you need to enable the accessibility service. This allows the app to detect when blocked apps are opened and automatically close them.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Open Settings', 
-            onPress: async () => {
-              try {
-                await AppBlocking.openAccessibilitySettings();
-                // Check again after user returns (they might have enabled it)
-                setTimeout(checkAccessibilityStatus, 1000);
-              } catch (error) {
-                Alert.alert('Error', 'Failed to open accessibility settings');
-              }
-            }
-          }
-        ]
-      );
-      return;
+  // Handle opening accessibility settings
+  const handleOpenAccessibilitySettings = async () => {
+    try {
+      await AppBlocking.openAccessibilitySettings();
+      // Check again after user returns (they might have enabled it)
+      setTimeout(checkAccessibilityStatus, 1000);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open accessibility settings');
     }
-    setAppBlockingEnabled(enabled);
   };
 
-  // Countdown effect
+  // Countdown effect - calculate elapsed time instead of using intervals
   useEffect(() => {
     if (!isRunning) return;
-    const id = setInterval(() => {
-      setTimeLeft(prev => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    
+    const updateTimer = () => {
+      if (startTimeRef.current && totalDurationRef.current > 0) {
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimeRef.current) / 1000);
+        const remaining = Math.max(0, totalDurationRef.current - elapsed);
+        setTimeLeft(remaining);
+      }
+    };
+
+    // Update immediately and then every second
+    updateTimer();
+    const id = setInterval(updateTimer, 1000);
     return () => clearInterval(id);
   }, [isRunning]);
 
@@ -105,14 +101,19 @@ const ZenScreen = ({ navigation }) => {
   }, [timeLeft]);
 
   const handleStart = async () => {
-    setTimeLeft(getDuration());
+    const duration = getDuration();
+    setTimeLeft(duration);
     tapTimestampsRef.current = [];
+    
+    // Record start time and duration for accurate timing
+    startTimeRef.current = Date.now();
+    totalDurationRef.current = duration;
     setIsRunning(true);
 
-    // Start app blocking if enabled
-    if (appBlockingEnabled && isAccessibilityEnabled) {
+    // Start app blocking if accessibility is enabled
+    if (isAccessibilityEnabled) {
       try {
-        const durationMinutes = Math.ceil(getDuration() / 60); // Convert to minutes, round up
+        const durationMinutes = Math.ceil(duration / 60); // Convert to minutes, round up
         await AppBlocking.startBlocking(durationMinutes, DEFAULT_BLOCKED_APPS);
         setBlockingActive(true);
       } catch (error) {
@@ -124,6 +125,8 @@ const ZenScreen = ({ navigation }) => {
 
   const handleTimerEnd = async () => {
     setIsRunning(false);
+    startTimeRef.current = null;
+    totalDurationRef.current = 0;
     
     // Stop app blocking
     if (blockingActive) {
@@ -138,6 +141,8 @@ const ZenScreen = ({ navigation }) => {
 
   const handleEmergencyStop = async () => {
     setIsRunning(false);
+    startTimeRef.current = null;
+    totalDurationRef.current = 0;
     
     // Stop app blocking on emergency stop too
     if (blockingActive) {
@@ -182,35 +187,6 @@ const ZenScreen = ({ navigation }) => {
               }}
             />
             
-            {/* App Blocking Toggle */}
-            <View style={styles.appBlockingContainer}>
-              <View style={styles.blockingToggleRow}>
-                <View style={styles.blockingInfo}>
-                  <Text style={styles.blockingTitle}>Enable App Blocking</Text>
-                  <Text style={styles.blockingSubtitle}>
-                    {isAccessibilityEnabled 
-                      ? (blockingActive ? 'Active - Apps will be blocked' : 'Ready - Apps blocked during timer')
-                      : 'Requires accessibility permission'
-                    }
-                  </Text>
-                </View>
-                <Switch
-                  value={appBlockingEnabled}
-                  onValueChange={handleAppBlockingToggle}
-                  trackColor={{ true: colors.primaryLight, false: colors.borderLight }}
-                  thumbColor={appBlockingEnabled ? colors.primary : colors.textSecondary}
-                  disabled={!isAccessibilityEnabled}
-                />
-              </View>
-              {!isAccessibilityEnabled && (
-                <TouchableOpacity 
-                  style={styles.permissionButton}
-                  onPress={() => handleAppBlockingToggle(true)}
-                >
-                  <Text style={styles.permissionButtonText}>Grant Accessibility Permission</Text>
-                </TouchableOpacity>
-              )}
-            </View>
             
             {/* preset circles */}
             <View style={styles.presetsContainer}>
@@ -430,14 +406,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderLight,
   },
-  blockingToggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   blockingInfo: {
-    flex: 1,
-    marginRight: 16,
+    marginBottom: 8,
   },
   blockingTitle: {
     fontSize: 16,

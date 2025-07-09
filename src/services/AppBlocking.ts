@@ -36,7 +36,8 @@ export default AppBlocking as AppBlockingInterface;
 // Default blocked apps (Facebook and Instagram)
 export const DEFAULT_BLOCKED_APPS = [
   'com.facebook.katana',      // Facebook
-  'com.instagram.android',    // Instagram
+  'com.instagram.android',  // Instagram
+  'com.google.android.youtube', // YouTube
 ];
 
 // Additional commonly blocked social apps
@@ -47,5 +48,4 @@ export const ADDITIONAL_BLOCKED_APPS = [
   'com.reddit.frontpage',     // Reddit
   'com.discord',              // Discord
   'com.whatsapp',             // WhatsApp
-  'com.google.android.youtube', // YouTube
 ];
