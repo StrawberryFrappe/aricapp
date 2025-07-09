@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Switch, Alert } from 'react-native';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import TimePicker from '../../components/TimePicker';
+import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
 
 /**
  * ZenScreen Component
@@ -30,6 +31,64 @@ const ZenScreen = ({ navigation }) => {
   // Track tap timestamps to detect emergency stop
   const tapTimestampsRef = useRef([]);
 
+  // App blocking state
+  const [appBlockingEnabled, setAppBlockingEnabled] = useState(false);
+  const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
+  const [blockingActive, setBlockingActive] = useState(false);
+
+  // Check accessibility status on mount
+  useEffect(() => {
+    checkAccessibilityStatus();
+    checkBlockingStatus();
+  }, []);
+
+  // Check accessibility service status
+  const checkAccessibilityStatus = async () => {
+    try {
+      const enabled = await AppBlocking.isAccessibilityEnabled();
+      setIsAccessibilityEnabled(enabled);
+    } catch (error) {
+      console.warn('Failed to check accessibility status:', error);
+    }
+  };
+
+  // Check if blocking is currently active
+  const checkBlockingStatus = async () => {
+    try {
+      const active = await AppBlocking.getBlockingStatus();
+      setBlockingActive(active);
+    } catch (error) {
+      console.warn('Failed to check blocking status:', error);
+    }
+  };
+
+  // Handle app blocking toggle
+  const handleAppBlockingToggle = async (enabled) => {
+    if (enabled && !isAccessibilityEnabled) {
+      Alert.alert(
+        'Enable Accessibility Service',
+        'To use app blocking, you need to enable the accessibility service. This allows the app to detect when blocked apps are opened and automatically close them.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Open Settings', 
+            onPress: async () => {
+              try {
+                await AppBlocking.openAccessibilitySettings();
+                // Check again after user returns (they might have enabled it)
+                setTimeout(checkAccessibilityStatus, 1000);
+              } catch (error) {
+                Alert.alert('Error', 'Failed to open accessibility settings');
+              }
+            }
+          }
+        ]
+      );
+      return;
+    }
+    setAppBlockingEnabled(enabled);
+  };
+
   // Countdown effect
   useEffect(() => {
     if (!isRunning) return;
@@ -38,15 +97,57 @@ const ZenScreen = ({ navigation }) => {
     }, 1000);
     return () => clearInterval(id);
   }, [isRunning]);
-    useEffect(() => {
+
+  useEffect(() => {
     if (timeLeft === 0 && isRunning) {
-      setIsRunning(false);
+      handleTimerEnd();
     }
   }, [timeLeft]);
-  const handleStart = () => {
+
+  const handleStart = async () => {
     setTimeLeft(getDuration());
     tapTimestampsRef.current = [];
     setIsRunning(true);
+
+    // Start app blocking if enabled
+    if (appBlockingEnabled && isAccessibilityEnabled) {
+      try {
+        const durationMinutes = Math.ceil(getDuration() / 60); // Convert to minutes, round up
+        await AppBlocking.startBlocking(durationMinutes, DEFAULT_BLOCKED_APPS);
+        setBlockingActive(true);
+      } catch (error) {
+        console.warn('Failed to start app blocking:', error);
+        Alert.alert('App Blocking Error', 'Failed to start app blocking. Timer will continue without blocking.');
+      }
+    }
+  };
+
+  const handleTimerEnd = async () => {
+    setIsRunning(false);
+    
+    // Stop app blocking
+    if (blockingActive) {
+      try {
+        AppBlocking.stopBlocking();
+        setBlockingActive(false);
+      } catch (error) {
+        console.warn('Failed to stop app blocking:', error);
+      }
+    }
+  };
+
+  const handleEmergencyStop = async () => {
+    setIsRunning(false);
+    
+    // Stop app blocking on emergency stop too
+    if (blockingActive) {
+      try {
+        AppBlocking.stopBlocking();
+        setBlockingActive(false);
+      } catch (error) {
+        console.warn('Failed to stop app blocking:', error);
+      }
+    }
   };
   
   // If tapped 11 times within 10 seconds, stop the timer
@@ -56,7 +157,7 @@ const ZenScreen = ({ navigation }) => {
     recent.push(now);
     tapTimestampsRef.current = recent;
     if (recent.length >= 11) {
-      setIsRunning(false);
+      handleEmergencyStop();
       tapTimestampsRef.current = [];
     }
   };
@@ -80,6 +181,37 @@ const ZenScreen = ({ navigation }) => {
                 setTimeLeft(h * 3600 + m * 60 + s);
               }}
             />
+            
+            {/* App Blocking Toggle */}
+            <View style={styles.appBlockingContainer}>
+              <View style={styles.blockingToggleRow}>
+                <View style={styles.blockingInfo}>
+                  <Text style={styles.blockingTitle}>Enable App Blocking</Text>
+                  <Text style={styles.blockingSubtitle}>
+                    {isAccessibilityEnabled 
+                      ? (blockingActive ? 'Active - Apps will be blocked' : 'Ready - Apps blocked during timer')
+                      : 'Requires accessibility permission'
+                    }
+                  </Text>
+                </View>
+                <Switch
+                  value={appBlockingEnabled}
+                  onValueChange={handleAppBlockingToggle}
+                  trackColor={{ true: colors.primaryLight, false: colors.borderLight }}
+                  thumbColor={appBlockingEnabled ? colors.primary : colors.textSecondary}
+                  disabled={!isAccessibilityEnabled}
+                />
+              </View>
+              {!isAccessibilityEnabled && (
+                <TouchableOpacity 
+                  style={styles.permissionButton}
+                  onPress={() => handleAppBlockingToggle(true)}
+                >
+                  <Text style={styles.permissionButtonText}>Grant Accessibility Permission</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            
             {/* preset circles */}
             <View style={styles.presetsContainer}>
               {presets.map((dur, idx) => {
@@ -287,6 +419,49 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  appBlockingContainer: {
+    width: '90%',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  blockingToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  blockingInfo: {
+    flex: 1,
+    marginRight: 16,
+  },
+  blockingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: 4,
+  },
+  blockingSubtitle: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    lineHeight: 18,
+  },
+  permissionButton: {
+    marginTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  permissionButtonText: {
+    color: colors.textOnPrimary || '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 
