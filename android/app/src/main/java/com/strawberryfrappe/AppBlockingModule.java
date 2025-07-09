@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,6 +33,7 @@ import com.facebook.react.bridge.Arguments;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Set;
 
@@ -200,112 +202,165 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Get list of installed apps that can be blocked
+     * Get list of installed apps that can be blocked - COMPREHENSIVE APPROACH
      */
     @ReactMethod
     public void getInstalledApps(Promise promise) {
         try {
-            android.util.Log.d("AppBlocking", "=== Starting getInstalledApps ===");
+            android.util.Log.d("AppBlocking", "=== Starting getInstalledApps (COMPREHENSIVE) ===");
             
             PackageManager pm = reactContext.getPackageManager();
-            List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_META_DATA);
-            WritableArray appList = Arguments.createArray();
-            
             String currentPackage = reactContext.getPackageName();
+            WritableArray appList = Arguments.createArray();
+            Set<String> processedPackages = new HashSet<>();
+            
             android.util.Log.d("AppBlocking", "Current package (to exclude): " + currentPackage);
-            android.util.Log.d("AppBlocking", "Total packages found: " + packages.size());
             
-            int processedCount = 0;
-            int skippedOwnApp = 0;
-            int skippedInvalidNames = 0;
-            int skippedSystemApps = 0;
+            int totalFound = 0;
             int addedToList = 0;
-            int errorCount = 0;
+            int filteredOut = 0;
+            int duplicatesSkipped = 0;
             
-            for (PackageInfo packageInfo : packages) {
-                processedCount++;
-                String packageName = packageInfo.packageName;
+            // METHOD 1: Get all installed packages (requires QUERY_ALL_PACKAGES permission)
+            try {
+                List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_META_DATA);
+                android.util.Log.d("AppBlocking", "Method 1 - getInstalledPackages found: " + packages.size());
                 
-                // Skip our own app only
-                if (packageName.equals(currentPackage)) {
-                    skippedOwnApp++;
-                    android.util.Log.d("AppBlocking", "Skipped own app: " + packageName);
-                    continue;
+                for (PackageInfo packageInfo : packages) {
+                    totalFound++;
+                    processApp(pm, packageInfo.packageName, currentPackage, appList, processedPackages);
                 }
-                
-                try {
-                    ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
-                    String appName = pm.getApplicationLabel(appInfo).toString();
-                    
-                    android.util.Log.v("AppBlocking", "Processing: " + packageName + " -> " + appName);
-                    
-                    // Skip apps with empty or very short names
-                    if (appName == null || appName.trim().length() < 2) {
-                        skippedInvalidNames++;
-                        android.util.Log.v("AppBlocking", "Skipped invalid name: " + packageName + " (name: '" + appName + "')");
-                        continue;
-                    }
-                    
-                    // Use comprehensive filtering logic
-                    if (shouldFilterApp(packageName, appName, appInfo)) {
-                        skippedSystemApps++;
-                        android.util.Log.v("AppBlocking", "Filtered out: " + packageName + " (" + appName + ")");
-                        continue;
-                    }
-                    
-                    // Only include apps that have launch intents (user-launchable apps)
-                    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
-                    if (launchIntent == null) {
-                        skippedSystemApps++;
-                        android.util.Log.v("AppBlocking", "No launch intent: " + packageName + " (" + appName + ")");
-                        continue;
-                    }
-                    
-                    // Include user apps and blockable system apps
-                    android.util.Log.v("AppBlocking", "Including app: " + packageName + " (" + appName + ")");
-                    
-                    // Get app icon as base64
-                    String iconBase64 = getAppIconBase64(pm, packageName);
-                    
-                    WritableMap appMap = Arguments.createMap();
-                    appMap.putString("packageName", packageName);
-                    appMap.putString("appName", appName);
-                    appMap.putString("icon", iconBase64);
-                    
-                    appList.pushMap(appMap);
-                    addedToList++;
-                    
-                    // Log some popular apps if found
-                    if (packageName.contains("youtube") || packageName.contains("instagram") || 
-                        packageName.contains("discord") || packageName.contains("facebook") ||
-                        packageName.contains("twitter") || packageName.contains("snapchat") ||
-                        packageName.contains("tiktok") || packageName.contains("musically") ||
-                        packageName.contains("reddit") || packageName.contains("whatsapp") ||
-                        packageName.contains("spotify") || packageName.contains("netflix") ||
-                        packageName.contains("chrome") || packageName.contains("browser")) {
-                        android.util.Log.i("AppBlocking", "FOUND POPULAR APP: " + packageName + " (" + appName + ")");
-                    }
-                    
-                } catch (Exception e) {
-                    errorCount++;
-                    android.util.Log.w("AppBlocking", "Error processing " + packageName + ": " + e.getMessage());
-                    continue;
-                }
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Method 1 failed: " + e.getMessage());
             }
             
-            android.util.Log.d("AppBlocking", "=== getInstalledApps Summary ===");
-            android.util.Log.d("AppBlocking", "Total processed: " + processedCount);
-            android.util.Log.d("AppBlocking", "Skipped own app: " + skippedOwnApp);
-            android.util.Log.d("AppBlocking", "Skipped invalid names: " + skippedInvalidNames);
-            android.util.Log.d("AppBlocking", "Skipped system apps: " + skippedSystemApps);
-            android.util.Log.d("AppBlocking", "Processing errors: " + errorCount);
-            android.util.Log.d("AppBlocking", "Added to list: " + addedToList);
+            // METHOD 2: Get all installed applications (alternative approach)
+            try {
+                List<ApplicationInfo> applications = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                android.util.Log.d("AppBlocking", "Method 2 - getInstalledApplications found: " + applications.size());
+                
+                for (ApplicationInfo appInfo : applications) {
+                    totalFound++;
+                    processApp(pm, appInfo.packageName, currentPackage, appList, processedPackages);
+                }
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Method 2 failed: " + e.getMessage());
+            }
+            
+            // METHOD 3: Query launcher apps specifically (finds user-facing apps)
+            try {
+                Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+                mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                List<ResolveInfo> launcherApps = pm.queryIntentActivities(mainIntent, 0);
+                android.util.Log.d("AppBlocking", "Method 3 - queryIntentActivities found: " + launcherApps.size());
+                
+                for (ResolveInfo resolveInfo : launcherApps) {
+                    if (resolveInfo.activityInfo != null) {
+                        totalFound++;
+                        processApp(pm, resolveInfo.activityInfo.packageName, currentPackage, appList, processedPackages);
+                    }
+                }
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Method 3 failed: " + e.getMessage());
+            }
+            
+            // METHOD 4: Query browsable apps (finds apps that can open web links)
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://example.com"));
+                List<ResolveInfo> browserApps = pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL);
+                android.util.Log.d("AppBlocking", "Method 4 - browser apps found: " + browserApps.size());
+                
+                for (ResolveInfo resolveInfo : browserApps) {
+                    if (resolveInfo.activityInfo != null) {
+                        totalFound++;
+                        processApp(pm, resolveInfo.activityInfo.packageName, currentPackage, appList, processedPackages);
+                    }
+                }
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Method 4 failed: " + e.getMessage());
+            }
+            
+            android.util.Log.d("AppBlocking", "=== getInstalledApps COMPREHENSIVE Summary ===");
+            android.util.Log.d("AppBlocking", "Total apps found (all methods): " + totalFound);
+            android.util.Log.d("AppBlocking", "Unique packages processed: " + processedPackages.size());
             android.util.Log.d("AppBlocking", "Final app list size: " + appList.size());
+            android.util.Log.d("AppBlocking", "Apps added to list: " + addedToList);
             
             promise.resolve(appList);
         } catch (Exception e) {
             android.util.Log.e("AppBlocking", "getInstalledApps failed: " + e.getMessage(), e);
             promise.reject("GET_APPS_ERROR", e.getMessage());
+        }
+    }
+    
+    /**
+     * Process a single app package and add it to the list if appropriate
+     */
+    private void processApp(PackageManager pm, String packageName, String currentPackage, 
+                           WritableArray appList, Set<String> processedPackages) {
+        // Skip if already processed (avoid duplicates)
+        if (processedPackages.contains(packageName)) {
+            return;
+        }
+        processedPackages.add(packageName);
+        
+        // Skip our own app
+        if (packageName.equals(currentPackage)) {
+            android.util.Log.d("AppBlocking", "Skipped own app: " + packageName);
+            return;
+        }
+        
+        try {
+            ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+            String appName = pm.getApplicationLabel(appInfo).toString();
+            
+            android.util.Log.v("AppBlocking", "Processing: " + packageName + " -> " + appName);
+            
+            // Skip apps with empty or very short names
+            if (appName == null || appName.trim().length() < 2) {
+                android.util.Log.v("AppBlocking", "Skipped invalid name: " + packageName + " (name: '" + appName + "')");
+                return;
+            }
+            
+            // Use comprehensive filtering logic
+            if (shouldFilterApp(packageName, appName, appInfo)) {
+                android.util.Log.v("AppBlocking", "Filtered out: " + packageName + " (" + appName + ")");
+                return;
+            }
+            
+            // Only include apps that have launch intents (user-launchable apps)
+            Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+            if (launchIntent == null) {
+                android.util.Log.v("AppBlocking", "No launch intent: " + packageName + " (" + appName + ")");
+                return;
+            }
+            
+            // Include user apps and blockable system apps
+            android.util.Log.v("AppBlocking", "Including app: " + packageName + " (" + appName + ")");
+            
+            // Get app icon as base64
+            String iconBase64 = getAppIconBase64(pm, packageName);
+            
+            WritableMap appMap = Arguments.createMap();
+            appMap.putString("packageName", packageName);
+            appMap.putString("appName", appName);
+            appMap.putString("icon", iconBase64);
+            
+            appList.pushMap(appMap);
+            
+            // Log popular apps if found
+            if (packageName.contains("youtube") || packageName.contains("instagram") || 
+                packageName.contains("discord") || packageName.contains("facebook") ||
+                packageName.contains("twitter") || packageName.contains("snapchat") ||
+                packageName.contains("tiktok") || packageName.contains("musically") ||
+                packageName.contains("reddit") || packageName.contains("whatsapp") ||
+                packageName.contains("spotify") || packageName.contains("netflix") ||
+                packageName.contains("chrome") || packageName.contains("browser")) {
+                android.util.Log.i("AppBlocking", "FOUND POPULAR APP: " + packageName + " (" + appName + ")");
+            }
+            
+        } catch (Exception e) {
+            android.util.Log.w("AppBlocking", "Error processing " + packageName + ": " + e.getMessage());
         }
     }
 
@@ -585,6 +640,65 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             android.util.Log.e("AppBlocking", "Debug filtering failed: " + e.getMessage(), e);
             promise.reject("DEBUG_ERROR", e.getMessage());
+        }
+    }
+
+    /**
+     * Debug method to check Android version and package visibility permissions
+     */
+    @ReactMethod
+    public void checkPackageVisibilityStatus(Promise promise) {
+        try {
+            WritableMap status = Arguments.createMap();
+            
+            // Android version info
+            status.putInt("sdkVersion", Build.VERSION.SDK_INT);
+            status.putString("release", Build.VERSION.RELEASE);
+            status.putBoolean("isAndroid11Plus", Build.VERSION.SDK_INT >= Build.VERSION_CODES.R);
+            
+            // Permission status
+            PackageManager pm = reactContext.getPackageManager();
+            boolean hasQueryAllPackages = false;
+            
+            try {
+                // Try to check if we have QUERY_ALL_PACKAGES permission
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    hasQueryAllPackages = pm.checkPermission(
+                        "android.permission.QUERY_ALL_PACKAGES", 
+                        reactContext.getPackageName()
+                    ) == PackageManager.PERMISSION_GRANTED;
+                }
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Error checking QUERY_ALL_PACKAGES: " + e.getMessage());
+            }
+            
+            status.putBoolean("hasQueryAllPackages", hasQueryAllPackages);
+            
+            // Test basic package query
+            int packageCount = 0;
+            int applicationCount = 0;
+            
+            try {
+                packageCount = pm.getInstalledPackages(0).size();
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Error getting installed packages: " + e.getMessage());
+            }
+            
+            try {
+                applicationCount = pm.getInstalledApplications(0).size();
+            } catch (Exception e) {
+                android.util.Log.w("AppBlocking", "Error getting installed applications: " + e.getMessage());
+            }
+            
+            status.putInt("packageCount", packageCount);
+            status.putInt("applicationCount", applicationCount);
+            
+            android.util.Log.i("AppBlocking", "Package Visibility Status - SDK:" + Build.VERSION.SDK_INT + 
+                              " QueryAll:" + hasQueryAllPackages + " Packages:" + packageCount + " Apps:" + applicationCount);
+            
+            promise.resolve(status);
+        } catch (Exception e) {
+            promise.reject("STATUS_CHECK_ERROR", e.getMessage());
         }
     }
 

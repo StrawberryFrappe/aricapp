@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  FlatList,
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -157,7 +158,7 @@ const AppSelector = () => {
     }
   };
 
-  const renderAppItem = (item) => {
+  const renderAppItem = useCallback(({ item }) => {
     // Add safety check for undefined items
     if (!item || !item.packageName) {
       console.warn('Skipping undefined app item:', item);
@@ -168,7 +169,6 @@ const AppSelector = () => {
     
     return (
       <TouchableOpacity
-        key={item.packageName}
         style={[
           localStyles.appItem,
           { 
@@ -213,7 +213,15 @@ const AppSelector = () => {
         </View>
       </TouchableOpacity>
     );
-  };
+  }, [selectedApps, colors, styles, toggleAppSelection]);
+
+  const getItemLayout = useCallback((data, index) => ({
+    length: 64, // Approximate height of each item
+    offset: 64 * index,
+    index,
+  }), []);
+
+  const keyExtractor = useCallback((item) => item.packageName, []);
 
   if (loading) {
     return (
@@ -279,9 +287,19 @@ const AppSelector = () => {
         </View>
       </View>
 
-      <View style={localStyles.appsList}>
-        {filteredApps.map(renderAppItem)}
-      </View>
+      <FlatList
+        data={filteredApps}
+        renderItem={renderAppItem}
+        keyExtractor={keyExtractor}
+        getItemLayout={getItemLayout}
+        removeClippedSubviews={true}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        updateCellsBatchingPeriod={50}
+        style={localStyles.appsList}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
