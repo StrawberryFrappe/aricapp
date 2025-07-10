@@ -35,11 +35,11 @@ const StatsScreen = () => {
 
   const getBlockingMessage = () => {
     if (weeklyBlocks === 0) {
-      return "No blocks this week! 🎉";
+      return "No blocked app attempts this week! 🎉";
     } else if (weeklyBlocks === 1) {
-      return "You've been blocked 1 time this week.";
+      return "You've been blocked 1 time trying to access an app this week.";
     } else {
-      return `You've been blocked ${weeklyBlocks} times this week.`;
+      return `You've been blocked ${weeklyBlocks} times trying to access apps this week.`;
     }
   };
 
@@ -70,7 +70,7 @@ const StatsScreen = () => {
             {weeklyBlocks}
           </Text>
           <Text style={[localStyles.counterLabel, { color: colors.textSecondary }]}>
-            Blocks This Week
+            App Access Blocks This Week
           </Text>
         </View>
 

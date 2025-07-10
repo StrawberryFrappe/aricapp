@@ -37,9 +37,31 @@ class EventBlockingService {
       // Setup app state monitoring
       this.setupAppStateMonitoring();
       
+      // Setup callback for individual blocking attempts
+      this.setupBlockingAttemptCallback();
+      
       console.log('EventBlockingService initialized');
     } catch (error) {
       console.error('Error initializing EventBlockingService:', error);
+    }
+  }
+
+  /**
+   * Setup callback to track individual app blocking attempts
+   */
+  setupBlockingAttemptCallback() {
+    try {
+      if (AppBlocking.setBlockingAttemptCallback) {
+        AppBlocking.setBlockingAttemptCallback((packageName, appName) => {
+          console.log(`User attempted to access blocked app: ${appName} (${packageName})`);
+          BlockingStatsService.recordBlockingAttempt(packageName, appName);
+        });
+        console.log('Blocking attempt callback set up successfully');
+      } else {
+        console.warn('setBlockingAttemptCallback not available in native module');
+      }
+    } catch (error) {
+      console.error('Error setting up blocking attempt callback:', error);
     }
   }
 
@@ -131,10 +153,14 @@ class EventBlockingService {
     if (activeEvents.length > 0 && !this.currentBlockingEvent) {
       // Start blocking for the first active strict event
       const activeEvent = activeEvents[0]; // Since all are strict priority, just take the first one
+      console.log(`Found ${activeEvents.length} active strict events, starting blocking for: ${activeEvent.title}`);
       await this.startEventBlocking(activeEvent);
     } else if (activeEvents.length === 0 && this.currentBlockingEvent) {
       // Stop blocking when no active events (or event ended)
+      console.log('No more active events, stopping blocking');
       await this.stopEventBlocking();
+    } else if (activeEvents.length > 0 && this.currentBlockingEvent) {
+      console.log(`${activeEvents.length} active events found, but blocking already active for: ${this.currentBlockingEvent.title}`);
     }
   }
 
@@ -180,8 +206,8 @@ class EventBlockingService {
           this.currentBlockingEvent = event;
           console.log(`Started auto-blocking for event: ${event.title} (${remainingSeconds}s remaining)`);
           
-          // Record blocking event in statistics
-          await BlockingStatsService.recordBlockingEvent();
+          // Note: Individual blocking attempts will be counted via callback
+          // when users actually try to access blocked apps
           
           // Show user notification
           this.showBlockingNotification(`Auto-blocking started for "${event.title}"`, false);
