@@ -114,7 +114,7 @@ class EventBlockingService {
     
     // Find active events (currently happening)
     const activeEvents = this.events.filter(event => {
-      if (!event.date || !event.time || event.isAllDay) return false;
+      if (!event.date || !event.time) return false;
       
       // Only block for strict priority events that haven't been manually overridden
       if (event.priority !== 'strict') return false;
@@ -269,7 +269,7 @@ class EventBlockingService {
     
     // Find currently active events
     this.events.forEach(event => {
-      if (event.date && event.time && !event.isAllDay) {
+      if (event.date && event.time) {
         const eventDateTime = new Date(`${event.date}T${event.time}`);
         const eventEndTime = new Date(eventDateTime.getTime() + (event.duration || 60) * 60000);
         

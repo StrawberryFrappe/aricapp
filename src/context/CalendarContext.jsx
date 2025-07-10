@@ -315,7 +315,7 @@ export const CalendarProvider = ({ children }) => {
     const nowTime = now.getTime();
     
     return events.filter(event => {
-      if (!event.date || !event.time || event.isAllDay) return false;
+      if (!event.date || !event.time) return false;
       if (event.priority !== 'strict') return false;
       
       const eventDateTime = new Date(`${event.date}T${event.time}`);

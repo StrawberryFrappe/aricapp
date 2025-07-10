@@ -139,8 +139,7 @@ const TodaySchedule = () => {
       const newEvent = {
         title: quickAddText.trim(),
         date: selectedDate,
-        time: new Date().toTimeString().slice(0, 5), // Current time
-        category: 'personal'
+        time: new Date().toTimeString().slice(0, 5) // Current time
       };
       
       try {
@@ -157,7 +156,6 @@ const TodaySchedule = () => {
   // Get event for a specific hour
   const getEventForHour = (hour) => {
     return dayEvents.find(event => {
-      if (event.isAllDay) return false;
       const eventHour = parseInt(event.time.split(':')[0]);
       return eventHour === hour;
     });
@@ -207,23 +205,6 @@ const TodaySchedule = () => {
 
       <View style={styles.timelineContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* All-day events section */}
-          {dayEvents.filter(event => event.isAllDay).length > 0 && (
-            <View style={styles.allDaySection}>
-              <Text style={[styles.sectionTitle, { color: themeColors.textSecondary }]}>
-                All Day
-              </Text>
-              {dayEvents.filter(event => event.isAllDay).map(event => (
-                <CompactEvent
-                  key={event.id}
-                  event={event}
-                  showDate={false}
-                  onPress={handleEventPress}
-                />
-              ))}
-            </View>
-          )}
-
           {/* Hourly timeline */}
           {hours.map(hour => {
             const hourEvent = getEventForHour(hour);

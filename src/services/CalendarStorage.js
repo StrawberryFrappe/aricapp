@@ -204,8 +204,7 @@ class CalendarStorage {
         return {
           weekStartsOn: 1, // Monday = 1, Sunday = 0
           defaultView: 'month',
-          defaultEventDuration: 60, // minutes
-          reminderDefaults: ['10 minutes before']
+          defaultEventDuration: 60 // minutes
         };
       }
       

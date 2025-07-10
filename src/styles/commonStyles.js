@@ -468,18 +468,6 @@ export const createStyles = (themeColors) => StyleSheet.create({
   scrollContent: {
     paddingBottom: 20,
   },
-  categorySection: {
-    marginBottom: 15,
-  },
-  categoryHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: themeColors.textSecondary,
-    marginHorizontal: 10,
-    marginVertical: 5,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
   eventsSection: {
     paddingTop: 5,
   },
@@ -513,15 +501,15 @@ export const createStyles = (themeColors) => StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  categoryIndicator: {
-    width: 4,
-  },
   eventCardContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 10,
+  },
+  eventIndicator: {
+    width: 4,
   },
   mainContent: {
     flex: 1,

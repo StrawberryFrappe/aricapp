@@ -202,7 +202,7 @@ const EditEvent = ({
                     {new Date(event.date).toLocaleDateString()} at {event.time}
                   </Text>
                   <Text style={[styles.smallText, styles.eventMetaText]}>
-                    Category: {event.category} • Priority: {event.priority}
+                    Priority: {event.priority}
                   </Text>
                 </View>
               </View>

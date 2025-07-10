@@ -80,9 +80,6 @@ const CreateTask = ({ visible, onClose }) => {
       fontSize: 16,
       marginRight: spacing.sm,
     },
-    reminderContainer: {
-      marginBottom: spacing.sm,
-    },
     timePickerRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -146,8 +143,6 @@ const CreateTask = ({ visible, onClose }) => {
   const [selectedClass, setSelectedClass] = useState('Travel');
   const [showClassList, setShowClassList] = useState(false);
   
-  const [selectedReminder, setSelectedReminder] = useState('10 minutes before');
-  const [showReminderList, setShowReminderList] = useState(false);
   const [selectedRepeat, setSelectedRepeat] = useState("Doesn't repeat");
   const [showRepeatList, setShowRepeatList] = useState(false);
   // Start and End date/time
@@ -245,26 +240,6 @@ const CreateTask = ({ visible, onClose }) => {
         {showEndTimePicker && (
           <DateTimePicker value={endDate} mode="time" is24Hour display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={(e, d) => { setShowEndTimePicker(false); if (d) { const newEnd = new Date(endDate); newEnd.setHours(d.getHours(), d.getMinutes()); if (newEnd < startDate) setEndDate(startDate); else setEndDate(newEnd); } }} />
         )}
-        <View style={dynamicStyles.separator} />
-        {/* Reminder Row with overlay dropdown */}
-        <View style={dynamicStyles.itemRow}>
-          <Text style={dynamicStyles.itemText}>Reminder</Text>
-          <View style={dynamicStyles.fieldContainer}>
-            <TouchableOpacity style={dynamicStyles.dropdownBox} onPress={() => setShowReminderList(prev => !prev)}>
-              <Text style={dynamicStyles.dropdownText}>{selectedReminder}</Text>
-              <Ionicons name={showReminderList ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textSecondary} />
-            </TouchableOpacity>
-            {showReminderList && (
-              <View style={dynamicStyles.dropdownList}>
-                {['10 minutes before','30 minutes before','1 hour before','1 day before'].map(rem => (
-                  <TouchableOpacity key={rem} style={dynamicStyles.dropdownItem} onPress={() => { setSelectedReminder(rem); setShowReminderList(false); }}>
-                    <Text style={dynamicStyles.dropdownItemText}>{rem}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-        </View>
         <View style={dynamicStyles.separator} />
         {/* Repeat Row with overlay dropdown */}
         <View style={dynamicStyles.itemRow}>

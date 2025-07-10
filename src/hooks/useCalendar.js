@@ -20,13 +20,6 @@ export const useCalendar = () => {
    */
   const eventUtils = useMemo(() => ({
     /**
-     * Filter events by category
-     */
-    filterByCategory: (category) => {
-      return context.events.filter(event => event.category === category);
-    },
-
-    /**
      * Filter events by priority
      */
     filterByPriority: (priority) => {
@@ -81,19 +74,6 @@ export const useCalendar = () => {
           groups[event.date] = [];
         }
         groups[event.date].push(event);
-        return groups;
-      }, {});
-    },
-
-    /**
-     * Group events by category
-     */
-    groupByCategory: (eventsArray) => {
-      return eventsArray.reduce((groups, event) => {
-        if (!groups[event.category]) {
-          groups[event.category] = [];
-        }
-        groups[event.category].push(event);
         return groups;
       }, {});
     }

@@ -23,8 +23,6 @@ export const CalendarEvent = {
       description: eventData.description || '',
       date: eventData.date || new Date().toISOString().split('T')[0], // YYYY-MM-DD format
       time: eventData.time || '09:00', // HH:mm format
-      isAllDay: eventData.isAllDay || false,
-      category: eventData.category || 'Travel',
       priority: eventData.priority || 'non-strict', // 'strict' | 'non-strict'
       completed: eventData.completed || false,
       createdAt: eventData.createdAt || now,
@@ -65,41 +63,6 @@ export const CalendarEvent = {
 };
 
 /**
- * Calendar Category Model
- * Defines available event categories with their properties
- */
-export const CalendarCategory = {
-  // Default categories matching existing CreateTask component
-  categories: [
-    { id: 'travel', name: 'Travel', color: '#4A90E2' },
-    { id: 'work', name: 'Work', color: '#50C878' },
-    { id: 'personal', name: 'Personal', color: '#FFB347' },
-    { id: 'health', name: 'Health', color: '#FF6B6B' },
-    { id: 'education', name: 'Education', color: '#9B59B6' },
-    { id: 'social', name: 'Social', color: '#3498DB' },
-    { id: 'hobby', name: 'Hobby', color: '#F39C12' },
-    { id: 'other', name: 'Other', color: '#95A5A6' }
-  ],
-
-  /**
-   * Get category by ID
-   * @param {string} categoryId - Category identifier
-   * @returns {Object|null} Category object or null if not found
-   */
-  getById: (categoryId) => {
-    return CalendarCategory.categories.find(cat => cat.id === categoryId) || null;
-  },
-
-  /**
-   * Get all category names
-   * @returns {Array<string>} Array of category names
-   */
-  getNames: () => {
-    return CalendarCategory.categories.map(cat => cat.name);
-  }
-};
-
-/**
  * Calendar View State Model
  * Manages calendar view preferences and navigation state
  */
@@ -128,6 +91,5 @@ const isValidTime = (timeString) => {
 
 export default {
   CalendarEvent,
-  CalendarCategory,
   CalendarViewState
 };

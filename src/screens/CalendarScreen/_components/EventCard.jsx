@@ -19,7 +19,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
-import { CalendarCategory } from '../../../models/CalendarModels';
 import EditEvent from './EditEvent';
 
 const EventCard = ({ 
@@ -40,9 +39,8 @@ const EventCard = ({
   // Animation refs for visual feedback
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  // Get category info
-  const category = CalendarCategory.getById(event.category);
-  const categoryColor = category?.color || colors.primary;
+  // Use default color scheme
+  const eventColor = colors.primary;
 
   // Priority colors
   const getPriorityColor = () => {
@@ -99,7 +97,6 @@ const EventCard = ({
   };
 
   const formatTime = (time) => {
-    if (event.isAllDay) return 'All day';
     return time;
   };
 
@@ -195,8 +192,8 @@ const EventCard = ({
           ]}
           disabled={isUpdating}
         >
-      {/* Category indicator */}
-      <View style={[styles.categoryIndicator, { backgroundColor: categoryColor }]} />
+      {/* Event indicator */}
+      <View style={[styles.eventIndicator, { backgroundColor: eventColor }]} />
       
       <View style={styles.eventCardContent}>
         {/* Main content */}

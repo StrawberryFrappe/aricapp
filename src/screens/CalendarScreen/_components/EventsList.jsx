@@ -1,7 +1,7 @@
 /**
  * Events List Component
  * 
- * Daily events list with time sorting and category grouping.
+ * Daily events list with time sorting.
  * Shows events for the selected date with filtering and organization.
  * 
  * @component EventsList
@@ -34,11 +34,6 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
     return maxEvents ? sortedEvents.slice(0, maxEvents) : sortedEvents;
   }, [targetDate, getEventsByDate, eventUtils, maxEvents]);
 
-  // Group events by category
-  const eventsByCategory = useMemo(() => {
-    return eventUtils.groupByCategory(events);
-  }, [events, eventUtils]);
-
   // Format the display date
   const displayDate = useMemo(() => {
     if (!targetDate) return '';
@@ -53,19 +48,6 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
     
     return dateUtils.formatDate(targetDate);
   }, [targetDate, dateUtils]);
-
-  const renderCategorySection = (category, categoryEvents) => (
-    <View key={category} style={styles.categorySection}>
-      <Text style={[styles.text, styles.categoryHeader]}>{category}</Text>
-      {categoryEvents.map((event) => (
-        <EventCard
-          key={event.id}
-          event={event}
-          showDate={false} // Don't show date since we're in a date-specific list
-        />
-      ))}
-    </View>
-  );
 
   const renderAllEvents = () => (
     <View style={styles.eventsSection}>
@@ -112,12 +94,7 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {Object.keys(eventsByCategory).length > 1 
-          ? Object.entries(eventsByCategory).map(([category, categoryEvents]) =>
-              renderCategorySection(category, categoryEvents)
-            )
-          : renderAllEvents()
-        }
+        {renderAllEvents()}
       </ScrollView>
     </View>
   );

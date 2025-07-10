@@ -25,7 +25,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { commonStyles, spacing } from '../styles/commonStyles';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import { useCalendarContext } from '../context/CalendarContext';
-import { CalendarEvent, CalendarCategory } from '../models/CalendarModels';
+import { CalendarEvent } from '../models/CalendarModels';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
 const CreateEvent = ({ 
@@ -134,29 +134,6 @@ const CreateEvent = ({
       fontSize: 12,
       marginTop: 4,
       fontStyle: 'italic',
-    },
-    categoryList: {
-      backgroundColor: colors.surface,
-      borderTopWidth: 1,
-      borderTopColor: colors.borderLight,
-      paddingVertical: spacing.sm,
-    },
-    categoryItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    categoryIcon: {
-      marginRight: spacing.sm,
-    },
-    categoryText: {
-      flex: 1,
-      fontSize: 16,
-      color: colors.textPrimary,
-    },
-    categorySelected: {
-      backgroundColor: colors.primaryLight || colors.primary + '20',
     },
     actionButtons: {
       flexDirection: 'row',
@@ -273,10 +250,7 @@ const CreateEvent = ({
   // Form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Travel');
-  const [showCategoryList, setShowCategoryList] = useState(false);
   const [priority, setPriority] = useState('non-strict');
-  const [isAllDay, setIsAllDay] = useState(false);
   
   // Date/Time state
   const [startDate, setStartDate] = useState(new Date());
@@ -286,9 +260,7 @@ const CreateEvent = ({
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
-  // Reminder and repeat state
-  const [selectedReminder, setSelectedReminder] = useState('10 minutes before');
-  const [showReminderList, setShowReminderList] = useState(false);
+  // Repeat state
   const [selectedRepeat, setSelectedRepeat] = useState("Doesn't repeat");
   const [showRepeatList, setShowRepeatList] = useState(false);
 
@@ -306,9 +278,7 @@ const CreateEvent = ({
       // Populate form for editing
       setTitle(eventToEdit.title || '');
       setDescription(eventToEdit.description || '');
-      setSelectedCategory(eventToEdit.category || 'Travel');
       setPriority(eventToEdit.priority || 'non-strict');
-      setIsAllDay(eventToEdit.isAllDay || false);
       
       // Parse date and time
       if (eventToEdit.date) {
@@ -447,25 +417,14 @@ const CreateEvent = ({
     if (!eventToEdit) {
       const eventDateTime = new Date(startDate);
       
-      if (isAllDay) {
-        // For all-day events, only check the date (ignore time)
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const eventDateOnly = new Date(eventDateTime.getFullYear(), eventDateTime.getMonth(), eventDateTime.getDate());
-        
-        if (eventDateOnly < todayStart) {
-          Alert.alert('Validation Error', 'Cannot create events on past dates');
-          return false;
-        }
-      } else {
-        // For timed events, check both date and time
-        if (eventDateTime < now) {
-          Alert.alert('Validation Error', 'Cannot create events in the past');
-          return false;
-        }
+      // For timed events, check both date and time
+      if (eventDateTime < now) {
+        Alert.alert('Validation Error', 'Cannot create events in the past');
+        return false;
       }
     }
 
-    if (startDate >= endDate && !isAllDay) {
+    if (startDate >= endDate) {
       Alert.alert('Validation Error', 'End time must be after start time');
       return false;
     }
@@ -485,12 +444,9 @@ const CreateEvent = ({
         title: title.trim(),
         description: description.trim(),
         date: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
-        time: isAllDay ? '00:00' : startDate.toTimeString().slice(0, 5), // HH:mm format
-        isAllDay,
-        category: selectedCategory,
+        time: startDate.toTimeString().slice(0, 5), // HH:mm format
         priority,
         // Additional metadata can be added here
-        reminder: selectedReminder,
         repeat: selectedRepeat
       };
 
@@ -626,39 +582,8 @@ const CreateEvent = ({
 
         <View style={dynamicStyles.separator} />
 
-        {/* Category & Priority Row */}
+        {/* Priority Row */}
         <View style={dynamicStyles.itemRow}>
-          <View style={dynamicStyles.fieldContainer}>
-            <Text style={dynamicStyles.fieldLabel}>Category</Text>
-            <TouchableOpacity 
-              style={dynamicStyles.dropdownBox} 
-              onPress={() => setShowCategoryList(prev => !prev)}
-            >
-              <Text style={dynamicStyles.dropdownText}>{selectedCategory}</Text>
-              <Ionicons 
-                name={showCategoryList ? 'chevron-up' : 'chevron-down'} 
-                size={16} 
-                color={colors.textSecondary} 
-              />
-            </TouchableOpacity>
-            {showCategoryList && (
-              <View style={dynamicStyles.dropdownList}>
-                {CalendarCategory.getNames().map(category => (
-                  <TouchableOpacity 
-                    key={category} 
-                    style={dynamicStyles.dropdownItem} 
-                    onPress={() => { 
-                      setSelectedCategory(category); 
-                      setShowCategoryList(false); 
-                    }}
-                  >
-                    <Text style={dynamicStyles.dropdownItemText}>{category}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-
           <View style={dynamicStyles.fieldContainer}>
             <Text style={dynamicStyles.fieldLabel}>App Blocking</Text>
             <View style={dynamicStyles.priorityContainer}>
@@ -688,19 +613,6 @@ const CreateEvent = ({
 
         <View style={dynamicStyles.separator} />
 
-        {/* All Day Toggle */}
-        <View style={dynamicStyles.itemRow}>
-          <Text style={dynamicStyles.itemText}>All Day</Text>
-          <Switch
-            value={isAllDay}
-            onValueChange={setIsAllDay}
-            thumbColor={isAllDay ? colors.primary : colors.surface}
-            trackColor={{ true: colors.primaryLight, false: colors.borderLight }}
-          />
-        </View>
-
-        <View style={dynamicStyles.separator} />
-
         {/* Date Pickers */}
         <View style={dynamicStyles.fieldContainer}>
           <Text style={dynamicStyles.fieldLabel}>Date</Text>
@@ -714,48 +626,40 @@ const CreateEvent = ({
               {startDate.toLocaleDateString()}
             </Text>
           </TouchableOpacity>
-          {!isAllDay && (
-            <>
-              <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
-              <TouchableOpacity 
-                style={dynamicStyles.rangeItem} 
-                onPress={() => setShowEndDatePicker(true)}
-              >
-                <Text style={dynamicStyles.itemText}>
-                  {endDate.toLocaleDateString()}
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
+          <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
+          <TouchableOpacity 
+            style={dynamicStyles.rangeItem} 
+            onPress={() => setShowEndDatePicker(true)}
+          >
+            <Text style={dynamicStyles.itemText}>
+              {endDate.toLocaleDateString()}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Time Pickers (only if not all day) */}
-        {!isAllDay && (
-          <>
-            <View style={dynamicStyles.fieldContainer}>
-              <Text style={dynamicStyles.fieldLabel}>Time</Text>
-            </View>
-            <View style={dynamicStyles.rangeRow}>
-              <TouchableOpacity 
-                style={dynamicStyles.rangeItem} 
-                onPress={() => setShowStartTimePicker(true)}
-              >
-                <Text style={dynamicStyles.timeText}>
-                  {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </Text>
-              </TouchableOpacity>
-              <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
-              <TouchableOpacity 
-                style={dynamicStyles.rangeItem} 
-                onPress={() => setShowEndTimePicker(true)}
-              >
-                <Text style={dynamicStyles.timeText}>
-                  {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
+        {/* Time Pickers */}
+        <View style={dynamicStyles.fieldContainer}>
+          <Text style={dynamicStyles.fieldLabel}>Time</Text>
+        </View>
+        <View style={dynamicStyles.rangeRow}>
+          <TouchableOpacity 
+            style={dynamicStyles.rangeItem} 
+            onPress={() => setShowStartTimePicker(true)}
+          >
+            <Text style={dynamicStyles.timeText}>
+              {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </TouchableOpacity>
+          <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
+          <TouchableOpacity 
+            style={dynamicStyles.rangeItem} 
+            onPress={() => setShowEndTimePicker(true)}
+          >
+            <Text style={dynamicStyles.timeText}>
+              {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Date/Time Pickers */}
         {showStartDatePicker && (
@@ -794,42 +698,6 @@ const CreateEvent = ({
             onChange={handleEndTimeChange}
           />
         )}
-
-        <View style={dynamicStyles.separator} />
-
-        {/* Reminder Row */}
-        <View style={dynamicStyles.itemRow}>
-          <Text style={dynamicStyles.itemText}>Reminder</Text>
-          <View style={dynamicStyles.fieldContainer}>
-            <TouchableOpacity 
-              style={dynamicStyles.dropdownBox} 
-              onPress={() => setShowReminderList(prev => !prev)}
-            >
-              <Text style={dynamicStyles.dropdownText}>{selectedReminder}</Text>
-              <Ionicons 
-                name={showReminderList ? 'chevron-up' : 'chevron-down'} 
-                size={16} 
-                color={colors.textSecondary} 
-              />
-            </TouchableOpacity>
-            {showReminderList && (
-              <View style={dynamicStyles.dropdownList}>
-                {['None', '10 minutes before', '30 minutes before', '1 hour before', '1 day before'].map(reminder => (
-                  <TouchableOpacity 
-                    key={reminder} 
-                    style={dynamicStyles.dropdownItem} 
-                    onPress={() => { 
-                      setSelectedReminder(reminder); 
-                      setShowReminderList(false); 
-                    }}
-                  >
-                    <Text style={dynamicStyles.dropdownItemText}>{reminder}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-        </View>
 
         <View style={dynamicStyles.separator} />
 

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { spacing } from '../styles/commonStyles';
 import { useThemedStyles } from '../hooks/useThemedStyles';
-import { CalendarCategory } from '../models/CalendarModels';
 
 /**
  * Compact Event Component
@@ -41,9 +40,8 @@ const CompactEvent = ({
         hours
     };
 
-    // Get category color if available
-    const category = event?.category ? CalendarCategory.getById(event.category) : null;
-    const cardBackgroundColor = backgroundColor || category?.color || colors.primary;
+    // Use default color scheme
+    const cardBackgroundColor = backgroundColor || colors.primary;
 
     // Helper function for priority colors
     const getPriorityColor = (priority) => {
@@ -113,7 +111,6 @@ const CompactEvent = ({
     };
 
     const formatTime = (timeValue) => {
-        if (event?.isAllDay) return 'All day';
         return timeValue || '18:00';
     };
 
