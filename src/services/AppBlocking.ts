@@ -76,20 +76,14 @@ interface AppBlockingInterface {
   debugAppFiltering(): Promise<any>;
 
   /**
-   * Set callback for when an app blocking attempt occurs
-   * @param callback - Function to call when user tries to access blocked app
+   * Enable blocking attempt callbacks via DeviceEventEmitter
    */
-  setBlockingAttemptCallback(callback: (packageName: string, appName: string) => void): void;
+  setBlockingAttemptCallback(): Promise<boolean>;
 
   /**
-   * Get count of blocking attempts since blocking started
+   * Disable blocking attempt callbacks
    */
-  getBlockingAttemptCount(): Promise<number>;
-
-  /**
-   * Reset the blocking attempt counter
-   */
-  resetBlockingAttemptCount(): Promise<void>;
+  removeBlockingAttemptCallback(): Promise<boolean>;
 }
 
 const { AppBlocking } = NativeModules;

@@ -39,6 +39,9 @@ public class AppBlockingAccessibilityService extends AccessibilityService {
             
             // Check if the opened app should be blocked
             if (blockedApps.contains(packageName)) {
+                // Send blocking attempt event to React Native
+                AppBlockingModule.sendBlockingAttemptEvent(packageName);
+                
                 // Close the app by simulating home button press
                 performGlobalAction(GLOBAL_ACTION_HOME);
             }

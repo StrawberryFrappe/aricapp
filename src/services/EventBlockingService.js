@@ -7,7 +7,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, Alert } from 'react-native';
+import { AppState, Alert, DeviceEventEmitter } from 'react-native';
 import AppBlocking from './AppBlocking';
 import BlockingStatsService from './BlockingStatsService';
 
@@ -19,6 +19,7 @@ class EventBlockingService {
     this.autoBlockingEnabled = false;
     this.onStatusChangeCallbacks = [];
     this.appStateSubscription = null;
+    this.blockingAttemptListener = null;
     this.manuallyOverriddenEvents = new Set(); // Track events that were manually overridden
     
     // Initialize service
@@ -47,19 +48,23 @@ class EventBlockingService {
   }
 
   /**
-   * Setup callback to track individual app blocking attempts
+   * Setup listener for blocking attempt events from native module
    */
-  setupBlockingAttemptCallback() {
+  async setupBlockingAttemptCallback() {
     try {
-      if (AppBlocking.setBlockingAttemptCallback) {
-        AppBlocking.setBlockingAttemptCallback((packageName, appName) => {
-          console.log(`User attempted to access blocked app: ${appName} (${packageName})`);
-          BlockingStatsService.recordBlockingAttempt(packageName, appName);
-        });
-        console.log('Blocking attempt callback set up successfully');
-      } else {
-        console.warn('setBlockingAttemptCallback not available in native module');
-      }
+      // Enable the callback in native module
+      await AppBlocking.setBlockingAttemptCallback();
+      
+      // Setup event listener
+      this.blockingAttemptListener = DeviceEventEmitter.addListener(
+        'AppBlockingAttempt',
+        (event) => {
+          console.log(`User attempted to access blocked app: ${event.packageName}`);
+          BlockingStatsService.recordBlockingAttempt(event.packageName);
+        }
+      );
+      
+      console.log('Blocking attempt callback setup complete');
     } catch (error) {
       console.error('Error setting up blocking attempt callback:', error);
     }
@@ -360,6 +365,10 @@ class EventBlockingService {
     this.stopMonitoring();
     if (this.appStateSubscription) {
       this.appStateSubscription.remove();
+    }
+    if (this.blockingAttemptListener) {
+      this.blockingAttemptListener.remove();
+      this.blockingAttemptListener = null;
     }
     this.onStatusChangeCallbacks = [];
   }

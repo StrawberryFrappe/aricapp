@@ -30,6 +30,8 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
@@ -51,6 +53,10 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private BlockingForegroundService boundService;
     private boolean serviceBound = false;
+    
+    // Static reference to allow accessibility service to send events
+    private static AppBlockingModule instance;
+    private boolean hasAttemptCallback = false;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -70,6 +76,7 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     public AppBlockingModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        instance = this; // Set static reference
     }
 
     @NonNull
@@ -868,5 +875,50 @@ public class AppBlockingModule extends ReactContextBaseJavaModule {
     private void clearBlockingData() {
         SharedPreferences prefs = reactContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
+    }
+
+    /**
+     * Static method to send blocking attempt events from accessibility service
+     */
+    public static void sendBlockingAttemptEvent(String packageName) {
+        if (instance != null && instance.hasAttemptCallback) {
+            try {
+                WritableMap params = Arguments.createMap();
+                params.putString("packageName", packageName);
+                params.putLong("timestamp", System.currentTimeMillis());
+                
+                instance.reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("AppBlockingAttempt", params);
+            } catch (Exception e) {
+                // Silently handle any errors to prevent crashes
+            }
+        }
+    }
+
+    /**
+     * Enable blocking attempt callbacks
+     */
+    @ReactMethod
+    public void setBlockingAttemptCallback(Promise promise) {
+        try {
+            hasAttemptCallback = true;
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("CALLBACK_ERROR", e.getMessage());
+        }
+    }
+
+    /**
+     * Disable blocking attempt callbacks
+     */
+    @ReactMethod
+    public void removeBlockingAttemptCallback(Promise promise) {
+        try {
+            hasAttemptCallback = false;
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("CALLBACK_ERROR", e.getMessage());
+        }
     }
 }
