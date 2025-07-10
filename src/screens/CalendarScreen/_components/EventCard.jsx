@@ -3,26 +3,42 @@
  * 
  * Compact event display with priority indicators and quick actions.
  * Supports complete/delete actions and shows event details.
+ * Now includes EditEvent modal integration.
  * 
  * @component EventCard
  */
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Alert, 
+  Animated 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, spacing } from '../../../styles/commonStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import { CalendarCategory } from '../../../models/CalendarModels';
+import EditEvent from './EditEvent';
 
 const EventCard = ({ 
   event, 
   showDate = true, 
   showQuickActions = true,
-  onPress = null 
+  onPress = null,
+  enableDragReschedule = true,
+  onDragReschedule = null 
 }) => {
   const navigation = useNavigation();
   const { updateEvent, deleteEvent } = useCalendar();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  
+  // Animation refs for visual feedback
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   // Get category info
   const category = CalendarCategory.getById(event.category);
@@ -42,10 +58,8 @@ const EventCard = ({
     if (onPress) {
       onPress(event);
     } else {
-      navigation.navigate('CreateTask', {
-        event: event,
-        mode: 'edit'
-      });
+      // Open edit modal instead of navigation
+      setShowEditModal(true);
     }
   };
 
@@ -98,15 +112,89 @@ const EventCard = ({
     });
   };
 
+  /**
+   * Handle long press to enable reschedule mode
+   */
+  const handleLongPress = () => {
+    if (!enableDragReschedule) return;
+    
+    setIsDragging(true);
+    
+    // Scale animation for feedback
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.05,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      })
+    ]).start();
+
+    // Show reschedule options
+    Alert.alert(
+      'Reschedule Event',
+      'How would you like to reschedule this event?',
+      [
+        { text: 'Cancel', style: 'cancel', onPress: () => setIsDragging(false) },
+        { 
+          text: 'Edit Date/Time', 
+          onPress: () => {
+            setIsDragging(false);
+            setShowEditModal(true);
+          }
+        },
+        { 
+          text: 'Move to Tomorrow', 
+          onPress: () => handleQuickReschedule(1)
+        },
+        { 
+          text: 'Move to Next Week', 
+          onPress: () => handleQuickReschedule(7)
+        }
+      ]
+    );
+  };
+
+  /**
+   * Handle quick reschedule (move by days)
+   */
+  const handleQuickReschedule = async (daysToAdd) => {
+    try {
+      setIsUpdating(true);
+      const currentDate = new Date(event.date);
+      const newDate = new Date(currentDate.getTime() + (daysToAdd * 24 * 60 * 60 * 1000));
+      
+      await updateEvent(event.id, {
+        date: newDate.toISOString().split('T')[0]
+      });
+      
+      Alert.alert('Success', `Event moved to ${newDate.toLocaleDateString()}`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to reschedule event');
+    } finally {
+      setIsUpdating(false);
+      setIsDragging(false);
+    }
+  };
+
   return (
-    <TouchableOpacity 
-      onPress={handlePress} 
-      style={[
-        styles.container,
-        event.completed && styles.completedContainer
-      ]}
-      disabled={isUpdating}
-    >
+    <>
+      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+        <TouchableOpacity 
+          onPress={handlePress}
+          onLongPress={enableDragReschedule ? handleLongPress : undefined}
+          delayLongPress={500}
+          style={[
+            styles.container,
+            event.completed && styles.completedContainer,
+            isDragging && styles.draggingContainer
+          ]}
+          disabled={isUpdating}
+        >
       {/* Category indicator */}
       <View style={[styles.categoryIndicator, { backgroundColor: categoryColor }]} />
       
@@ -183,6 +271,17 @@ const EventCard = ({
         )}
       </View>
     </TouchableOpacity>
+    </Animated.View>
+
+    {/* Edit Event Modal */}
+    {showEditModal && (
+      <EditEvent
+        visible={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        event={event}
+      />
+    )}
+    </>
   );
 };
 
@@ -205,6 +304,11 @@ const styles = StyleSheet.create({
   completedContainer: {
     opacity: 0.7,
     backgroundColor: colors.background + 'F0',
+  },
+  draggingContainer: {
+    borderColor: colors.primary,
+    borderWidth: 2,
+    shadowOpacity: 0.2,
   },
   categoryIndicator: {
     width: 4,

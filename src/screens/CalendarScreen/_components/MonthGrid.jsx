@@ -5,6 +5,7 @@
  * Renders the calendar grid with days of week header and week rows.
  * 
  * @component MonthGrid
+ * @param {Function} onDateSelect - Callback when a date is selected
  */
 
 import React from 'react';
@@ -13,7 +14,7 @@ import { colors, spacing } from '../../../styles/commonStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import DayCell from './DayCell';
 
-const MonthGrid = () => {
+const MonthGrid = ({ onDateSelect }) => {
   const { 
     viewState, 
     currentViewData, 
@@ -26,6 +27,11 @@ const MonthGrid = () => {
 
   const handleDaySelection = (dayObj) => {
     selectDate(dayObj.date);
+    
+    // Call parent callback if provided
+    if (onDateSelect) {
+      onDateSelect(dayObj.date);
+    }
   };
 
   const getEventsForDay = (date) => {

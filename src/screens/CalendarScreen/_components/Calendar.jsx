@@ -11,15 +11,16 @@ import MonthGrid from './MonthGrid';
  * Refactored to use modular components for better maintainability.
  * 
  * @component Calendar
+ * @param {Function} onDateSelect - Callback when a date is selected
  */
-const Calendar = () => {
+const Calendar = ({ onDateSelect }) => {
     return (
         <View style={styles.container}>
             {/* Calendar Header with navigation */}
             <CalendarHeader />
             
             {/* Month Grid with days */}
-            <MonthGrid />
+            <MonthGrid onDateSelect={onDateSelect} />
         </View>
     );
 };
