@@ -11,6 +11,13 @@
     "preview": {
       "distribution": "internal"
     },
+    "universal": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "distribution": "internal"
+    },
     "production": {
       "autoIncrement": true
     }
