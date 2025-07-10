@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, spacing } from '../styles/commonStyles';
+import { spacing } from '../styles/commonStyles';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 import { CalendarCategory } from '../models/CalendarModels';
 
 /**
@@ -28,6 +29,7 @@ const CompactEvent = ({
     onPress = null
 }) => {
     const navigation = useNavigation();
+    const { colors } = useThemedStyles();
 
     // Use event object if provided, otherwise use individual props
     const eventData = event || {
@@ -41,7 +43,64 @@ const CompactEvent = ({
 
     // Get category color if available
     const category = event?.category ? CalendarCategory.getById(event.category) : null;
-    const cardBackgroundColor = backgroundColor || category?.color || colors.semanticBlue;
+    const cardBackgroundColor = backgroundColor || category?.color || colors.primary;
+
+    // Helper function for priority colors
+    const getPriorityColor = (priority) => {
+        switch (priority) {
+            case 'high': return colors.error;
+            case 'medium': return colors.warning;
+            case 'low': return colors.success;
+            default: return colors.textSecondary;
+        }
+    };
+
+    // Dynamic styles using inline objects (no StyleSheet.create)
+    const eventCardStyle = {
+        borderRadius: 10,
+        padding: spacing.lg,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        minHeight: 60,
+        shadowColor: colors.textPrimary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        backgroundColor: cardBackgroundColor,
+    };
+
+    const timeTextStyle = {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: colors.textPrimary,
+    };
+
+    const titleTextStyle = {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.textPrimary,
+    };
+
+    const descriptionTextStyle = {
+        fontSize: 12,
+        color: colors.textPrimary,
+        marginTop: 4,
+    };
+
+    const priorityTextStyle = {
+        fontSize: 10,
+        fontWeight: '500',
+        marginLeft: 6,
+        color: colors.textPrimary,
+    };
+
+    const dateTextStyle = {
+        fontSize: 12,
+        color: colors.textPrimary,
+        textAlign: 'right',
+    };
 
     const handlePress = () => {
         if (onPress) {
@@ -77,21 +136,18 @@ const CompactEvent = ({
 
     return (
         <TouchableOpacity onPress={handlePress} style={styles.container}>
-            <View style={[
-                styles.eventCard, 
-                { backgroundColor: cardBackgroundColor }
-            ]}>
+            <View style={eventCardStyle}>
                 <View style={styles.eventContent}>
-                    <Text style={styles.timeText}>
+                    <Text style={timeTextStyle}>
                         {formatTime(eventData.time)}
                     </Text>
-                    <Text style={styles.titleText}>
+                    <Text style={titleTextStyle}>
                         {eventData.title || 'Festival del Ñoqui'}
                     </Text>
                     
                     {/* Show description if available */}
                     {eventData.description && (
-                        <Text style={styles.descriptionText} numberOfLines={1}>
+                        <Text style={descriptionTextStyle} numberOfLines={1}>
                             {eventData.description}
                         </Text>
                     )}
@@ -103,7 +159,7 @@ const CompactEvent = ({
                                 styles.priorityDot,
                                 { backgroundColor: getPriorityColor(event.priority) }
                             ]} />
-                            <Text style={styles.priorityText}>
+                            <Text style={priorityTextStyle}>
                                 {event.priority} priority
                             </Text>
                         </View>
@@ -111,7 +167,7 @@ const CompactEvent = ({
                 </View>
                 
                 {showDate && (
-                    <Text style={styles.dateText}>
+                    <Text style={dateTextStyle}>
                         {formatDate(eventData.date)}
                     </Text>
                 )}
@@ -120,52 +176,12 @@ const CompactEvent = ({
     );
 };
 
-// Helper function for priority colors
-const getPriorityColor = (priority) => {
-    switch (priority) {
-        case 'high': return colors.semanticRed;
-        case 'medium': return colors.semanticYellow;
-        case 'low': return colors.semanticGreen;
-        default: return colors.textSecondary;
-    }
-};
-
 const styles = StyleSheet.create({
     container: {
         marginVertical: spacing.sm,
     },
-    eventCard: {
-        borderRadius: 10,
-        padding: spacing.lg,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        minHeight: 60,
-        shadowColor: colors.textPrimary,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
     eventContent: {
         flex: 1,
-    },
-    timeText: {
-        fontSize: 12,
-        color: colors.textPrimary,
-        fontWeight: '500',
-    },
-    titleText: {
-        fontSize: 14,
-        color: colors.textPrimary,
-        fontWeight: 'bold',
-        marginTop: 2,
-    },
-    descriptionText: {
-        fontSize: 12,
-        color: colors.textPrimary,
-        opacity: 0.8,
-        marginTop: 2,
     },
     priorityContainer: {
         flexDirection: 'row',
@@ -177,17 +193,6 @@ const styles = StyleSheet.create({
         height: 6,
         borderRadius: 3,
         marginRight: spacing.xs,
-    },
-    priorityText: {
-        fontSize: 10,
-        color: colors.textPrimary,
-        opacity: 0.7,
-        textTransform: 'capitalize',
-    },
-    dateText: {
-        fontSize: 12,
-        color: colors.textPrimary,
-        fontWeight: '500',
     },
 });
 

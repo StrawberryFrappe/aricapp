@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
-import { commonStyles, colors } from '../../../styles/commonStyles';
+import { commonStyles } from '../../../styles/commonStyles';
 import { Ionicons } from '@expo/vector-icons';
 import { useCalendar } from '../../../hooks/useCalendar';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -21,6 +21,73 @@ const TodaySchedule = () => {
   
   const { styles: themedStyles, colors: themeColors } = useThemedStyles();
   const { getEventsByDate, dateUtils, createEvent, navigateToDate } = useCalendar();
+  
+  // Create dynamic styles as objects (not StyleSheet)
+  const wrapperStyle = {
+    flex: 1,
+    width: '100%',
+    backgroundColor: themeColors.background,
+  };
+
+  const navButtonStyle = {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: themeColors.surface,
+  };
+
+  const dateBoxStyle = {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  };
+
+  const lineStyle = {
+    height: 1,
+    backgroundColor: themeColors.borderLight,
+    marginTop: 8,
+  };
+
+  const currentLineStyle = {
+    position: 'absolute',
+    left: 80,
+    right: 20,
+    height: 2,
+    backgroundColor: themeColors.accent,
+    borderRadius: 1,
+    zIndex: 2,
+  };
+
+  const bottomBarStyle = {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    alignItems: 'center',
+    backgroundColor: themeColors.surfaceLight,
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+  };
+
+  const inputStyle = {
+    flex: 1,
+    height: 40,
+    color: themeColors.textPrimary,
+  };
+
+  const addButtonStyle = {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: themeColors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  };
   
   const hourHeight = 60;
 
@@ -103,10 +170,10 @@ const TodaySchedule = () => {
   const dayName = displayDate.toLocaleString('default', { weekday: 'long' });
 
   return (
-    <View style={styles.wrapper}>
+    <View style={wrapperStyle}>
       <View style={styles.header}>
         <View style={styles.navigationRow}>
-          <TouchableOpacity onPress={navigateToPreviousDay} style={styles.navButton}>
+          <TouchableOpacity onPress={navigateToPreviousDay} style={navButtonStyle}>
             <Ionicons name="chevron-back" size={20} color={themeColors.textPrimary} />
           </TouchableOpacity>
           
@@ -115,7 +182,7 @@ const TodaySchedule = () => {
               {monthName}
             </Text>
             <View style={styles.dateRow}>
-              <View style={[styles.dateBox, { backgroundColor: isToday ? themeColors.primary : themeColors.surface }]}>
+              <View style={[dateBoxStyle, { backgroundColor: isToday ? themeColors.primary : themeColors.surface }]}>
                 <Text style={[styles.dateNumber, { color: isToday ? themeColors.white : themeColors.textPrimary }]}>
                   {dayNumber}
                 </Text>
@@ -126,7 +193,7 @@ const TodaySchedule = () => {
             </View>
           </TouchableOpacity>
           
-          <TouchableOpacity onPress={navigateToNextDay} style={styles.navButton}>
+          <TouchableOpacity onPress={navigateToNextDay} style={navButtonStyle}>
             <Ionicons name="chevron-forward" size={20} color={themeColors.textPrimary} />
           </TouchableOpacity>
         </View>
@@ -166,7 +233,7 @@ const TodaySchedule = () => {
                   {hour % 12 === 0 ? 12 : hour % 12} {hour < 12 ? 'AM' : 'PM'}
                 </Text>
                 <View style={styles.timeSlotContent}>
-                  <View style={[styles.line, { backgroundColor: themeColors.borderLight }]} />
+                  <View style={lineStyle} />
                   {hourEvent && (
                     <View style={styles.eventInTimeline}>
                       <CompactEvent
@@ -183,17 +250,16 @@ const TodaySchedule = () => {
           
           {/* Current time indicator - only show for today */}
           {isToday && (
-            <View style={[styles.currentLine, { 
-              top: currentPosition,
-              backgroundColor: themeColors.accent 
+            <View style={[currentLineStyle, { 
+              top: currentPosition
             }]} />
           )}
         </ScrollView>
       </View>
 
-      <View style={[styles.bottomBar, { backgroundColor: themeColors.surfaceLight }]}>
+      <View style={bottomBarStyle}>
         <TextInput
-          style={[styles.input, { color: themeColors.textPrimary }]}
+          style={inputStyle}
           placeholder={`Add event on ${monthName} ${dayNumber}`}
           placeholderTextColor={themeColors.textMuted}
           value={quickAddText}
@@ -201,7 +267,7 @@ const TodaySchedule = () => {
           onSubmitEditing={handleQuickAdd}
         />
         <TouchableOpacity 
-          style={[styles.addButton, { backgroundColor: themeColors.primary }]} 
+          style={addButtonStyle} 
           onPress={handleQuickAdd}
         >
           <Ionicons name="add" size={24} color={themeColors.white} />
@@ -235,11 +301,6 @@ const TodaySchedule = () => {
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: colors.background,
-  },
   header: {
     padding: 20,
     alignItems: 'center',
@@ -251,11 +312,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
-  navButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-  },
   dateContainer: {
     alignItems: 'center',
     flex: 1,
@@ -263,21 +319,11 @@ const styles = StyleSheet.create({
   monthText: {
     ...commonStyles.titleText,
     fontSize: 18,
-    color: colors.textSecondary,
   },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
-  },
-  dateBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
   },
   dateNumber: {
     ...commonStyles.titleText,
@@ -319,52 +365,12 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  line: {
-    height: 1,
-    backgroundColor: colors.borderLight,
-    marginTop: 8,
-  },
   eventInTimeline: {
     position: 'absolute',
     top: -25,
     left: 10,
     right: 20,
     zIndex: 1,
-  },
-  currentLine: {
-    position: 'absolute',
-    left: 80,
-    right: 20,
-    height: 2,
-    backgroundColor: colors.accent,
-    borderRadius: 1,
-    zIndex: 2,
-  },
-  bottomBar: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    alignItems: 'center',
-    backgroundColor: colors.surfaceLight,
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    color: colors.textPrimary,
-  },
-  addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
   },
 });
 
