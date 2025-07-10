@@ -90,21 +90,13 @@ const { AppBlocking } = NativeModules;
 
 export default AppBlocking as AppBlockingInterface;
 
-// DEPRECATED: Default app constants removed to enforce user-driven app selection
-// All blocking decisions are now based solely on user's saved preferences
+// DEPRECATED: All default app constants and fallback logic removed
+// App blocking now exclusively uses user-selected apps from AsyncStorage
 
-// Helper function that returns only user-selected apps (no defaults)
-export const initializeDefaultAppsIfEmpty = async () => {
-  try {
-    const currentApps = await AppBlocking.getSelectedApps();
-    return currentApps || [];
-  } catch (error) {
-    console.warn('Error checking selected apps:', error);
-    return [];
-  }
-};
-
-// Function to get selected apps without falling back to defaults
+/**
+ * Get user-selected apps for blocking without any fallback to defaults
+ * @returns Promise<string[]> Array of package names selected by user, empty if none selected
+ */
 export const getSelectedAppsStrict = async () => {
   try {
     const apps = await AppBlocking.getSelectedApps();
@@ -113,4 +105,14 @@ export const getSelectedAppsStrict = async () => {
     console.warn('Error getting selected apps:', error);
     return [];
   }
+};
+
+/**
+ * DEPRECATED: No longer initializes with default apps
+ * @deprecated Use getSelectedAppsStrict() instead
+ * @returns Promise<string[]> Empty array or user selections only
+ */
+export const initializeDefaultAppsIfEmpty = async () => {
+  console.warn('initializeDefaultAppsIfEmpty is deprecated - use getSelectedAppsStrict()');
+  return getSelectedAppsStrict();
 };

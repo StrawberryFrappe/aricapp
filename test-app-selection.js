@@ -55,34 +55,32 @@ const testScenarios = [
   },
   {
     id: 'APP_SELECT_004',
-    name: 'Default Fallback Behavior',
-    description: 'Verify system falls back to defaults when no selections made',
+    name: 'Empty Selection Behavior',
+    description: 'Verify behavior when no apps are selected for blocking',
     steps: [
       '1. Clear all app selections in Settings',
       '2. Save empty selection',
-      '3. Navigate to ZenScreen and start timer',
-      '4. Try opening Facebook, Instagram, YouTube',
-      '5. Verify default apps are blocked',
-      '6. Try opening other apps',
-      '7. Verify other apps work normally'
+      '3. Navigate to ZenScreen and try to start timer',
+      '4. Verify user gets warning about no apps selected',
+      '5. If timer starts anyway, verify no apps are blocked',
+      '6. Try opening any apps to confirm they work normally'
     ],
-    expectedResult: 'Default apps (Facebook, Instagram, YouTube) blocked when no custom selection'
+    expectedResult: 'User warned about empty selection, no blocking occurs if timer starts'
   },
   {
     id: 'APP_SELECT_005',
-    name: 'Mixed Selection Test',
-    description: 'Verify mix of default and custom apps work correctly',
+    name: 'User Selection Only Test',
+    description: 'Verify only user-selected apps are blocked (no defaults)',
     steps: [
-      '1. Select Facebook and a custom app (e.g., Calculator)',
-      '2. Leave Instagram unselected',
-      '3. Save selections',
-      '4. Start timer and test:',
-      '   - Facebook should be blocked',
+      '1. Select only Calculator app in Settings',
+      '2. Save selections (Facebook/Instagram remain unselected)',
+      '3. Start timer and test:',
       '   - Calculator should be blocked',
+      '   - Facebook should work normally',
       '   - Instagram should work normally',
       '   - Other apps should work normally'
     ],
-    expectedResult: 'Only selected apps are blocked, regardless of defaults'
+    expectedResult: 'Only selected apps are blocked, no default behavior'
   }
 ];
 
@@ -90,7 +88,7 @@ const appSelectionFeatures = {
   nativeModule: 'getInstalledApps(), saveSelectedApps(), getSelectedApps()',
   settingsUI: 'AppSelector component with checkboxes and save functionality',
   persistence: 'Android SharedPreferences with KEY_SELECTED_APPS',
-  integration: 'ZenScreen loadSelectedApps() with user-selected apps only (no defaults)',
+  integration: 'ZenScreen loadSelectedApps() with user-selected apps only (no defaults ever)',
   icons: 'Base64 encoded app icons for visual identification'
 };
 
@@ -137,7 +135,7 @@ console.log('✓ Native Android module with app enumeration');
 console.log('✓ Settings screen UI with app selection interface');
 console.log('✓ Persistent storage for user selections');
 console.log('✓ ZenScreen integration with custom app blocking');
-console.log('✓ Fallback to default apps when no selection made');
+console.log('✓ No default apps - user must explicitly select apps');
 console.log('✓ System app filtering and icon handling');
 
 console.log();
@@ -146,7 +144,7 @@ console.log('-'.repeat(40));
 console.log('✓ Users can see all their installed (non-system) apps');
 console.log('✓ App selection interface is intuitive with icons');
 console.log('✓ Selections persist across app restarts');
-console.log('✓ Custom selections override default blocked apps');
+console.log('✓ Only user-selected apps are blocked (no defaults)');
 console.log('✓ Performance is smooth with many installed apps');
 
 console.log();
