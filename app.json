@@ -1,36 +1,32 @@
 {
   "expo": {
-    "name": "aricApp",
+    "name": "aricapp",
     "slug": "aricapp",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.strawberryfrappe.aricapp"
-    },
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "android": {
+      "package": "com.strawberryfrappe.aricapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.strawberryfrappe.aricapp"
+      }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "plugins": [
+      "expo-dev-client"
+    ],
     "extra": {
       "eas": {
         "projectId": "2ec94918-7b2c-4922-9832-b404a1ffec75"
       }
-    }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/2ec94918-7b2c-4922-9832-b404a1ffec75"
+    },
+    "ios": {}
   }
 }
