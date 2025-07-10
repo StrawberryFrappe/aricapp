@@ -1,10 +1,146 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Switch, TouchableOpacity, ScrollView, SafeAreaView, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { commonStyles, colors, spacing } from '../styles/commonStyles';
+import { commonStyles, spacing } from '../styles/commonStyles';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 const CreateTask = ({ visible, onClose }) => {
+  const { colors } = useThemedStyles();
+  
+  // Dynamic styles based on current theme
+  const dynamicStyles = {
+    container: {
+      flex: 1,
+      backgroundColor: colors.surface,
+    },
+    scrollViewContent: {
+      flex: 1,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.md,
+    },
+    titleInput: {
+      flex: 1,
+      fontSize: 22,
+      color: colors.textPrimary,
+      paddingVertical: spacing.sm,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: colors.borderLight,
+      marginHorizontal: spacing.md,
+      marginVertical: spacing.sm,
+    },
+    itemRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      marginVertical: spacing.xs,
+    },
+    fieldContainer: { 
+      flex: 1, 
+      position: 'relative' 
+    },
+    fieldLabel: { 
+      fontSize: 14, 
+      color: colors.textSecondary, 
+      marginBottom: spacing.xs,
+      paddingHorizontal: spacing.md,
+    },
+    classPickerBox: {
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      borderWidth: 1, 
+      borderColor: colors.borderLight,
+      borderRadius: 8, 
+      paddingHorizontal: spacing.md, 
+      paddingVertical: spacing.sm,
+      flex: 1, 
+      marginLeft: spacing.md,
+    },
+    classPickerText: { 
+      flex: 1, 
+      color: colors.textPrimary, 
+      fontSize: 16 
+    },
+    strictModeContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginLeft: spacing.md,
+    },
+    strictModeText: {
+      color: colors.textPrimary,
+      fontSize: 16,
+      marginRight: spacing.sm,
+    },
+    reminderContainer: {
+      marginBottom: spacing.sm,
+    },
+    timePickerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    timePickerItem: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: spacing.xs,
+    },
+    timePickerLabel: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+    },
+    timePickerButton: {
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      borderRadius: 8,
+    },
+    timePickerText: {
+      color: colors.textPrimary,
+      fontSize: 16,
+      textAlign: 'center',
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: spacing.md,
+      paddingVertical: spacing.lg,
+      borderTopWidth: 1,
+      borderTopColor: colors.borderLight,
+    },
+    cancelButton: {
+      padding: spacing.md,
+      paddingHorizontal: spacing.lg,
+    },
+    cancelText: {
+      color: colors.textPrimary,
+      fontSize: 16,
+    },
+    saveButton: {
+      padding: spacing.md,
+      paddingHorizontal: spacing.lg,
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  };
+  
   const [title, setTitle] = useState('');
   const [strictMode, setStrictMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState('Travel');
@@ -26,12 +162,12 @@ const CreateTask = ({ visible, onClose }) => {
   
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollViewContent}>
+    <SafeAreaView style={dynamicStyles.container}>
+      <ScrollView style={dynamicStyles.scrollViewContent}>
         {/* Title Input */}
-        <View style={styles.row}>            
+        <View style={dynamicStyles.row}>            
           <TextInput
-            style={styles.titleInput}
+            style={dynamicStyles.titleInput}
             placeholder="Title"
             placeholderTextColor={colors.textMuted}
             value={title}
@@ -41,27 +177,27 @@ const CreateTask = ({ visible, onClose }) => {
             <Entypo name="emoji-happy" size={24} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
         {/* Class & Strict Mode Row */}
-        <View style={styles.itemRow}>
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Class</Text>
-            <TouchableOpacity style={styles.classPickerBox} onPress={() => setShowClassList(prev => !prev)}>
-              <Text style={styles.classPickerText}>{selectedClass}</Text>
+        <View style={dynamicStyles.itemRow}>
+          <View style={dynamicStyles.fieldContainer}>
+            <Text style={dynamicStyles.fieldLabel}>Class</Text>
+            <TouchableOpacity style={dynamicStyles.classPickerBox} onPress={() => setShowClassList(prev => !prev)}>
+              <Text style={dynamicStyles.classPickerText}>{selectedClass}</Text>
               <Ionicons name={showClassList ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textSecondary} />
             </TouchableOpacity>
             {showClassList && (
-              <View style={styles.classList}>
+              <View style={dynamicStyles.classList}>
                 {['Travel','Work','Social'].map(item => (
-                  <TouchableOpacity key={item} style={styles.classListItem} onPress={() => { setSelectedClass(item); setShowClassList(false); }}>
-                    <Text style={styles.classListItemText}>{item}</Text>
+                  <TouchableOpacity key={item} style={dynamicStyles.classListItem} onPress={() => { setSelectedClass(item); setShowClassList(false); }}>
+                    <Text style={dynamicStyles.classListItemText}>{item}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             )}
           </View>
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Strict mode</Text>
+          <View style={dynamicStyles.fieldContainer}>
+            <Text style={dynamicStyles.fieldLabel}>Strict mode</Text>
             <Switch
               value={strictMode}
               onValueChange={setStrictMode}
@@ -70,18 +206,18 @@ const CreateTask = ({ visible, onClose }) => {
             />
           </View>
         </View>
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
         {/* Date and Time Pickers */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Date</Text>
+        <View style={dynamicStyles.fieldContainer}>
+          <Text style={dynamicStyles.fieldLabel}>Date</Text>
         </View>
-        <View style={styles.rangeRow}>
-          <TouchableOpacity style={styles.rangeItem} onPress={() => setShowStartDatePicker(true)}>
-            <Text style={styles.itemText}>{startDate.toDateString()}</Text>
+        <View style={dynamicStyles.rangeRow}>
+          <TouchableOpacity style={dynamicStyles.rangeItem} onPress={() => setShowStartDatePicker(true)}>
+            <Text style={dynamicStyles.itemText}>{startDate.toDateString()}</Text>
           </TouchableOpacity>
           <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
-          <TouchableOpacity style={styles.rangeItem} onPress={() => setShowEndDatePicker(true)}>
-            <Text style={styles.itemText}>{endDate.toDateString()}</Text>
+          <TouchableOpacity style={dynamicStyles.rangeItem} onPress={() => setShowEndDatePicker(true)}>
+            <Text style={dynamicStyles.itemText}>{endDate.toDateString()}</Text>
           </TouchableOpacity>
         </View>
         {showStartDatePicker && (
@@ -90,17 +226,17 @@ const CreateTask = ({ visible, onClose }) => {
         {showEndDatePicker && (
           <DateTimePicker value={endDate} mode="date" display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={(e, d) => { setShowEndDatePicker(false); if (d) { if (d < startDate) setEndDate(startDate); else setEndDate(d); } }} />
         )}
-        <View style={styles.separator} />
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Time</Text>
+        <View style={dynamicStyles.separator} />
+        <View style={dynamicStyles.fieldContainer}>
+          <Text style={dynamicStyles.fieldLabel}>Time</Text>
         </View>
-        <View style={styles.rangeRow}>
-          <TouchableOpacity style={styles.rangeItem} onPress={() => setShowStartTimePicker(true)}>
-            <Text style={styles.timeText}>{startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+        <View style={dynamicStyles.rangeRow}>
+          <TouchableOpacity style={dynamicStyles.rangeItem} onPress={() => setShowStartTimePicker(true)}>
+            <Text style={dynamicStyles.timeText}>{startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
           </TouchableOpacity>
           <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
-          <TouchableOpacity style={styles.rangeItem} onPress={() => setShowEndTimePicker(true)}>
-            <Text style={styles.timeText}>{endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+          <TouchableOpacity style={dynamicStyles.rangeItem} onPress={() => setShowEndTimePicker(true)}>
+            <Text style={dynamicStyles.timeText}>{endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
           </TouchableOpacity>
         </View>
         {showStartTimePicker && (
@@ -109,210 +245,58 @@ const CreateTask = ({ visible, onClose }) => {
         {showEndTimePicker && (
           <DateTimePicker value={endDate} mode="time" is24Hour display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={(e, d) => { setShowEndTimePicker(false); if (d) { const newEnd = new Date(endDate); newEnd.setHours(d.getHours(), d.getMinutes()); if (newEnd < startDate) setEndDate(startDate); else setEndDate(newEnd); } }} />
         )}
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
         {/* Reminder Row with overlay dropdown */}
-        <View style={styles.itemRow}>
-          <Text style={styles.itemText}>Reminder</Text>
-          <View style={styles.fieldContainer}>
-            <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowReminderList(prev => !prev)}>
-              <Text style={styles.dropdownText}>{selectedReminder}</Text>
+        <View style={dynamicStyles.itemRow}>
+          <Text style={dynamicStyles.itemText}>Reminder</Text>
+          <View style={dynamicStyles.fieldContainer}>
+            <TouchableOpacity style={dynamicStyles.dropdownBox} onPress={() => setShowReminderList(prev => !prev)}>
+              <Text style={dynamicStyles.dropdownText}>{selectedReminder}</Text>
               <Ionicons name={showReminderList ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textSecondary} />
             </TouchableOpacity>
             {showReminderList && (
-              <View style={styles.dropdownList}>
+              <View style={dynamicStyles.dropdownList}>
                 {['10 minutes before','30 minutes before','1 hour before','1 day before'].map(rem => (
-                  <TouchableOpacity key={rem} style={styles.dropdownItem} onPress={() => { setSelectedReminder(rem); setShowReminderList(false); }}>
-                    <Text style={styles.dropdownItemText}>{rem}</Text>
+                  <TouchableOpacity key={rem} style={dynamicStyles.dropdownItem} onPress={() => { setSelectedReminder(rem); setShowReminderList(false); }}>
+                    <Text style={dynamicStyles.dropdownItemText}>{rem}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             )}
           </View>
         </View>
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
         {/* Repeat Row with overlay dropdown */}
-        <View style={styles.itemRow}>
-          <Text style={styles.itemText}>Repeat</Text>
-          <View style={styles.fieldContainer}>
-            <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowRepeatList(prev => !prev)}>
-              <Text style={styles.dropdownText}>{selectedRepeat}</Text>
+        <View style={dynamicStyles.itemRow}>
+          <Text style={dynamicStyles.itemText}>Repeat</Text>
+          <View style={dynamicStyles.fieldContainer}>
+            <TouchableOpacity style={dynamicStyles.dropdownBox} onPress={() => setShowRepeatList(prev => !prev)}>
+              <Text style={dynamicStyles.dropdownText}>{selectedRepeat}</Text>
               <Ionicons name={showRepeatList ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textSecondary} />
             </TouchableOpacity>
             {showRepeatList && (
-              <View style={styles.dropdownList}>
+              <View style={dynamicStyles.dropdownList}>
                 {[`Doesn't repeat`,'Daily','Weekly','Monthly','Yearly'].map(rep => (
-                  <TouchableOpacity key={rep} style={styles.dropdownItem} onPress={() => { setSelectedRepeat(rep); setShowRepeatList(false); }}>
-                    <Text style={styles.dropdownItemText}>{rep}</Text>
+                  <TouchableOpacity key={rep} style={dynamicStyles.dropdownItem} onPress={() => { setSelectedRepeat(rep); setShowRepeatList(false); }}>
+                    <Text style={dynamicStyles.dropdownItemText}>{rep}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             )}
           </View>
         </View>
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
       </ScrollView>
       {/* Action Buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-          <Text style={styles.cancelText}>Cancel</Text>
+      <View style={dynamicStyles.buttonRow}>
+        <TouchableOpacity style={dynamicStyles.cancelButton} onPress={onClose}>
+          <Text style={dynamicStyles.cancelText}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.saveButton} onPress={onClose}>
-          <Text style={styles.saveText}>Save</Text>
+        <TouchableOpacity style={dynamicStyles.saveButton} onPress={onClose}>
+          <Text style={dynamicStyles.saveText}>Save</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    paddingTop: spacing.md,
-  },
-  scrollViewContent: {
-    flex: 1,
-  },
-  classPickerBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    flex: 1,
-    marginRight: spacing.md,
-  },
-  classPickerText: {
-    flex: 1,
-    color: colors.textPrimary,
-    fontSize: 16,
-  },
-  classList: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    zIndex: 999,
-    backgroundColor: colors.surfaceLight,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  classListItem: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-  },
-  classListItemText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.md,
-    marginBottom: spacing.md,
-  },
-  titleInput: {
-    flex: 1,
-    fontSize: 22,
-    color: colors.textPrimary,
-    marginVertical: spacing.md,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.borderLight,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,   // reduced spacing
-  },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,  // reduced spacing
-    paddingHorizontal: spacing.md,
-    marginVertical: spacing.xs,   // reduced spacing
-  },
-  itemText: {
-    flex: 1,
-    marginLeft: spacing.sm,
-    color: colors.textPrimary,
-    fontSize: 16,
-  },
-  timeText: {
-    color: colors.textPrimary,
-    marginLeft: spacing.sm,
-    fontSize: 16,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: spacing.md,
-    paddingVertical: spacing.md,
-  },
-  cancelButton: {
-    padding: spacing.md,
-  },
-  cancelText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-  },
-  saveButton: {
-    padding: spacing.md,
-  },
-  saveText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  classRowRight: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  strictModeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-  strictModeText: {
-    color: colors.textPrimary,
-    marginRight: spacing.sm,
-    fontSize: 16,
-  },
-  dropdownBox: {
-    flexDirection: 'row', alignItems: 'center', borderWidth:1, borderColor:colors.borderLight,
-    borderRadius:8, paddingHorizontal:spacing.md, paddingVertical:spacing.sm,
-    flex:1, marginLeft:spacing.md
-  },
-  dropdownText: { flex:1, color:colors.textPrimary, fontSize:16 },
-  dropdownList: {
-    position: 'absolute',
-    zIndex: 999,
-    backgroundColor: colors.surfaceLight,
-    marginHorizontal: spacing.md,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  dropdownItem: { paddingVertical:spacing.sm, paddingHorizontal:spacing.md },
-  dropdownItemText: { fontSize:16, color:colors.textPrimary },
-  fieldContainer: { flex:1, position: 'relative' },
-  fieldLabel: { fontSize:14, color:colors.textSecondary, marginBottom:spacing.xs },
-  rangeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,    // reduced spacing
-  },
-  rangeItem: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.xs,  // slight vertical padding
-  },
-});
-
 export default CreateTask;

@@ -22,10 +22,11 @@ import {
   Alert 
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { commonStyles, colors, spacing } from '../styles/commonStyles';
+import { commonStyles, spacing } from '../styles/commonStyles';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import { useCalendarContext } from '../context/CalendarContext';
 import { CalendarEvent, CalendarCategory } from '../models/CalendarModels';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 const CreateEvent = ({ 
   visible, 
@@ -33,6 +34,237 @@ const CreateEvent = ({
   preSelectedDate = null,
   eventToEdit = null 
 }) => {
+  const { colors } = useThemedStyles();
+  
+  // Dynamic styles based on current theme
+  const dynamicStyles = {
+    container: {
+      flex: 1,
+      backgroundColor: colors.surface,
+    },
+    scrollViewContent: {
+      flex: 1,
+    },
+    header: {
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderLight,
+      marginBottom: spacing.md,
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.textPrimary,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.md,
+    },
+    titleInput: {
+      flex: 1,
+      fontSize: 22,
+      color: colors.textPrimary,
+      paddingVertical: spacing.sm,
+    },
+    descriptionInput: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.textPrimary,
+      paddingVertical: spacing.sm,
+      textAlignVertical: 'top',
+      minHeight: 60,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: colors.borderLight,
+      marginHorizontal: spacing.md,
+      marginVertical: spacing.sm,
+    },
+    itemRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      marginVertical: spacing.xs,
+    },
+    itemText: {
+      flex: 1,
+      marginLeft: spacing.sm,
+      color: colors.textPrimary,
+      fontSize: 16,
+    },
+    timeText: {
+      color: colors.textSecondary,
+      fontSize: 14,
+    },
+    priorityContainer: {
+      flexDirection: 'row',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.md,
+      justifyContent: 'space-around',
+    },
+    priorityButton: {
+      flex: 1,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      marginHorizontal: spacing.xs,
+      borderRadius: 8,
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+    },
+    priorityButtonSelected: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    priorityText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+    },
+    priorityTextSelected: {
+      color: colors.white,
+      fontWeight: 'bold',
+    },
+    categoryList: {
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.borderLight,
+      paddingVertical: spacing.sm,
+    },
+    categoryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+    },
+    categoryIcon: {
+      marginRight: spacing.sm,
+    },
+    categoryText: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.textPrimary,
+    },
+    categorySelected: {
+      backgroundColor: colors.primaryLight || colors.primary + '20',
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      borderTopWidth: 1,
+      borderTopColor: colors.borderLight,
+    },
+    actionButton: {
+      flex: 1,
+      paddingVertical: spacing.md,
+      marginHorizontal: spacing.xs,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    cancelButton: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+    },
+    saveButton: {
+      backgroundColor: colors.primary,
+    },
+    cancelButtonText: {
+      color: colors.textSecondary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    saveButtonText: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    fieldContainer: { 
+      flex: 1, 
+      position: 'relative' 
+    },
+    fieldLabel: { 
+      fontSize: 14, 
+      color: colors.textSecondary, 
+      marginBottom: spacing.xs,
+      paddingHorizontal: spacing.md,
+    },
+    dropdownBox: {
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      borderWidth: 1, 
+      borderColor: colors.borderLight,
+      borderRadius: 8, 
+      paddingHorizontal: spacing.md, 
+      paddingVertical: spacing.sm,
+      flex: 1, 
+      marginLeft: spacing.md,
+    },
+    dropdownText: { 
+      flex: 1, 
+      color: colors.textPrimary, 
+      fontSize: 16 
+    },
+    dropdownList: {
+      position: 'absolute',
+      top: '100%',
+      left: spacing.md,
+      right: 0,
+      zIndex: 999,
+      backgroundColor: colors.surfaceLight || colors.surface,
+      borderRadius: 8,
+      overflow: 'hidden',
+      elevation: 5,
+      shadowColor: colors.textPrimary,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+    },
+    dropdownItem: { 
+      paddingVertical: spacing.sm, 
+      paddingHorizontal: spacing.md 
+    },
+    dropdownItemText: { 
+      fontSize: 16, 
+      color: colors.textPrimary 
+    },
+    rangeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    rangeItem: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: spacing.xs,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: spacing.md,
+      paddingVertical: spacing.lg,
+      borderTopWidth: 1,
+      borderTopColor: colors.borderLight,
+    },
+    cancelText: {
+      color: colors.textPrimary,
+      fontSize: 16,
+    },
+    saveText: {
+      color: colors.surface,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  };
+  
   // Form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -350,19 +582,19 @@ const CreateEvent = ({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollViewContent}>
+    <SafeAreaView style={dynamicdynamicStyles.container}>
+      <ScrollView style={dynamicdynamicStyles.scrollViewContent}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>
+        <View style={dynamicdynamicStyles.header}>
+          <Text style={dynamicdynamicStyles.headerTitle}>
             {eventToEdit ? 'Edit Event' : 'Create Event'}
           </Text>
         </View>
 
         {/* Title Input */}
-        <View style={styles.row}>            
+        <View style={dynamicdynamicStyles.row}>            
           <TextInput
-            style={styles.titleInput}
+            style={dynamicdynamicStyles.titleInput}
             placeholder="Event title"
             placeholderTextColor={colors.textMuted}
             value={title}
@@ -375,9 +607,9 @@ const CreateEvent = ({
         </View>
 
         {/* Description Input */}
-        <View style={styles.row}>
+        <View style={dynamicdynamicStyles.row}>
           <TextInput
-            style={styles.descriptionInput}
+            style={dynamicdynamicStyles.descriptionInput}
             placeholder="Description (optional)"
             placeholderTextColor={colors.textMuted}
             value={description}
@@ -387,17 +619,17 @@ const CreateEvent = ({
           />
         </View>
 
-        <View style={styles.separator} />
+        <View style={dynamicdynamicStyles.separator} />
 
         {/* Category & Priority Row */}
-        <View style={styles.itemRow}>
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Category</Text>
+        <View style={dynamicStyles.itemRow}>
+          <View style={dynamicStyles.fieldContainer}>
+            <Text style={dynamicStyles.fieldLabel}>Category</Text>
             <TouchableOpacity 
-              style={styles.dropdownBox} 
+              style={dynamicStyles.dropdownBox} 
               onPress={() => setShowCategoryList(prev => !prev)}
             >
-              <Text style={styles.dropdownText}>{selectedCategory}</Text>
+              <Text style={dynamicStyles.dropdownText}>{selectedCategory}</Text>
               <Ionicons 
                 name={showCategoryList ? 'chevron-up' : 'chevron-down'} 
                 size={16} 
@@ -405,37 +637,37 @@ const CreateEvent = ({
               />
             </TouchableOpacity>
             {showCategoryList && (
-              <View style={styles.dropdownList}>
+              <View style={dynamicStyles.dropdownList}>
                 {CalendarCategory.getNames().map(category => (
                   <TouchableOpacity 
                     key={category} 
-                    style={styles.dropdownItem} 
+                    style={dynamicStyles.dropdownItem} 
                     onPress={() => { 
                       setSelectedCategory(category); 
                       setShowCategoryList(false); 
                     }}
                   >
-                    <Text style={styles.dropdownItemText}>{category}</Text>
+                    <Text style={dynamicStyles.dropdownItemText}>{category}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             )}
           </View>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Priority</Text>
-            <View style={styles.priorityContainer}>
+          <View style={dynamicStyles.fieldContainer}>
+            <Text style={dynamicStyles.fieldLabel}>Priority</Text>
+            <View style={dynamicStyles.priorityContainer}>
               {['low', 'medium', 'high'].map(p => (
                 <TouchableOpacity
                   key={p}
                   style={[
-                    styles.priorityButton,
+                    dynamicStyles.priorityButton,
                     { backgroundColor: priority === p ? colors.primary + '20' : 'transparent' }
                   ]}
                   onPress={() => setPriority(p)}
                 >
                   <Text style={[
-                    styles.priorityText,
+                    dynamicStyles.priorityText,
                     { color: priority === p ? colors.primary : colors.textSecondary }
                   ]}>
                     {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -446,11 +678,11 @@ const CreateEvent = ({
           </View>
         </View>
 
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
 
         {/* All Day Toggle */}
-        <View style={styles.itemRow}>
-          <Text style={styles.itemText}>All Day</Text>
+        <View style={dynamicStyles.itemRow}>
+          <Text style={dynamicStyles.itemText}>All Day</Text>
           <Switch
             value={isAllDay}
             onValueChange={setIsAllDay}
@@ -459,18 +691,18 @@ const CreateEvent = ({
           />
         </View>
 
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
 
         {/* Date Pickers */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Date</Text>
+        <View style={dynamicStyles.fieldContainer}>
+          <Text style={dynamicStyles.fieldLabel}>Date</Text>
         </View>
-        <View style={styles.rangeRow}>
+        <View style={dynamicStyles.rangeRow}>
           <TouchableOpacity 
-            style={styles.rangeItem} 
+            style={dynamicStyles.rangeItem} 
             onPress={() => setShowStartDatePicker(true)}
           >
-            <Text style={styles.itemText}>
+            <Text style={dynamicStyles.itemText}>
               {startDate.toLocaleDateString()}
             </Text>
           </TouchableOpacity>
@@ -478,10 +710,10 @@ const CreateEvent = ({
             <>
               <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
               <TouchableOpacity 
-                style={styles.rangeItem} 
+                style={dynamicStyles.rangeItem} 
                 onPress={() => setShowEndDatePicker(true)}
               >
-                <Text style={styles.itemText}>
+                <Text style={dynamicStyles.itemText}>
                   {endDate.toLocaleDateString()}
                 </Text>
               </TouchableOpacity>
@@ -492,24 +724,24 @@ const CreateEvent = ({
         {/* Time Pickers (only if not all day) */}
         {!isAllDay && (
           <>
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Time</Text>
+            <View style={dynamicStyles.fieldContainer}>
+              <Text style={dynamicStyles.fieldLabel}>Time</Text>
             </View>
-            <View style={styles.rangeRow}>
+            <View style={dynamicStyles.rangeRow}>
               <TouchableOpacity 
-                style={styles.rangeItem} 
+                style={dynamicStyles.rangeItem} 
                 onPress={() => setShowStartTimePicker(true)}
               >
-                <Text style={styles.timeText}>
+                <Text style={dynamicStyles.timeText}>
                   {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
               </TouchableOpacity>
               <Ionicons name="arrow-forward" size={20} color={colors.textSecondary} />
               <TouchableOpacity 
-                style={styles.rangeItem} 
+                style={dynamicStyles.rangeItem} 
                 onPress={() => setShowEndTimePicker(true)}
               >
-                <Text style={styles.timeText}>
+                <Text style={dynamicStyles.timeText}>
                   {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
               </TouchableOpacity>
@@ -555,17 +787,17 @@ const CreateEvent = ({
           />
         )}
 
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
 
         {/* Reminder Row */}
-        <View style={styles.itemRow}>
-          <Text style={styles.itemText}>Reminder</Text>
-          <View style={styles.fieldContainer}>
+        <View style={dynamicStyles.itemRow}>
+          <Text style={dynamicStyles.itemText}>Reminder</Text>
+          <View style={dynamicStyles.fieldContainer}>
             <TouchableOpacity 
-              style={styles.dropdownBox} 
+              style={dynamicStyles.dropdownBox} 
               onPress={() => setShowReminderList(prev => !prev)}
             >
-              <Text style={styles.dropdownText}>{selectedReminder}</Text>
+              <Text style={dynamicStyles.dropdownText}>{selectedReminder}</Text>
               <Ionicons 
                 name={showReminderList ? 'chevron-up' : 'chevron-down'} 
                 size={16} 
@@ -573,17 +805,17 @@ const CreateEvent = ({
               />
             </TouchableOpacity>
             {showReminderList && (
-              <View style={styles.dropdownList}>
+              <View style={dynamicStyles.dropdownList}>
                 {['None', '10 minutes before', '30 minutes before', '1 hour before', '1 day before'].map(reminder => (
                   <TouchableOpacity 
                     key={reminder} 
-                    style={styles.dropdownItem} 
+                    style={dynamicStyles.dropdownItem} 
                     onPress={() => { 
                       setSelectedReminder(reminder); 
                       setShowReminderList(false); 
                     }}
                   >
-                    <Text style={styles.dropdownItemText}>{reminder}</Text>
+                    <Text style={dynamicStyles.dropdownItemText}>{reminder}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -591,17 +823,17 @@ const CreateEvent = ({
           </View>
         </View>
 
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
 
         {/* Repeat Row */}
-        <View style={styles.itemRow}>
-          <Text style={styles.itemText}>Repeat</Text>
-          <View style={styles.fieldContainer}>
+        <View style={dynamicStyles.itemRow}>
+          <Text style={dynamicStyles.itemText}>Repeat</Text>
+          <View style={dynamicStyles.fieldContainer}>
             <TouchableOpacity 
-              style={styles.dropdownBox} 
+              style={dynamicStyles.dropdownBox} 
               onPress={() => setShowRepeatList(prev => !prev)}
             >
-              <Text style={styles.dropdownText}>{selectedRepeat}</Text>
+              <Text style={dynamicStyles.dropdownText}>{selectedRepeat}</Text>
               <Ionicons 
                 name={showRepeatList ? 'chevron-up' : 'chevron-down'} 
                 size={16} 
@@ -609,17 +841,17 @@ const CreateEvent = ({
               />
             </TouchableOpacity>
             {showRepeatList && (
-              <View style={styles.dropdownList}>
+              <View style={dynamicStyles.dropdownList}>
                 {["Doesn't repeat", 'Daily', 'Weekly', 'Monthly', 'Yearly'].map(repeat => (
                   <TouchableOpacity 
                     key={repeat} 
-                    style={styles.dropdownItem} 
+                    style={dynamicStyles.dropdownItem} 
                     onPress={() => { 
                       setSelectedRepeat(repeat); 
                       setShowRepeatList(false); 
                     }}
                   >
-                    <Text style={styles.dropdownItemText}>{repeat}</Text>
+                    <Text style={dynamicStyles.dropdownItemText}>{repeat}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -627,24 +859,24 @@ const CreateEvent = ({
           </View>
         </View>
 
-        <View style={styles.separator} />
+        <View style={dynamicStyles.separator} />
       </ScrollView>
 
       {/* Action Buttons */}
-      <View style={styles.buttonRow}>
+      <View style={dynamicStyles.buttonRow}>
         <TouchableOpacity 
-          style={styles.cancelButton} 
+          style={dynamicStyles.cancelButton} 
           onPress={handleCancel}
           disabled={isSaving}
         >
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={dynamicStyles.cancelText}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.saveButton, { opacity: isSaving ? 0.6 : 1 }]} 
+          style={[dynamicStyles.saveButton, { opacity: isSaving ? 0.6 : 1 }]} 
           onPress={handleSave}
           disabled={isSaving}
         >
-          <Text style={styles.saveText}>
+          <Text style={dynamicStyles.saveText}>
             {isSaving ? 'Saving...' : (eventToEdit ? 'Update' : 'Save')}
           </Text>
         </TouchableOpacity>
@@ -652,175 +884,5 @@ const CreateEvent = ({
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surface,
-  },
-  scrollViewContent: {
-    flex: 1,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    marginBottom: spacing.md,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.md,
-  },
-  titleInput: {
-    flex: 1,
-    fontSize: 22,
-    color: colors.textPrimary,
-    paddingVertical: spacing.sm,
-  },
-  descriptionInput: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.textPrimary,
-    paddingVertical: spacing.sm,
-    textAlignVertical: 'top',
-    minHeight: 60,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.borderLight,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-  },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    marginVertical: spacing.xs,
-  },
-  itemText: {
-    flex: 1,
-    marginLeft: spacing.sm,
-    color: colors.textPrimary,
-    fontSize: 16,
-  },
-  timeText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  fieldContainer: { 
-    flex: 1, 
-    position: 'relative' 
-  },
-  fieldLabel: { 
-    fontSize: 14, 
-    color: colors.textSecondary, 
-    marginBottom: spacing.xs,
-    paddingHorizontal: spacing.md,
-  },
-  dropdownBox: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    borderWidth: 1, 
-    borderColor: colors.borderLight,
-    borderRadius: 8, 
-    paddingHorizontal: spacing.md, 
-    paddingVertical: spacing.sm,
-    flex: 1, 
-    marginLeft: spacing.md,
-  },
-  dropdownText: { 
-    flex: 1, 
-    color: colors.textPrimary, 
-    fontSize: 16 
-  },
-  dropdownList: {
-    position: 'absolute',
-    top: '100%',
-    left: spacing.md,
-    right: 0,
-    zIndex: 999,
-    backgroundColor: colors.surfaceLight,
-    borderRadius: 8,
-    overflow: 'hidden',
-    elevation: 5,
-    shadowColor: colors.textPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  dropdownItem: { 
-    paddingVertical: spacing.sm, 
-    paddingHorizontal: spacing.md 
-  },
-  dropdownItemText: { 
-    fontSize: 16, 
-    color: colors.textPrimary 
-  },
-  priorityContainer: {
-    flexDirection: 'row',
-    marginLeft: spacing.md,
-  },
-  priorityButton: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 16,
-    marginRight: spacing.xs,
-  },
-  priorityText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  rangeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  rangeItem: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.xs,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: spacing.md,
-    paddingVertical: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
-  },
-  cancelButton: {
-    padding: spacing.md,
-    paddingHorizontal: spacing.lg,
-  },
-  cancelText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-  },
-  saveButton: {
-    padding: spacing.md,
-    paddingHorizontal: spacing.lg,
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-  },
-  saveText: {
-    color: colors.surface,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default CreateEvent;

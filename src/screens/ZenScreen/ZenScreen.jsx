@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, Modal, Alert, AppState } from 'react-native';
-import { commonStyles, colors } from '../../styles/commonStyles';
+import { commonStyles } from '../../styles/commonStyles';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import TimePicker from '../../components/TimePicker';
 import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
 
@@ -13,7 +14,128 @@ import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
  */
 
 const ZenScreen = ({ navigation }) => {
+  const { colors } = useThemedStyles();
   const scale = 1.33;
+
+  // Dynamic styles based on current theme
+  const dynamicStyles = {
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    presetCircle: {
+      width: 69,
+      height: 69,
+      borderRadius: 69,
+      borderWidth: 2,
+      backgroundColor: colors.surface,
+      borderColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    presetText: {
+      color: colors.textPrimary,
+      fontSize: 13,
+    },
+    editForm: {
+      backgroundColor: colors.background,
+      padding: 20,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    modalText: {
+      color: colors.textPrimary,
+      fontSize: 16,
+      marginBottom: 10,
+    },
+    timeInput: {
+      width: 50,
+      color: colors.textPrimary,
+      borderColor: colors.textSecondary,
+      marginHorizontal: 5,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.textSecondary,
+      width: 80,
+      marginVertical: 10,
+      textAlign: 'center',
+      color: colors.textPrimary,
+    },
+    formButton: {
+      backgroundColor: colors.primary,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 5,
+    },
+    startButton: {
+      marginTop: 20,
+      alignSelf: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      backgroundColor: colors.primary,
+      borderRadius: 15,
+    },
+    startButtonText: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    circle: {
+      width: 200,
+      height: 200,
+      borderRadius: 100,
+      borderWidth: 4,
+      borderColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    timerText: {
+      fontSize: 32,
+      color: colors.textPrimary,
+      fontWeight: '600',
+    },
+    appBlockingContainer: {
+      width: '90%',
+      marginVertical: 20,
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+    },
+    blockingTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.textPrimary,
+      marginBottom: 4,
+    },
+    blockingSubtitle: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      lineHeight: 18,
+    },
+    warningText: {
+      fontSize: 12,
+      color: colors.warning,
+      marginTop: 4,
+      fontWeight: '500',
+    },
+    permissionButton: {
+      marginTop: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    permissionButtonText: {
+      color: colors.white,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+  };
   // Zen Mode timer state
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -227,13 +349,40 @@ const ZenScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={dynamicStyles.container}>
       <KeyboardAvoidingView 
-        style={styles.keyboardContainer}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         {!isRunning ? (
-          <View style={[styles.centerContainer, { transform: [{ scale }] }] }>
+          <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }, { transform: [{ scale }] }] }>
+            {/* App Blocking Section */}
+            <View style={dynamicStyles.appBlockingContainer}>
+              <View style={{ marginBottom: 8 }}>
+                <Text style={dynamicStyles.blockingTitle}>App Blocking</Text>
+                <Text style={dynamicStyles.blockingSubtitle}>
+                  Automatically block distracting apps during focus sessions to help you stay concentrated.
+                </Text>
+                {!isAccessibilityEnabled && (
+                  <Text style={dynamicStyles.warningText}>
+                    Permission required for app blocking to work
+                  </Text>
+                )}
+              </View>
+              {!isAccessibilityEnabled ? (
+                <TouchableOpacity 
+                  style={dynamicStyles.permissionButton} 
+                  onPress={handleOpenAccessibilitySettings}
+                >
+                  <Text style={dynamicStyles.permissionButtonText}>Grant Permission</Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={[dynamicStyles.blockingSubtitle, { color: colors.success || '#4CAF50' }]}>
+                  ✓ App blocking enabled
+                </Text>
+              )}
+            </View>
+
             <TimePicker
               hours={hours}
               minutes={minutes}
@@ -247,7 +396,7 @@ const ZenScreen = ({ navigation }) => {
             />
             
             {/* preset circles */}
-            <View style={styles.presetsContainer}>
+            <View style={{ flexDirection: 'row', marginVertical: 20, paddingHorizontal: 15, justifyContent: 'space-around', width: '80%' }}>
               {presets.map((dur, idx) => {
                 const h = Math.floor(dur / 3600);
                 const m = Math.floor((dur % 3600) / 60);
@@ -255,7 +404,7 @@ const ZenScreen = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     key={idx}
-                    style={styles.presetCircle}
+                    style={dynamicStyles.presetCircle}
                     onPress={() => {
                       setHours(h);
                       setMinutes(m);
@@ -270,19 +419,19 @@ const ZenScreen = ({ navigation }) => {
                     }}
                     delayLongPress={1500}
                   >
-                    <Text style={styles.presetText}>{`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`}</Text>
+                    <Text style={dynamicStyles.presetText}>{`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`}</Text>
                   </TouchableOpacity>
                 );
               })}
             </View>
-            <TouchableOpacity style={styles.startButton} onPress={handleStart}>
-              <Text style={styles.startButtonText}>Start</Text>
+            <TouchableOpacity style={dynamicStyles.startButton} onPress={handleStart}>
+              <Text style={dynamicStyles.startButtonText}>Start</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={[styles.timerContainer, { transform: [{ scale }] }] }>
-            <TouchableOpacity style={styles.circle} onPress={handleCirclePress}>
-              <Text style={styles.timerText}>{
+          <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }, { transform: [{ scale }] }] }>
+            <TouchableOpacity style={dynamicStyles.circle} onPress={handleCirclePress}>
+              <Text style={dynamicStyles.timerText}>{
                 String(Math.floor(timeLeft/3600)).padStart(2,'0') + ':' +
                 String(Math.floor((timeLeft%3600)/60)).padStart(2,'0') + ':' +
                 String(timeLeft%60).padStart(2,'0')
@@ -294,46 +443,46 @@ const ZenScreen = ({ navigation }) => {
       {/* edit preset modal */}
       {editingPreset !== null && (
         <Modal transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.editForm}>
-              <Text style={styles.modalText}>Edit preset #{editingPreset + 1}</Text>
-              <View style={styles.editInputsContainer}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={dynamicStyles.editForm}>
+              <Text style={dynamicStyles.modalText}>Edit preset #{editingPreset + 1}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                 <TextInput
-                  style={[styles.input, styles.timeInput]}
+                  style={[dynamicStyles.input, dynamicStyles.timeInput]}
                   keyboardType="numeric"
                   value={String(editHours)}
                   onChangeText={t => setEditHours(Number(t) || 0)}
                   placeholder="HH"
-                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  placeholderTextColor={colors.textSecondary}
                 />
-                <Text style={styles.modalText}>:</Text>
+                <Text style={dynamicStyles.modalText}>:</Text>
                 <TextInput
-                  style={[styles.input, styles.timeInput]}
+                  style={[dynamicStyles.input, dynamicStyles.timeInput]}
                   keyboardType="numeric"
                   value={String(editMinutes)}
                   onChangeText={t => setEditMinutes(Number(t) || 0)}
                   placeholder="MM"
-                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  placeholderTextColor={colors.textSecondary}
                 />
-                <Text style={styles.modalText}>:</Text>
+                <Text style={dynamicStyles.modalText}>:</Text>
                 <TextInput
-                  style={[styles.input, styles.timeInput]}
+                  style={[dynamicStyles.input, dynamicStyles.timeInput]}
                   keyboardType="numeric"
                   value={String(editSeconds)}
                   onChangeText={t => setEditSeconds(Number(t) || 0)}
                   placeholder="SS"
-                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  placeholderTextColor={colors.textSecondary}
                 />
               </View>
               <TouchableOpacity
-                style={styles.formButton}
+                style={dynamicStyles.formButton}
                 onPress={() => {
                   const newDur = editHours * 3600 + editMinutes * 60 + editSeconds;
                   setPresets(ps => ps.map((d,i) => (i === editingPreset ? newDur : d)));
                   setEditingPreset(null);
                 }}
               >
-                <Text style={styles.modalText}>Save</Text>
+                <Text style={[dynamicStyles.modalText, { color: colors.white }]}>Save</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -342,161 +491,5 @@ const ZenScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  keyboardContainer: {
-    flex: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  presetsContainer: {
-    flexDirection: 'row',
-    marginVertical: 20,
-    paddingHorizontal: 15,
-    justifyContent: 'space-around',
-    width: '80%',
-  },
-  presetCircle: {
-    width: 69,
-    height: 69,
-    borderRadius: 69,
-    borderWidth: 2,
-    backgroundColor: colors.surface,
-    borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  presetText: {
-    color: colors.textPrimary,
-    fontSize: 13,
-  },
-  modalOverlay: {
-    flex:1,
-    backgroundColor:'rgba(0,0,0,0.5)',
-    justifyContent:'center',
-    alignItems:'center',
-  },
-  editForm: {
-    backgroundColor: colors.background,
-    padding:20,
-    borderRadius:8,
-    alignItems:'center',
-  },
-  modalText: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  editInputsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  timeInput: {
-    width: 50,
-    color: '#fff',
-    borderColor: colors.textSecondary,
-    marginHorizontal: 5,
-  },
-  input: {
-    borderWidth:1,
-    borderColor:colors.textSecondary,
-    width:80,
-    marginVertical:10,
-    textAlign:'center',
-    color:'#fff',
-  },
-  formButton: {
-    backgroundColor: colors.primary,
-    paddingVertical:8,
-    paddingHorizontal:16,
-    borderRadius:5,
-  },
-  startButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: colors.primary,
-    borderRadius: 15,
-  },
-  startButtonText: {
-    color: colors.textOnPrimary || '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  circle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 4,
-    borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  circleDisabled: {
-    opacity: 0.6,
-  },
-  timerText: {
-    fontSize: 32,
-    color: colors.textPrimary,
-    fontWeight: '600',
-  },
-  timerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appBlockingContainer: {
-    width: '90%',
-    marginVertical: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  blockingInfo: {
-    marginBottom: 8,
-  },
-  blockingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
-  blockingSubtitle: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    lineHeight: 18,
-  },
-  warningText: {
-    fontSize: 12,
-    color: '#FFA500',
-    marginTop: 4,
-    fontWeight: '500',
-  },
-  permissionButton: {
-    marginTop: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  permissionButtonText: {
-    color: colors.textOnPrimary || '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
 
 export default ZenScreen;

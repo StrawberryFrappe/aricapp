@@ -18,6 +18,107 @@ const AppSelector = () => {
   const { colors } = useTheme();
   const styles = useThemedStyles(commonStyles);
   
+  // Dynamic styles based on current theme
+  const localStyles = {
+    container: {
+      flex: 1,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 40,
+    },
+    searchInput: {
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      marginBottom: 16,
+      fontSize: 16,
+      color: colors.textPrimary,
+      backgroundColor: colors.surface,
+    },
+    selectionInfo: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+      flexWrap: 'wrap',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    debugButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 6,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+    },
+    saveButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.primary,
+    },
+    appsList: {
+      flex: 1,
+    },
+    appItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginBottom: 8,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      borderRadius: 8,
+      backgroundColor: colors.surface,
+    },
+    appInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    appIcon: {
+      width: 32,
+      height: 32,
+      borderRadius: 6,
+      marginRight: 12,
+    },
+    appDetails: {
+      flex: 1,
+    },
+    appName: {
+      fontWeight: '600',
+      marginBottom: 2,
+      color: colors.textPrimary,
+    },
+    packageName: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    checkbox: {
+      width: 24,
+      height: 24,
+      borderWidth: 2,
+      borderColor: colors.borderLight,
+      borderRadius: 4,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: 12,
+    },
+    checkmark: {
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+  };
+  
   const [installedApps, setInstalledApps] = useState([]);
   const [selectedApps, setSelectedApps] = useState(new Set());
   const [loading, setLoading] = useState(true);
@@ -302,91 +403,6 @@ const AppSelector = () => {
       />
     </View>
   );
-};
-
-const localStyles = {
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 16,
-    fontSize: 16,
-  },
-  selectionInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    flexWrap: 'wrap',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  debugButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  saveButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  appsList: {
-    flex: 1,
-  },
-  appItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderRadius: 8,
-  },
-  appInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  appIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 6,
-    marginRight: 12,
-  },
-  appDetails: {
-    flex: 1,
-  },
-  appName: {
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderWidth: 2,
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 12,
-  },
-  checkmark: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
 };
 
 export default AppSelector;
