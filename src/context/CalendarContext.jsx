@@ -8,6 +8,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import CalendarStorage from '../services/CalendarStorage';
 import { CalendarEvent, CalendarViewState } from '../models/CalendarModels';
+import EventBlockingService from '../services/EventBlockingService';
 
 const CalendarContext = createContext(null);
 
@@ -24,12 +25,47 @@ export const CalendarProvider = ({ children }) => {
   const [lastRefresh, setLastRefresh] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
 
+  // Auto-blocking state
+  const [blockingStatus, setBlockingStatus] = useState({
+    autoBlockingEnabled: false,
+    isMonitoring: false,
+    currentBlockingEvent: null,
+    isBlocking: false
+  });
+
   /**
    * Initialize calendar data on mount
    */
   useEffect(() => {
     initializeCalendar();
+    
+    // Setup blocking service status monitoring
+    const unsubscribe = EventBlockingService.onStatusChange((status) => {
+      setBlockingStatus(status);
+    });
+
+    // Initialize blocking status
+    setBlockingStatus(EventBlockingService.getStatus());
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
+  /**
+   * Update events being monitored
+   */
+  useEffect(() => {
+    if (events.length > 0) {
+      EventBlockingService.updateEvents(events);
+      
+      // Auto-start monitoring if auto-blocking is enabled
+      const status = EventBlockingService.getStatus();
+      if (status.autoBlockingEnabled && !status.isMonitoring) {
+        EventBlockingService.startMonitoring(events);
+      }
+    }
+  }, [events]);
 
   const initializeCalendar = async () => {
     try {
@@ -239,6 +275,58 @@ export const CalendarProvider = ({ children }) => {
     return events.some(event => event.date === date);
   }, [events]);
 
+  /**
+   * Auto-blocking functions
+   */
+  const toggleAutoBlocking = useCallback(async (enabled) => {
+    try {
+      await EventBlockingService.setAutoBlockingEnabled(enabled);
+      if (enabled && events.length > 0) {
+        EventBlockingService.startMonitoring(events);
+      }
+    } catch (error) {
+      console.error('Error toggling auto-blocking:', error);
+      setError(error.message);
+    }
+  }, [events]);
+
+  const manualOverrideBlocking = useCallback(async () => {
+    try {
+      return await EventBlockingService.manualOverride();
+    } catch (error) {
+      console.error('Error with manual override:', error);
+      setError(error.message);
+      return false;
+    }
+  }, []);
+
+  const startEventMonitoring = useCallback(() => {
+    if (events.length > 0) {
+      EventBlockingService.startMonitoring(events);
+    }
+  }, [events]);
+
+  const stopEventMonitoring = useCallback(() => {
+    EventBlockingService.stopMonitoring();
+  }, []);
+
+  const getUpcomingPriorityEvents = useCallback(() => {
+    const now = new Date();
+    const nowTime = now.getTime();
+    
+    return events.filter(event => {
+      if (!event.date || !event.time || event.isAllDay) return false;
+      if (event.priority !== 'strict') return false;
+      
+      const eventDateTime = new Date(`${event.date}T${event.time}`);
+      return eventDateTime.getTime() > nowTime;
+    }).sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}`);
+      const dateB = new Date(`${b.date}T${b.time}`);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }, [events]);
+
   // Context value
   const contextValue = {
     // State
@@ -248,6 +336,7 @@ export const CalendarProvider = ({ children }) => {
     viewState,
     lastRefresh,
     isDirty,
+    blockingStatus,
 
     // Event operations
     createEvent,
@@ -275,6 +364,13 @@ export const CalendarProvider = ({ children }) => {
     getCompletedEventsCount,
     getPendingEventsCount,
     hasEventsOnDate,
+
+    // Auto-blocking
+    toggleAutoBlocking,
+    manualOverrideBlocking,
+    startEventMonitoring,
+    stopEventMonitoring,
+    getUpcomingPriorityEvents,
 
     // Actions
     initializeCalendar

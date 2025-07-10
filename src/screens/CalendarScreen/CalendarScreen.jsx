@@ -5,6 +5,7 @@ import { useCalendar } from '../../hooks/useCalendar';
 import Calendar from './_components/Calendar';
 import EventsContainer from './_components/EventsContainer';
 import CreateEvent from '../../components/CreateEvent';
+import BlockingStatusIndicator from '../../components/BlockingStatusIndicator';
 import { useNavigation } from '@react-navigation/native';
 
 /**
@@ -55,6 +56,11 @@ const CalendarScreen = () => {
       <SafeAreaView style={[localStyles.safeArea, { backgroundColor: colors.background }]}>
         
         <View style={[localStyles.container, { backgroundColor: colors.background }]}>
+          {/* Blocking Status Indicator */}
+          <View style={localStyles.statusIndicatorSection}>
+            <BlockingStatusIndicator />
+          </View>
+
           {/* Main Calendar Component */}
           <View style={localStyles.calendarSection}>
             <Calendar onDateSelect={handleDateSelect} />
@@ -121,7 +127,10 @@ const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-  },  
+  },
+  statusIndicatorSection: {
+    paddingVertical: 8,
+  },
   calendarSection: {
     flex: 1, // Give calendar appropriate space (not too much)
     flexDirection: 'column',

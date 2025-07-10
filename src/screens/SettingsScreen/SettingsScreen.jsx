@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import ThemeSelector from './_components/ThemeSelector';
 import AppSelector from './_components/AppSelector';
+import AutoBlockingSettings from './_components/AutoBlockingSettings';
 
 /**
  * SettingsScreen Component
@@ -21,9 +22,16 @@ const SettingsScreen = () => {
       type: 'header',
     },
     {
+      id: 'auto-blocking',
+      type: 'section',
+      title: 'Auto-Blocking',
+      subtitle: 'Automatic blocking during calendar events',
+      component: 'auto-blocking',
+    },
+    {
       id: 'app-blocking',
       type: 'section',
-      title: 'App Blocking',
+      title: 'App Selection',
       subtitle: 'Select apps to block during focus sessions',
       component: 'app-selector',
     },
@@ -91,6 +99,7 @@ const SettingsScreen = () => {
               <View style={localStyles.sectionContent}>
                 {item.component === 'theme' && <ThemeSelector />}
                 {item.component === 'app-selector' && <AppSelector />}
+                {item.component === 'auto-blocking' && <AutoBlockingSettings />}
               </View>
             )}
           </View>

@@ -130,6 +130,11 @@ const CreateEvent = ({
       color: colors.white,
       fontWeight: 'bold',
     },
+    fieldHint: {
+      fontSize: 12,
+      marginTop: 4,
+      fontStyle: 'italic',
+    },
     categoryList: {
       backgroundColor: colors.surface,
       borderTopWidth: 1,
@@ -270,7 +275,7 @@ const CreateEvent = ({
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Travel');
   const [showCategoryList, setShowCategoryList] = useState(false);
-  const [priority, setPriority] = useState('medium');
+  const [priority, setPriority] = useState('non-strict');
   const [isAllDay, setIsAllDay] = useState(false);
   
   // Date/Time state
@@ -302,7 +307,7 @@ const CreateEvent = ({
       setTitle(eventToEdit.title || '');
       setDescription(eventToEdit.description || '');
       setSelectedCategory(eventToEdit.category || 'Travel');
-      setPriority(eventToEdit.priority || 'medium');
+      setPriority(eventToEdit.priority || 'non-strict');
       setIsAllDay(eventToEdit.isAllDay || false);
       
       // Parse date and time
@@ -655,9 +660,9 @@ const CreateEvent = ({
           </View>
 
           <View style={dynamicStyles.fieldContainer}>
-            <Text style={dynamicStyles.fieldLabel}>Priority</Text>
+            <Text style={dynamicStyles.fieldLabel}>App Blocking</Text>
             <View style={dynamicStyles.priorityContainer}>
-              {['low', 'medium', 'high'].map(p => (
+              {['non-strict', 'strict'].map(p => (
                 <TouchableOpacity
                   key={p}
                   style={[
@@ -670,11 +675,14 @@ const CreateEvent = ({
                     dynamicStyles.priorityText,
                     { color: priority === p ? colors.primary : colors.textSecondary }
                   ]}>
-                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                    {p === 'strict' ? 'Block Apps' : 'Allow Apps'}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
+            <Text style={[dynamicStyles.fieldHint, { color: colors.textSecondary }]}>
+              {priority === 'strict' ? 'Distracting apps will be blocked during this event' : 'No app blocking for this event'}
+            </Text>
           </View>
         </View>
 

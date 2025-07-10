@@ -63,10 +63,10 @@ export const useCalendar = () => {
     },
 
     /**
-     * Sort events by priority (high to low)
+     * Sort events by priority (strict first, then non-strict)
      */
     sortByPriority: (eventsArray) => {
-      const priorityOrder = { high: 3, medium: 2, low: 1 };
+      const priorityOrder = { 'strict': 2, 'non-strict': 1 };
       return [...eventsArray].sort((a, b) => 
         priorityOrder[b.priority] - priorityOrder[a.priority]
       );

@@ -47,9 +47,8 @@ const EventCard = ({
   // Priority colors
   const getPriorityColor = () => {
     switch (event.priority) {
-      case 'high': return colors.error;
-      case 'medium': return colors.warning;
-      case 'low': return colors.success;
+      case 'strict': return colors.error;
+      case 'non-strict': return colors.textSecondary;
       default: return colors.textSecondary;
     }
   };

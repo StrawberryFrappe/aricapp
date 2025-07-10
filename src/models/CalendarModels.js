@@ -25,7 +25,7 @@ export const CalendarEvent = {
       time: eventData.time || '09:00', // HH:mm format
       isAllDay: eventData.isAllDay || false,
       category: eventData.category || 'Travel',
-      priority: eventData.priority || 'medium', // 'low' | 'medium' | 'high'
+      priority: eventData.priority || 'non-strict', // 'strict' | 'non-strict'
       completed: eventData.completed || false,
       createdAt: eventData.createdAt || now,
       updatedAt: eventData.updatedAt || now,
@@ -53,8 +53,8 @@ export const CalendarEvent = {
       errors.push('Valid time is required');
     }
     
-    if (!['low', 'medium', 'high'].includes(event.priority)) {
-      errors.push('Priority must be low, medium, or high');
+    if (!['strict', 'non-strict'].includes(event.priority)) {
+      errors.push('Priority must be strict or non-strict');
     }
     
     return {

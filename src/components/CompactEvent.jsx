@@ -48,9 +48,8 @@ const CompactEvent = ({
     // Helper function for priority colors
     const getPriorityColor = (priority) => {
         switch (priority) {
-            case 'high': return colors.error;
-            case 'medium': return colors.warning;
-            case 'low': return colors.success;
+            case 'strict': return colors.error;
+            case 'non-strict': return colors.textSecondary;
             default: return colors.textSecondary;
         }
     };
@@ -160,7 +159,7 @@ const CompactEvent = ({
                                 { backgroundColor: getPriorityColor(event.priority) }
                             ]} />
                             <Text style={priorityTextStyle}>
-                                {event.priority} priority
+                                {event.priority === 'strict' ? 'Apps blocked' : 'Apps allowed'}
                             </Text>
                         </View>
                     )}
