@@ -174,20 +174,8 @@ Focus: Alternative views (Week/Day), calendar widgets, and search functionality
   - Compact month view
   - Date range selection
   - Use in other screens
-- [ ] Implement calendar widgets for HomeScreen
-  - Today's events widget
-  - Upcoming events list
-  - Quick add button
 
-### Day 20: Search & Filtering
-- [ ] Create `src/screens/CalendarScreen/_components/EventSearch.jsx`
-  - Full-text search
-  - Category filtering
-  - Date range filtering
-- [ ] Create `src/screens/CalendarScreen/_components/CalendarFilters.jsx`
-  - Category toggles
-  - Priority filtering
-  - Completed/pending toggle
+
 
 ---
 
