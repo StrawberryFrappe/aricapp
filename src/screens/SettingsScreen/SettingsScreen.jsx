@@ -52,7 +52,7 @@ const SettingsScreen = () => {
             <Text style={[styles.titleText, { fontSize: 24, marginBottom: 8 }]}>
               Settings
             </Text>
-            <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
+            <Text style={styles.bodyText}>
               Customize your app experience
             </Text>
           </View>
@@ -72,11 +72,11 @@ const SettingsScreen = () => {
                   <Text style={[styles.titleText, { fontSize: 18 }]}>
                     {item.title}
                   </Text>
-                  <Text style={[styles.smallText, { color: colors.textSecondary, marginTop: 2 }]}>
+                  <Text style={[styles.smallText, { marginTop: 2 }]}>
                     {item.subtitle}
                   </Text>
                 </View>
-                <View style={[localStyles.chevron, { borderColor: colors.textSecondary }]}>
+                <View style={localStyles.chevron}>
                   <Text style={[localStyles.chevronText, { 
                     color: colors.textSecondary,
                     transform: [{ rotate: isExpanded ? '90deg' : '0deg' }]

@@ -95,46 +95,6 @@ const ZenScreen = ({ navigation }) => {
       color: colors.textPrimary,
       fontWeight: '600',
     },
-    appBlockingContainer: {
-      width: '90%',
-      marginVertical: 20,
-      paddingHorizontal: 20,
-      paddingVertical: 16,
-      backgroundColor: colors.surface,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.borderLight,
-    },
-    blockingTitle: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.textPrimary,
-      marginBottom: 4,
-    },
-    blockingSubtitle: {
-      fontSize: 13,
-      color: colors.textSecondary,
-      lineHeight: 18,
-    },
-    warningText: {
-      fontSize: 12,
-      color: colors.warning,
-      marginTop: 4,
-      fontWeight: '500',
-    },
-    permissionButton: {
-      marginTop: 12,
-      paddingVertical: 10,
-      paddingHorizontal: 16,
-      backgroundColor: colors.primary,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    permissionButtonText: {
-      color: colors.white,
-      fontSize: 14,
-      fontWeight: '600',
-    },
   };
   // Zen Mode timer state
   const [hours, setHours] = useState(0);
@@ -162,12 +122,35 @@ const ZenScreen = ({ navigation }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [selectedApps, setSelectedApps] = useState([]);
 
-  // Check accessibility status on mount
+  // Check accessibility status on mount and request if needed
   useEffect(() => {
-    checkAccessibilityStatus();
-    checkBlockingStatus();
-    checkNotificationStatus();
-    loadSelectedApps();
+    const initializePermissions = async () => {
+      await checkAccessibilityStatus();
+      await checkBlockingStatus();
+      await checkNotificationStatus();
+      await loadSelectedApps();
+      
+      // If accessibility is not enabled, prompt user immediately
+      const enabled = await AppBlocking.isAccessibilityEnabled();
+      if (!enabled) {
+        Alert.alert(
+          'App Blocking Permission Required',
+          'To use focus sessions with app blocking, please grant accessibility permission in the next screen.',
+          [
+            {
+              text: 'Skip',
+              style: 'cancel',
+            },
+            {
+              text: 'Grant Permission',
+              onPress: handleOpenAccessibilitySettings,
+            },
+          ]
+        );
+      }
+    };
+    
+    initializePermissions();
   }, []);
 
   // Monitor app state changes to update blocking status when app comes to foreground
@@ -356,33 +339,6 @@ const ZenScreen = ({ navigation }) => {
       >
         {!isRunning ? (
           <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }, { transform: [{ scale }] }] }>
-            {/* App Blocking Section */}
-            <View style={dynamicStyles.appBlockingContainer}>
-              <View style={{ marginBottom: 8 }}>
-                <Text style={dynamicStyles.blockingTitle}>App Blocking</Text>
-                <Text style={dynamicStyles.blockingSubtitle}>
-                  Automatically block distracting apps during focus sessions to help you stay concentrated.
-                </Text>
-                {!isAccessibilityEnabled && (
-                  <Text style={dynamicStyles.warningText}>
-                    Permission required for app blocking to work
-                  </Text>
-                )}
-              </View>
-              {!isAccessibilityEnabled ? (
-                <TouchableOpacity 
-                  style={dynamicStyles.permissionButton} 
-                  onPress={handleOpenAccessibilitySettings}
-                >
-                  <Text style={dynamicStyles.permissionButtonText}>Grant Permission</Text>
-                </TouchableOpacity>
-              ) : (
-                <Text style={[dynamicStyles.blockingSubtitle, { color: colors.success || '#4CAF50' }]}>
-                  ✓ App blocking enabled
-                </Text>
-              )}
-            </View>
-
             <TimePicker
               hours={hours}
               minutes={minutes}
