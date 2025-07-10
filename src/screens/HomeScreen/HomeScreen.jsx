@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import TodaySchedule from './_components/TodaySchedule';
 
@@ -15,12 +14,11 @@ import TodaySchedule from './_components/TodaySchedule';
 
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
   const { styles, colors } = useThemedStyles();
   
   return (
     <View style={[localStyles.container, { backgroundColor: colors.background }]}>
-      <TodaySchedule onAdd={() => navigation.navigate('CreateTask')} />
+      <TodaySchedule />
     </View>
   );
 };
