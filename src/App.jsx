@@ -10,6 +10,7 @@ import NavigationBar from './components/NavigationBar.jsx';
 
 import CreateTask from './components/CreateTask.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
+import { CalendarProvider } from './context/CalendarContext.jsx';
 import { useThemedStyles } from './hooks/useThemedStyles';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -91,9 +92,11 @@ function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <ErrorBoundary>
-          <AppWrapper />
-        </ErrorBoundary>
+        <CalendarProvider>
+          <ErrorBoundary>
+            <AppWrapper />
+          </ErrorBoundary>
+        </CalendarProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

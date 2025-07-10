@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
+import { useCalendar } from '../../hooks/useCalendar';
 import Calendar from './_components/Calendar';
 import EventsContainer from './_components/EventsContainer';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 const CalendarScreen = () => {
   const navigation = useNavigation();
   const { colors } = useThemedStyles();
+  const calendar = useCalendar();
 
   return (
     <>
