@@ -180,10 +180,6 @@ Focus: Alternative views (Week/Day), calendar widgets, and search functionality
 - [x] **Theme Integration**: Consistent styling with useThemedStyles
   - Dynamic color support throughout day view
   - Proper contrast and accessibility
-- [ ] Create `src/screens/CalendarScreen/_components/WeekView.jsx`
-  - 7-day horizontal layout
-  - Time slots (optional)
-  - Scroll to today
 
 ### Day 18-19: Calendar Integration Features
 - [ ] Create `src/screens/CalendarScreen/_components/MiniCalendar.jsx`

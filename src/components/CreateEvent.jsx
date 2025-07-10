@@ -582,19 +582,19 @@ const CreateEvent = ({
   };
 
   return (
-    <SafeAreaView style={dynamicdynamicStyles.container}>
-      <ScrollView style={dynamicdynamicStyles.scrollViewContent}>
+    <SafeAreaView style={dynamicStyles.container}>
+      <ScrollView style={dynamicStyles.scrollViewContent}>
         {/* Header */}
-        <View style={dynamicdynamicStyles.header}>
-          <Text style={dynamicdynamicStyles.headerTitle}>
+        <View style={dynamicStyles.header}>
+          <Text style={dynamicStyles.headerTitle}>
             {eventToEdit ? 'Edit Event' : 'Create Event'}
           </Text>
         </View>
 
         {/* Title Input */}
-        <View style={dynamicdynamicStyles.row}>            
+        <View style={dynamicStyles.row}>            
           <TextInput
-            style={dynamicdynamicStyles.titleInput}
+            style={dynamicStyles.titleInput}
             placeholder="Event title"
             placeholderTextColor={colors.textMuted}
             value={title}
@@ -607,9 +607,9 @@ const CreateEvent = ({
         </View>
 
         {/* Description Input */}
-        <View style={dynamicdynamicStyles.row}>
+        <View style={dynamicStyles.row}>
           <TextInput
-            style={dynamicdynamicStyles.descriptionInput}
+            style={dynamicStyles.descriptionInput}
             placeholder="Description (optional)"
             placeholderTextColor={colors.textMuted}
             value={description}
@@ -619,7 +619,7 @@ const CreateEvent = ({
           />
         </View>
 
-        <View style={dynamicdynamicStyles.separator} />
+        <View style={dynamicStyles.separator} />
 
         {/* Category & Priority Row */}
         <View style={dynamicStyles.itemRow}>
