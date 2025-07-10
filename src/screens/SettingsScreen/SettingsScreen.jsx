@@ -130,7 +130,9 @@ const SettingsScreen = () => {
             {isExpanded && (
               <View style={localStyles.sectionContent}>
                 {item.component === 'theme' && <ThemeSelector />}
-                {item.component === 'app-selector' && <AppSelector />}
+                {item.component === 'app-selector' && (
+                  <AppSelector onSelectionChanged={(count) => setSelectedAppsCount(count)} />
+                )}
                 {item.component === 'auto-blocking' && <AutoBlockingSettings />}
               </View>
             )}

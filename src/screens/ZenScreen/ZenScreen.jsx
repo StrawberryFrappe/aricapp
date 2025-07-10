@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidin
 import { commonStyles } from '../../styles/commonStyles';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import TimePicker from '../../components/TimePicker';
-import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../services/AppBlocking';
+import AppBlocking, { getSelectedAppsStrict } from '../../services/AppBlocking';
 
 /**
  * ZenScreen Component
@@ -221,11 +221,11 @@ const ZenScreen = ({ navigation }) => {
   // Load user's selected apps for blocking
   const loadSelectedApps = async () => {
     try {
-      const apps = await AppBlocking.getSelectedApps();
-      setSelectedApps(apps.length > 0 ? apps : DEFAULT_BLOCKED_APPS);
+      const apps = await getSelectedAppsStrict();
+      setSelectedApps(apps);
     } catch (error) {
       console.warn('Failed to load selected apps:', error);
-      setSelectedApps(DEFAULT_BLOCKED_APPS); // Fallback to defaults
+      setSelectedApps([]);
     }
   };
 
@@ -266,6 +266,16 @@ const ZenScreen = ({ navigation }) => {
   }, [timeLeft]);
 
   const handleStart = async () => {
+    // Check if user has selected apps for blocking
+    if (selectedApps.length === 0) {
+      Alert.alert(
+        'No Apps Selected',
+        'You haven\'t selected any apps for blocking. Please go to Settings > App Selection to choose which apps to block during focus sessions.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
     const duration = getDuration();
     setTimeLeft(duration);
     tapTimestampsRef.current = [];

@@ -12,14 +12,15 @@ import {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { commonStyles } from '../../../styles/commonStyles';
-import AppBlocking from '../../../services/AppBlocking';
+import AppBlocking, { DEFAULT_BLOCKED_APPS } from '../../../services/AppBlocking';
 
-const AppSelector = () => {
+const AppSelector = ({ onSelectionChanged }) => {
   const { colors } = useTheme();
   const styles = useThemedStyles(commonStyles);
   
   // Add state for selected apps count
   const [selectedCount, setSelectedCount] = useState(0);
+  const [showDefaultAppsPrompt, setShowDefaultAppsPrompt] = useState(false);
 
   // Dynamic styles based on current theme
   const localStyles = {
@@ -131,6 +132,7 @@ const AppSelector = () => {
   useEffect(() => {
     loadInstalledApps();
     loadSelectedApps();
+    checkFirstTimeUser();
   }, []);
 
   const loadInstalledApps = async () => {
@@ -175,6 +177,7 @@ const AppSelector = () => {
     }
     setSelectedApps(newSelected);
     setSelectedCount(newSelected.size);
+    onSelectionChanged && onSelectionChanged(newSelected); // Notify parent component
   };
 
   const filteredApps = useMemo(() => {
@@ -194,6 +197,11 @@ const AppSelector = () => {
       setSaving(true);
       const selectedArray = Array.from(selectedApps);
       await AppBlocking.saveSelectedApps(selectedArray);
+      
+      // Notify parent component of the change
+      if (onSelectionChanged) {
+        onSelectionChanged(selectedArray.length);
+      }
       
       if (selectedArray.length === 0) {
         Alert.alert(
@@ -347,6 +355,55 @@ const AppSelector = () => {
     setSelectedCount(selectedApps.size);
   }, [selectedApps]);
 
+  // Check if this is a first-time user (no apps selected)
+  const checkFirstTimeUser = async () => {
+    try {
+      const apps = await AppBlocking.getSelectedApps();
+      if (!apps || apps.length === 0) {
+        setShowDefaultAppsPrompt(true);
+      }
+    } catch (error) {
+      console.error('Error checking first-time user status:', error);
+    }
+  };
+
+  const handleUseDefaultApps = async () => {
+    try {
+      // Get suggested apps that are actually installed
+      const installedApps = await AppBlocking.getInstalledApps();
+      const suggestedApps = DEFAULT_BLOCKED_APPS.filter(packageName => 
+        installedApps.some(app => app.packageName === packageName)
+      );
+      
+      if (suggestedApps.length > 0) {
+        const newSelected = new Set(suggestedApps);
+        setSelectedApps(newSelected);
+        setSelectedCount(newSelected.size);
+        
+        await AppBlocking.saveSelectedApps(Array.from(newSelected));
+        
+        if (onSelectionChanged) {
+          onSelectionChanged(newSelected.size);
+        }
+        
+        Alert.alert(
+          'Default Apps Selected',
+          `${suggestedApps.length} commonly blocked apps have been selected for you. You can modify this selection anytime.`
+        );
+      } else {
+        Alert.alert(
+          'No Suggested Apps Found',
+          'None of the commonly blocked apps are installed on your device. Please manually select apps to block.'
+        );
+      }
+    } catch (error) {
+      console.error('Error setting default apps:', error);
+      Alert.alert('Error', 'Failed to set default apps. Please select manually.');
+    } finally {
+      setShowDefaultAppsPrompt(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={localStyles.loadingContainer}>
@@ -431,6 +488,62 @@ const AppSelector = () => {
         style={localStyles.appsList}
         showsVerticalScrollIndicator={false}
       />
+
+      {showDefaultAppsPrompt && (
+        <View style={{ 
+          padding: 16, 
+          borderTopWidth: 1, 
+          borderColor: colors.borderLight,
+          backgroundColor: colors.surfaceLight 
+        }}>
+          <Text style={[styles.bodyText, { marginBottom: 8 }]}>🎯 First Time Here?</Text>
+          <Text style={[styles.smallText, { color: colors.textSecondary, marginBottom: 16 }]}>
+            Get started quickly with commonly blocked social media and entertainment apps. You can always customize this selection later.
+          </Text>
+          
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity
+              style={[
+                localStyles.saveButton,
+                { 
+                  backgroundColor: colors.surface,
+                  borderWidth: 1,
+                  borderColor: colors.borderLight,
+                  marginRight: 8,
+                  flex: 1,
+                }
+              ]}
+              onPress={() => setShowDefaultAppsPrompt(false)}
+            >
+              <Text style={[styles.smallText, { color: colors.textPrimary, fontWeight: '600', textAlign: 'center' }]}>
+                I'll Choose Manually
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                localStyles.saveButton,
+                { 
+                  backgroundColor: colors.primary,
+                  marginLeft: 8,
+                  flex: 1,
+                  opacity: saving ? 0.6 : 1,
+                }
+              ]}
+              onPress={handleUseDefaultApps}
+              disabled={saving}
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color={colors.textOnPrimary || '#fff'} />
+              ) : (
+                <Text style={[styles.smallText, { color: colors.textOnPrimary || '#fff', fontWeight: '600', textAlign: 'center' }]}>
+                  Use Suggested Apps
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

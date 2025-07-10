@@ -106,3 +106,29 @@ export const ADDITIONAL_BLOCKED_APPS = [
   'com.discord',              // Discord
   'com.whatsapp',             // WhatsApp
 ];
+
+// Helper function to initialize default apps for new users (optional)
+export const initializeDefaultAppsIfEmpty = async () => {
+  try {
+    const currentApps = await AppBlocking.getSelectedApps();
+    if (!currentApps || currentApps.length === 0) {
+      // Only suggest defaults, don't automatically set them
+      return DEFAULT_BLOCKED_APPS;
+    }
+    return currentApps;
+  } catch (error) {
+    console.warn('Error checking selected apps:', error);
+    return [];
+  }
+};
+
+// Function to get selected apps without falling back to defaults
+export const getSelectedAppsStrict = async () => {
+  try {
+    const apps = await AppBlocking.getSelectedApps();
+    return apps || [];
+  } catch (error) {
+    console.warn('Error getting selected apps:', error);
+    return [];
+  }
+};

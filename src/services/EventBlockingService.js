@@ -187,7 +187,8 @@ class EventBlockingService {
       
       console.log('Retrieved selected apps for blocking:', blockedApps);
       
-      if (!blockedApps || blockedApps.length === 0) {
+      // Ensure we have an array and it's not empty
+      if (!Array.isArray(blockedApps) || blockedApps.length === 0) {
         console.warn('No apps selected for blocking! User needs to configure app blocking preferences.');
         
         // Show user notification about missing app selection
