@@ -90,32 +90,14 @@ const { AppBlocking } = NativeModules;
 
 export default AppBlocking as AppBlockingInterface;
 
-// Default blocked apps (Facebook and Instagram)
-export const DEFAULT_BLOCKED_APPS = [
-  'com.facebook.katana',      // Facebook
-  'com.instagram.android',  // Instagram
-  'com.google.android.youtube', // YouTube
-];
+// DEPRECATED: Default app constants removed to enforce user-driven app selection
+// All blocking decisions are now based solely on user's saved preferences
 
-// Additional commonly blocked social apps
-export const ADDITIONAL_BLOCKED_APPS = [
-  'com.twitter.android',      // Twitter
-  'com.snapchat.android',     // Snapchat
-  'com.zhiliaoapp.musically', // TikTok
-  'com.reddit.frontpage',     // Reddit
-  'com.discord',              // Discord
-  'com.whatsapp',             // WhatsApp
-];
-
-// Helper function to initialize default apps for new users (optional)
+// Helper function that returns only user-selected apps (no defaults)
 export const initializeDefaultAppsIfEmpty = async () => {
   try {
     const currentApps = await AppBlocking.getSelectedApps();
-    if (!currentApps || currentApps.length === 0) {
-      // Only suggest defaults, don't automatically set them
-      return DEFAULT_BLOCKED_APPS;
-    }
-    return currentApps;
+    return currentApps || [];
   } catch (error) {
     console.warn('Error checking selected apps:', error);
     return [];

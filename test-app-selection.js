@@ -90,7 +90,7 @@ const appSelectionFeatures = {
   nativeModule: 'getInstalledApps(), saveSelectedApps(), getSelectedApps()',
   settingsUI: 'AppSelector component with checkboxes and save functionality',
   persistence: 'Android SharedPreferences with KEY_SELECTED_APPS',
-  integration: 'ZenScreen loadSelectedApps() with DEFAULT_BLOCKED_APPS fallback',
+  integration: 'ZenScreen loadSelectedApps() with user-selected apps only (no defaults)',
   icons: 'Base64 encoded app icons for visual identification'
 };
 
