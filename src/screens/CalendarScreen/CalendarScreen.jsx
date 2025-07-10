@@ -123,7 +123,7 @@ const localStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },  
   calendarSection: {
-    flex: 2, // Give calendar more space
+    flex: 1, // Give calendar appropriate space (not too much)
     flexDirection: 'column',
   },
   eventsSection: {

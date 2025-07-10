@@ -18,10 +18,7 @@ const Calendar = ({ onDateSelect }) => {
     const { colors } = useThemedStyles();
     
     return (
-        <View style={[styles.container, { 
-            backgroundColor: colors.background,
-            borderColor: colors.border 
-        }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Calendar Header with navigation */}
             <CalendarHeader />
             
@@ -35,9 +32,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, // Use all available space
         paddingHorizontal: spacing.lg,
-        borderWidth: 1, // Subtle border for definition
-        borderRadius: 8,
-        margin: 10,
         padding: spacing.md,
     },
 });
