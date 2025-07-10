@@ -8,7 +8,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, Alert } from 'react-native';
-import AppBlocking, { DEFAULT_BLOCKED_APPS } from './AppBlocking';
+import AppBlocking from './AppBlocking';
+import BlockingStatsService from './BlockingStatsService';
 
 class EventBlockingService {
   constructor() {
@@ -150,10 +151,21 @@ class EventBlockingService {
         return false;
       }
 
-      // Get user's selected apps or use defaults
+      // Get user's selected apps - this is critical for proper blocking
       let blockedApps = await AppBlocking.getSelectedApps();
+      
+      console.log('Retrieved selected apps for blocking:', blockedApps);
+      
       if (!blockedApps || blockedApps.length === 0) {
-        blockedApps = DEFAULT_BLOCKED_APPS;
+        console.warn('No apps selected for blocking! User needs to configure app blocking preferences.');
+        
+        // Show user notification about missing app selection
+        this.showBlockingNotification(
+          `Cannot start blocking for "${event.title}" - No apps selected for blocking. Please configure your app preferences in Settings.`,
+          true
+        );
+        
+        return false;
       }
 
       // Calculate remaining duration
@@ -167,6 +179,9 @@ class EventBlockingService {
         if (success) {
           this.currentBlockingEvent = event;
           console.log(`Started auto-blocking for event: ${event.title} (${remainingSeconds}s remaining)`);
+          
+          // Record blocking event in statistics
+          await BlockingStatsService.recordBlockingEvent();
           
           // Show user notification
           this.showBlockingNotification(`Auto-blocking started for "${event.title}"`, false);
@@ -337,6 +352,20 @@ class EventBlockingService {
         [{ text: 'OK', style: 'default' }],
         { cancelable: true }
       );
+    }
+  }
+
+  /**
+   * Check if user has configured app blocking preferences
+   * @returns {boolean} Whether user has selected apps for blocking
+   */
+  async hasConfiguredApps() {
+    try {
+      const selectedApps = await AppBlocking.getSelectedApps();
+      return selectedApps && selectedApps.length > 0;
+    } catch (error) {
+      console.error('Error checking configured apps:', error);
+      return false;
     }
   }
 }

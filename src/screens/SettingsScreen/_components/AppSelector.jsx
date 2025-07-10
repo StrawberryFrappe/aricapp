@@ -18,6 +18,9 @@ const AppSelector = () => {
   const { colors } = useTheme();
   const styles = useThemedStyles(commonStyles);
   
+  // Add state for selected apps count
+  const [selectedCount, setSelectedCount] = useState(0);
+
   // Dynamic styles based on current theme
   const localStyles = {
     container: {
@@ -155,7 +158,9 @@ const AppSelector = () => {
   const loadSelectedApps = async () => {
     try {
       const selected = await AppBlocking.getSelectedApps();
-      setSelectedApps(new Set(selected));
+      const selectedSet = new Set(selected);
+      setSelectedApps(selectedSet);
+      setSelectedCount(selectedSet.size);
     } catch (error) {
       console.error('Error loading selected apps:', error);
     }
@@ -169,6 +174,7 @@ const AppSelector = () => {
       newSelected.add(packageName);
     }
     setSelectedApps(newSelected);
+    setSelectedCount(newSelected.size);
   };
 
   const filteredApps = useMemo(() => {
@@ -186,8 +192,21 @@ const AppSelector = () => {
   const saveSelections = async () => {
     try {
       setSaving(true);
-      await AppBlocking.saveSelectedApps(Array.from(selectedApps));
-      Alert.alert('Success', 'App blocking preferences saved successfully!');
+      const selectedArray = Array.from(selectedApps);
+      await AppBlocking.saveSelectedApps(selectedArray);
+      
+      if (selectedArray.length === 0) {
+        Alert.alert(
+          'No Apps Selected', 
+          'You haven\'t selected any apps for blocking. App blocking during calendar events will not work until you select at least one app.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert(
+          'Success', 
+          `App blocking preferences saved! ${selectedArray.length} app${selectedArray.length === 1 ? '' : 's'} will be blocked during focus sessions.`
+        );
+      }
     } catch (error) {
       console.error('Error saving selections:', error);
       Alert.alert('Error', 'Failed to save selections. Please try again.');
@@ -324,6 +343,10 @@ const AppSelector = () => {
 
   const keyExtractor = useCallback((item) => item.packageName, []);
 
+  useEffect(() => {
+    setSelectedCount(selectedApps.size);
+  }, [selectedApps]);
+
   if (loading) {
     return (
       <View style={localStyles.loadingContainer}>
@@ -361,9 +384,16 @@ const AppSelector = () => {
       />
       
       <View style={localStyles.selectionInfo}>
-        <Text style={[styles.smallText, { color: colors.textSecondary }]}>
-          {selectedApps.size} apps selected • {filteredApps.length} apps shown
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.smallText, { color: colors.textSecondary }]}>
+            {selectedApps.size} apps selected • {filteredApps.length} apps shown
+          </Text>
+          {selectedApps.size === 0 && (
+            <Text style={[styles.smallText, { color: colors.error || '#FF6B6B', marginTop: 4 }]}>
+              ⚠️ No apps selected - blocking will not work during events
+            </Text>
+          )}
+        </View>
         
         <View style={localStyles.buttonContainer}>
           <TouchableOpacity
