@@ -8,8 +8,8 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 
 const DatePicker = ({ 
@@ -18,6 +18,7 @@ const DatePicker = ({
   onDateSelect,
   initialDate = null 
 }) => {
+  const { styles, colors } = useThemedStyles();
   const { navigateToDate, viewState, dateUtils } = useCalendar();
   
   // Parse initial date or use current view date
@@ -103,78 +104,78 @@ const DatePicker = ({
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
+        <View style={[styles.card, styles.datePickerModal]}>
           {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Select Date</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>×</Text>
+          <View style={[styles.row, styles.spaceBetween, styles.datePickerHeader]}>
+            <Text style={[styles.text, styles.datePickerTitle]}>Select Date</Text>
+            <TouchableOpacity onPress={onClose} style={styles.button}>
+              <Text style={[styles.text, { fontSize: 24 }]}>×</Text>
             </TouchableOpacity>
           </View>
 
           {/* Date Display */}
           <View style={styles.dateDisplay}>
-            <Text style={styles.selectedDateText}>
+            <Text style={[styles.text, styles.selectedDateText]}>
               {formatSelectedDate()}
             </Text>
           </View>
 
           {/* Year and Month Selectors */}
-          <View style={styles.selectors}>
+          <View style={[styles.row, styles.selectors]}>
             <TouchableOpacity
-              style={styles.selector}
+              style={[styles.card, styles.selector]}
               onPress={() => setShowYearPicker(true)}
             >
-              <Text style={styles.selectorLabel}>Year</Text>
-              <Text style={styles.selectorValue}>{selectedDate.getFullYear()}</Text>
+              <Text style={[styles.smallText, styles.selectorLabel]}>Year</Text>
+              <Text style={[styles.text, styles.selectorValue]}>{selectedDate.getFullYear()}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.selector}
+              style={[styles.card, styles.selector]}
               onPress={() => setShowMonthPicker(true)}
             >
-              <Text style={styles.selectorLabel}>Month</Text>
-              <Text style={styles.selectorValue}>
+              <Text style={[styles.smallText, styles.selectorLabel]}>Month</Text>
+              <Text style={[styles.text, styles.selectorValue]}>
                 {monthNames[selectedDate.getMonth()]}
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* Quick Actions */}
-          <View style={styles.quickActions}>
+          <View style={[styles.row, styles.quickActions]}>
             <TouchableOpacity
-              style={[styles.actionButton, styles.todayButton]}
+              style={[styles.button, { backgroundColor: colors.borderDefault + '30' }]}
               onPress={handleToday}
             >
-              <Text style={styles.todayButtonText}>Today</Text>
+              <Text style={[styles.buttonText, { color: colors.textPrimary }]}>Today</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionButton, styles.confirmButton]}
+              style={[styles.button, { backgroundColor: colors.primary }]}
               onPress={handleConfirm}
             >
-              <Text style={styles.confirmButtonText}>Go to Date</Text>
+              <Text style={[styles.buttonText, { color: colors.white }]}>Go to Date</Text>
             </TouchableOpacity>
           </View>
 
           {/* Year Picker Modal */}
           {showYearPicker && (
             <View style={styles.pickerOverlay}>
-              <View style={styles.pickerContent}>
-                <Text style={styles.pickerTitle}>Select Year</Text>
+              <View style={[styles.card, styles.pickerContent]}>
+                <Text style={[styles.text, styles.pickerTitle]}>Select Year</Text>
                 <ScrollView style={styles.pickerScroll}>
                   {yearRange.map((year) => (
                     <TouchableOpacity
                       key={year}
                       style={[
                         styles.pickerItem,
-                        year === selectedDate.getFullYear() && styles.selectedPickerItem
+                        year === selectedDate.getFullYear() && { backgroundColor: colors.primary + '20' }
                       ]}
                       onPress={() => handleYearSelect(year)}
                     >
                       <Text style={[
-                        styles.pickerItemText,
-                        year === selectedDate.getFullYear() && styles.selectedPickerItemText
+                        styles.text,
+                        year === selectedDate.getFullYear() && { color: colors.primary, fontWeight: 'bold' }
                       ]}>
                         {year}
                       </Text>
@@ -182,10 +183,10 @@ const DatePicker = ({
                   ))}
                 </ScrollView>
                 <TouchableOpacity
-                  style={styles.pickerCloseButton}
+                  style={[styles.button, { backgroundColor: colors.borderDefault + '30' }]}
                   onPress={() => setShowYearPicker(false)}
                 >
-                  <Text style={styles.pickerCloseText}>Cancel</Text>
+                  <Text style={[styles.buttonText, { color: colors.textPrimary }]}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -194,21 +195,21 @@ const DatePicker = ({
           {/* Month Picker Modal */}
           {showMonthPicker && (
             <View style={styles.pickerOverlay}>
-              <View style={styles.pickerContent}>
-                <Text style={styles.pickerTitle}>Select Month</Text>
+              <View style={[styles.card, styles.pickerContent]}>
+                <Text style={[styles.text, styles.pickerTitle]}>Select Month</Text>
                 <ScrollView style={styles.pickerScroll}>
                   {monthNames.map((month, index) => (
                     <TouchableOpacity
                       key={month}
                       style={[
                         styles.pickerItem,
-                        index === selectedDate.getMonth() && styles.selectedPickerItem
+                        index === selectedDate.getMonth() && { backgroundColor: colors.primary + '20' }
                       ]}
                       onPress={() => handleMonthSelect(index)}
                     >
                       <Text style={[
-                        styles.pickerItemText,
-                        index === selectedDate.getMonth() && styles.selectedPickerItemText
+                        styles.text,
+                        index === selectedDate.getMonth() && { color: colors.primary, fontWeight: 'bold' }
                       ]}>
                         {month}
                       </Text>
@@ -216,10 +217,10 @@ const DatePicker = ({
                   ))}
                 </ScrollView>
                 <TouchableOpacity
-                  style={styles.pickerCloseButton}
+                  style={[styles.button, { backgroundColor: colors.borderDefault + '30' }]}
                   onPress={() => setShowMonthPicker(false)}
                 >
-                  <Text style={styles.pickerCloseText}>Cancel</Text>
+                  <Text style={[styles.buttonText, { color: colors.textPrimary }]}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -229,164 +230,5 @@ const DatePicker = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: colors.background,
-    borderRadius: 16,
-    padding: spacing.lg,
-    margin: spacing.lg,
-    width: '85%',
-    maxHeight: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.border + '30',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: colors.textSecondary,
-    fontWeight: 'bold',
-  },
-  dateDisplay: {
-    alignItems: 'center',
-    marginBottom: spacing.xl,
-    paddingVertical: spacing.lg,
-    backgroundColor: colors.primary + '10',
-    borderRadius: 12,
-  },
-  selectedDateText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  selectors: {
-    flexDirection: 'row',
-    marginBottom: spacing.xl,
-    gap: spacing.md,
-  },
-  selector: {
-    flex: 1,
-    backgroundColor: colors.border + '20',
-    borderRadius: 12,
-    padding: spacing.lg,
-    alignItems: 'center',
-  },
-  selectorLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-    textTransform: 'uppercase',
-    fontWeight: '600',
-  },
-  selectorValue: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    fontWeight: 'bold',
-  },
-  quickActions: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  todayButton: {
-    backgroundColor: colors.border + '30',
-  },
-  confirmButton: {
-    backgroundColor: colors.primary,
-  },
-  todayButtonText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    fontWeight: '600',
-  },
-  confirmButtonText: {
-    fontSize: 16,
-    color: colors.background,
-    fontWeight: '600',
-  },
-  pickerOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pickerContent: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
-    padding: spacing.lg,
-    width: '80%',
-    maxHeight: '60%',
-  },
-  pickerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-  },
-  pickerScroll: {
-    maxHeight: 200,
-  },
-  pickerItem: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: 8,
-    marginVertical: spacing.xs,
-  },
-  selectedPickerItem: {
-    backgroundColor: colors.primary + '20',
-  },
-  pickerItemText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    textAlign: 'center',
-  },
-  selectedPickerItemText: {
-    color: colors.primary,
-    fontWeight: 'bold',
-  },
-  pickerCloseButton: {
-    marginTop: spacing.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-  },
-  pickerCloseText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    fontWeight: '600',
-  },
-});
 
 export default DatePicker;

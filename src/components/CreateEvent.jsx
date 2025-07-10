@@ -103,6 +103,16 @@ const CreateEvent = ({
   const handleStartDateChange = (event, selectedDate) => {
     setShowStartDatePicker(false);
     if (selectedDate) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+      
+      // Prevent selecting past dates for new events
+      if (!eventToEdit && selectedDateOnly < today) {
+        Alert.alert('Invalid Date', 'Cannot select past dates for new events');
+        return;
+      }
+      
       setStartDate(selectedDate);
       // Ensure end date is after start date
       if (selectedDate > endDate) {
@@ -114,6 +124,16 @@ const CreateEvent = ({
   const handleEndDateChange = (event, selectedDate) => {
     setShowEndDatePicker(false);
     if (selectedDate) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+      
+      // Prevent selecting past dates for new events
+      if (!eventToEdit && selectedDateOnly < today) {
+        Alert.alert('Invalid Date', 'Cannot select past dates for new events');
+        return;
+      }
+      
       // Ensure end date is not before start date
       if (selectedDate < startDate) {
         setEndDate(startDate);
@@ -128,6 +148,18 @@ const CreateEvent = ({
     if (selectedTime) {
       const newStart = new Date(startDate);
       newStart.setHours(selectedTime.getHours(), selectedTime.getMinutes());
+      
+      // Prevent selecting past times for new events on today's date
+      if (!eventToEdit) {
+        const now = new Date();
+        const isToday = newStart.toDateString() === now.toDateString();
+        
+        if (isToday && newStart < now) {
+          Alert.alert('Invalid Time', 'Cannot select past times for events today');
+          return;
+        }
+      }
+      
       setStartDate(newStart);
       
       // Ensure end time is after start time
@@ -143,6 +175,17 @@ const CreateEvent = ({
       const newEnd = new Date(endDate);
       newEnd.setHours(selectedTime.getHours(), selectedTime.getMinutes());
       
+      // Prevent selecting past times for new events on today's date
+      if (!eventToEdit) {
+        const now = new Date();
+        const isToday = newEnd.toDateString() === now.toDateString();
+        
+        if (isToday && newEnd < now) {
+          Alert.alert('Invalid Time', 'Cannot select past times for events today');
+          return;
+        }
+      }
+      
       // Ensure end time is after start time
       if (newEnd <= startDate) {
         setEndDate(new Date(startDate.getTime() + 3600000));
@@ -156,9 +199,33 @@ const CreateEvent = ({
    * Validate form data
    */
   const validateForm = () => {
+    const now = new Date();
+    
     if (!title.trim()) {
       Alert.alert('Validation Error', 'Event title is required');
       return false;
+    }
+
+    // Check if event is in the past (only for new events, not edits)
+    if (!eventToEdit) {
+      const eventDateTime = new Date(startDate);
+      
+      if (isAllDay) {
+        // For all-day events, only check the date (ignore time)
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const eventDateOnly = new Date(eventDateTime.getFullYear(), eventDateTime.getMonth(), eventDateTime.getDate());
+        
+        if (eventDateOnly < todayStart) {
+          Alert.alert('Validation Error', 'Cannot create events on past dates');
+          return false;
+        }
+      } else {
+        // For timed events, check both date and time
+        if (eventDateTime < now) {
+          Alert.alert('Validation Error', 'Cannot create events in the past');
+          return false;
+        }
+      }
     }
 
     if (startDate >= endDate && !isAllDay) {
@@ -193,7 +260,12 @@ const CreateEvent = ({
       if (eventToEdit) {
         await updateEvent(eventToEdit.id, eventData);
       } else {
-        await createEvent(eventData);
+        // Check if this is a recurring event
+        if (selectedRepeat && selectedRepeat !== "Doesn't repeat") {
+          await createRecurringEvents(eventData, selectedRepeat);
+        } else {
+          await createEvent(eventData);
+        }
       }
 
       onClose();
@@ -203,6 +275,60 @@ const CreateEvent = ({
     } finally {
       setIsSaving(false);
     }
+  };
+
+  /**
+   * Create recurring events based on pattern
+   */
+  const createRecurringEvents = async (baseEventData, repeatPattern) => {
+    const occurrences = [];
+    const maxOccurrences = 10; // Limit to prevent too many events
+    const baseDate = new Date(baseEventData.date);
+    const recurringGroupId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    for (let i = 0; i < maxOccurrences; i++) {
+      const occurrenceDate = new Date(baseDate);
+      
+      switch (repeatPattern) {
+        case 'Daily':
+          occurrenceDate.setDate(baseDate.getDate() + i);
+          break;
+        case 'Weekly':
+          occurrenceDate.setDate(baseDate.getDate() + (i * 7));
+          break;
+        case 'Monthly':
+          occurrenceDate.setMonth(baseDate.getMonth() + i);
+          break;
+        case 'Yearly':
+          occurrenceDate.setFullYear(baseDate.getFullYear() + i);
+          break;
+        default:
+          // Single occurrence
+          if (i > 0) break;
+      }
+      
+      const eventData = {
+        ...baseEventData,
+        date: occurrenceDate.toISOString().split('T')[0],
+        title: i === 0 ? baseEventData.title : `${baseEventData.title} (${i + 1})`,
+        // Add recurring metadata
+        isRecurring: true,
+        recurringGroup: recurringGroupId,
+        occurenceIndex: i
+      };
+      
+      occurrences.push(eventData);
+    }
+    
+    // Create all recurring events
+    for (const eventData of occurrences) {
+      await createEvent(eventData);
+    }
+    
+    Alert.alert(
+      'Recurring Events Created',
+      `Created ${occurrences.length} ${repeatPattern.toLowerCase()} occurrences`
+    );
   };
 
   /**
@@ -398,6 +524,7 @@ const CreateEvent = ({
             mode="date" 
             display={Platform.OS === 'ios' ? 'spinner' : 'default'} 
             onChange={handleStartDateChange}
+            minimumDate={!eventToEdit ? new Date() : undefined}
           />
         )}
         {showEndDatePicker && (
@@ -406,6 +533,7 @@ const CreateEvent = ({
             mode="date" 
             display={Platform.OS === 'ios' ? 'spinner' : 'default'} 
             onChange={handleEndDateChange}
+            minimumDate={!eventToEdit ? new Date() : undefined}
           />
         )}
         {showStartTimePicker && (

@@ -8,12 +8,13 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { View, Text, ScrollView } from 'react-native';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import EventCard from './EventCard';
 
 const EventsList = ({ selectedDate = null, maxEvents = null }) => {
+  const { styles, colors } = useThemedStyles();
   const { 
     getEventsByDate, 
     viewState, 
@@ -55,7 +56,7 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
 
   const renderCategorySection = (category, categoryEvents) => (
     <View key={category} style={styles.categorySection}>
-      <Text style={styles.categoryHeader}>{category}</Text>
+      <Text style={[styles.text, styles.categoryHeader]}>{category}</Text>
       {categoryEvents.map((event) => (
         <EventCard
           key={event.id}
@@ -80,14 +81,14 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
 
   if (events.length === 0) {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.dateTitle}>{displayDate}</Text>
-          <Text style={styles.eventCount}>No events</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.row, styles.spaceBetween, styles.eventsHeader]}>
+          <Text style={[styles.text, styles.dateTitle]}>{displayDate}</Text>
+          <Text style={[styles.smallText, styles.eventCount]}>No events</Text>
         </View>
         <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>No events scheduled</Text>
-          <Text style={styles.emptyStateSubtext}>
+          <Text style={[styles.text, styles.emptyStateText]}>No events scheduled</Text>
+          <Text style={[styles.smallText, styles.emptyStateSubtext]}>
             Tap + to add your first event
           </Text>
         </View>
@@ -96,11 +97,11 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.dateTitle}>{displayDate}</Text>
-        <Text style={styles.eventCount}>
+      <View style={[styles.row, styles.spaceBetween, styles.eventsHeader]}>
+        <Text style={[styles.text, styles.dateTitle]}>{displayDate}</Text>
+        <Text style={[styles.smallText, styles.eventCount]}>
           {events.length} event{events.length !== 1 ? 's' : ''}
         </Text>
       </View>
@@ -122,69 +123,6 @@ const EventsList = ({ selectedDate = null, maxEvents = null }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border + '30',
-  },
-  dateTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  eventCount: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: spacing.xl,
-  },
-  categorySection: {
-    marginBottom: spacing.lg,
-  },
-  categoryHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textSecondary,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  eventsSection: {
-    paddingTop: spacing.sm,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-    textAlign: 'center',
-  },
-  emptyStateSubtext: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    opacity: 0.7,
-    textAlign: 'center',
-  },
-});
+
 
 export default EventsList;

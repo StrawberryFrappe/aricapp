@@ -10,11 +10,12 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import DayCell from './DayCell';
 
 const MonthGrid = ({ onDateSelect }) => {
+  const { styles, colors } = useThemedStyles();
   const { 
     viewState, 
     currentViewData, 
@@ -40,7 +41,7 @@ const MonthGrid = ({ onDateSelect }) => {
   };
 
   const renderWeekRow = (week, weekIndex) => (
-    <View key={weekIndex} style={styles.weekRow}>
+    <View key={weekIndex} style={[styles.row, styles.weekRow]}>
       {week.map((dayObj, dayIndex) => {
         const isSelected = viewState.selectedDate === dayObj.date;
         const dayEvents = getEventsForDay(dayObj.date);
@@ -62,12 +63,16 @@ const MonthGrid = ({ onDateSelect }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container, 
+      localStyles.monthGridContainer,
+      { backgroundColor: colors.background }
+    ]}>
       {/* Days of week header */}
-      <View style={styles.daysOfWeekContainer}>
+      <View style={[styles.row, styles.monthGridHeader]}>
         {daysOfWeek.map((day, index) => (
           <View key={index} style={styles.dayOfWeekContainer}>
-            <Text style={styles.dayOfWeekText}>{day}</Text>
+            <Text style={[styles.smallText, styles.dayOfWeekText]}>{day}</Text>
           </View>
         ))}
       </View>
@@ -81,7 +86,7 @@ const MonthGrid = ({ onDateSelect }) => {
 
       {/* Grid status info for accessibility */}
       <View style={styles.gridInfo} accessible={false}>
-        <Text style={styles.gridInfoText}>
+        <Text style={[styles.smallText, { opacity: 0 }]}>
           {currentViewData?.grid?.length || 0} weeks displayed
         </Text>
       </View>
@@ -89,52 +94,13 @@ const MonthGrid = ({ onDateSelect }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-    alignSelf: 'stretch',
-  },
-  daysOfWeekContainer: {
-    flexDirection: 'row',
-    marginBottom: spacing.sm,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border + '30', // 30% opacity
-  },
-  dayOfWeekContainer: {
+const localStyles = StyleSheet.create({
+  monthGridContainer: {
     flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.xs,
-  },
-  dayOfWeekText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-  },
-  calendarGrid: {
-    flexDirection: 'column',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.border,
-    paddingVertical: spacing.sm,
-    alignSelf: 'stretch',
-    backgroundColor: colors.background,
-  },
-  weekRow: {
-    flexDirection: 'row',
-    marginBottom: spacing.xs,
-    paddingHorizontal: spacing.xs,
-  },
-  gridInfo: {
-    alignItems: 'center',
-    paddingVertical: spacing.xs,
-    opacity: 0, // Hidden but available for screen readers
-  },
-  gridInfoText: {
-    fontSize: 12,
-    color: colors.textSecondary,
+    minHeight: 300, // Ensure minimum height for calendar grid
   },
 });
+
+
 
 export default MonthGrid;

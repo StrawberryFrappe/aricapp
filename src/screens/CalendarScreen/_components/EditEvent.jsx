@@ -11,14 +11,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
-  StyleSheet, 
   TouchableOpacity, 
   Modal,
   Alert,
   ScrollView,
   SafeAreaView
 } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Ionicons } from '@expo/vector-icons';
 import { useCalendarContext } from '../../../context/CalendarContext';
 import CreateEvent from '../../../components/CreateEvent';
@@ -29,6 +28,7 @@ const EditEvent = ({
   event = null,
   events = [] // For bulk operations
 }) => {
+  const { styles, colors } = useThemedStyles();
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [bulkMode, setBulkMode] = useState(false);
@@ -171,37 +171,37 @@ const EditEvent = ({
         presentationStyle="pageSheet"
         onRequestClose={onClose}
       >
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
           {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <View style={[styles.row, styles.spaceBetween, styles.editEventHeader]}>
+            <TouchableOpacity onPress={onClose} style={styles.button}>
               <Ionicons name="close" size={24} color={colors.textPrimary} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>
+            <Text style={[styles.text, styles.headerTitle]}>
               {bulkMode ? `${selectedEvents.length} Selected` : 'Event Options'}
             </Text>
             {events.length > 1 && (
-              <TouchableOpacity onPress={handleToggleBulkMode} style={styles.bulkButton}>
-                <Text style={styles.bulkButtonText}>
+              <TouchableOpacity onPress={handleToggleBulkMode} style={styles.button}>
+                <Text style={[styles.text, { color: colors.primary }]}>
                   {bulkMode ? 'Done' : 'Select'}
                 </Text>
               </TouchableOpacity>
             )}
           </View>
 
-          <ScrollView style={styles.content}>
+          <ScrollView style={styles.editEventContent}>
             {/* Event Info Section */}
             {!bulkMode && event && (
               <View style={styles.eventInfoSection}>
-                <Text style={styles.eventTitle}>{event.title}</Text>
+                <Text style={[styles.text, styles.eventTitle]}>{event.title}</Text>
                 {event.description && (
-                  <Text style={styles.eventDescription}>{event.description}</Text>
+                  <Text style={[styles.smallText, styles.eventDescription]}>{event.description}</Text>
                 )}
                 <View style={styles.eventMeta}>
-                  <Text style={styles.eventMetaText}>
+                  <Text style={[styles.smallText, styles.eventMetaText]}>
                     {new Date(event.date).toLocaleDateString()} at {event.time}
                   </Text>
-                  <Text style={styles.eventMetaText}>
+                  <Text style={[styles.smallText, styles.eventMetaText]}>
                     Category: {event.category} • Priority: {event.priority}
                   </Text>
                 </View>
@@ -211,12 +211,12 @@ const EditEvent = ({
             {/* Bulk Selection Mode */}
             {bulkMode && (
               <View style={styles.bulkSection}>
-                <View style={styles.bulkControls}>
-                  <TouchableOpacity onPress={handleSelectAll} style={styles.bulkControlButton}>
-                    <Text style={styles.bulkControlText}>Select All</Text>
+                <View style={[styles.row, styles.bulkControls]}>
+                  <TouchableOpacity onPress={handleSelectAll} style={[styles.button, styles.bulkControlButton]}>
+                    <Text style={[styles.text, { color: colors.primary }]}>Select All</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={handleClearSelection} style={styles.bulkControlButton}>
-                    <Text style={styles.bulkControlText}>Clear</Text>
+                  <TouchableOpacity onPress={handleClearSelection} style={[styles.button, styles.bulkControlButton]}>
+                    <Text style={[styles.text, { color: colors.primary }]}>Clear</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -247,50 +247,58 @@ const EditEvent = ({
 
               {/* Edit Event */}
               <TouchableOpacity 
-                style={styles.actionButton} 
+                style={[styles.row, styles.spaceBetween, styles.actionButton]} 
                 onPress={handleEditEvent}
                 disabled={bulkMode && selectedEvents.length !== 1}
               >
-                <Ionicons name="create-outline" size={20} color={colors.primary} />
-                <Text style={styles.actionButtonText}>Edit Event</Text>
+                <View style={[styles.row, styles.actionButtonContent]}>
+                  <Ionicons name="create-outline" size={20} color={colors.primary} />
+                  <Text style={[styles.text, styles.actionButtonText]}>Edit Event</Text>
+                </View>
                 <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
               </TouchableOpacity>
 
               {/* Duplicate Event */}
               {!bulkMode && (
-                <TouchableOpacity style={styles.actionButton} onPress={handleDuplicateEvent}>
-                  <Ionicons name="copy-outline" size={20} color={colors.primary} />
-                  <Text style={styles.actionButtonText}>Duplicate Event</Text>
+                <TouchableOpacity style={[styles.row, styles.spaceBetween, styles.actionButton]} onPress={handleDuplicateEvent}>
+                  <View style={[styles.row, styles.actionButtonContent]}>
+                    <Ionicons name="copy-outline" size={20} color={colors.primary} />
+                    <Text style={[styles.text, styles.actionButtonText]}>Duplicate Event</Text>
+                  </View>
                   <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
                 </TouchableOpacity>
               )}
 
               {/* Move Event */}
               <TouchableOpacity 
-                style={styles.actionButton} 
+                style={[styles.row, styles.spaceBetween, styles.actionButton]} 
                 onPress={handleMoveEvent}
                 disabled={bulkMode && selectedEvents.length > 1}
               >
-                <Ionicons name="calendar-outline" size={20} color={colors.primary} />
-                <Text style={styles.actionButtonText}>
-                  {bulkMode && selectedEvents.length > 1 ? 'Move Events' : 'Move Event'}
-                </Text>
+                <View style={[styles.row, styles.actionButtonContent]}>
+                  <Ionicons name="calendar-outline" size={20} color={colors.primary} />
+                  <Text style={[styles.text, styles.actionButtonText]}>
+                    {bulkMode && selectedEvents.length > 1 ? 'Move Events' : 'Move Event'}
+                  </Text>
+                </View>
                 <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
               </TouchableOpacity>
 
               {/* Separator */}
-              <View style={styles.separator} />
+              <View style={[{ borderBottomWidth: 1, borderBottomColor: colors.borderDefault + '30' }, styles.separator]} />
 
               {/* Delete Event */}
               <TouchableOpacity 
-                style={[styles.actionButton, styles.deleteButton]} 
+                style={[styles.row, styles.spaceBetween, styles.actionButton]} 
                 onPress={handleDeleteEvent}
                 disabled={selectedEvents.length === 0}
               >
-                <Ionicons name="trash-outline" size={20} color={colors.semanticRed} />
-                <Text style={[styles.actionButtonText, styles.deleteButtonText]}>
-                  Delete {selectedEvents.length > 1 ? 'Events' : 'Event'}
-                </Text>
+                <View style={[styles.row, styles.actionButtonContent]}>
+                  <Ionicons name="trash-outline" size={20} color={colors.error} />
+                  <Text style={[styles.text, { color: colors.error }]}>
+                    Delete {selectedEvents.length > 1 ? 'Events' : 'Event'}
+                  </Text>
+                </View>
                 <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
@@ -317,143 +325,5 @@ const EditEvent = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border + '30',
-  },
-  closeButton: {
-    padding: spacing.xs,
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  bulkButton: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-  },
-  bulkButtonText: {
-    fontSize: 16,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  content: {
-    flex: 1,
-  },
-  eventInfoSection: {
-    padding: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border + '30',
-  },
-  eventTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  eventDescription: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: spacing.sm,
-  },
-  eventMeta: {
-    marginTop: spacing.sm,
-  },
-  eventMetaText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-  },
-  bulkSection: {
-    padding: spacing.md,
-  },
-  bulkControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: spacing.md,
-  },
-  bulkControlButton: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-  },
-  bulkControlText: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  eventRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    borderRadius: 8,
-    marginBottom: spacing.xs,
-  },
-  eventRowContent: {
-    flex: 1,
-  },
-  eventRowTitle: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    fontWeight: '500',
-  },
-  eventRowMeta: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginTop: spacing.xs / 2,
-  },
-  actionsSection: {
-    padding: spacing.md,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textSecondary,
-    marginBottom: spacing.md,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    marginBottom: spacing.sm,
-  },
-  actionButtonText: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.textPrimary,
-    marginLeft: spacing.md,
-  },
-  deleteButton: {
-    backgroundColor: colors.semanticRed + '10',
-  },
-  deleteButtonText: {
-    color: colors.semanticRed,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.border + '30',
-    marginVertical: spacing.md,
-  },
-});
 
 export default EditEvent;

@@ -8,12 +8,13 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import DatePicker from './DatePicker';
 
 const CalendarHeader = () => {
+  const { styles, colors } = useThemedStyles();
   const { 
     currentViewData, 
     navigateToPreviousMonth, 
@@ -32,53 +33,53 @@ const CalendarHeader = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.row, styles.headerContainer]}>
       {/* Navigation Controls */}
       <TouchableOpacity
-        style={styles.navButton}
+        style={[styles.button, styles.navButton]}
         onPress={navigateToPreviousMonth}
         accessibilityLabel="Previous month"
         accessibilityRole="button"
       >
-        <Text style={styles.navText}>‹</Text>
+        <Text style={[styles.text, styles.navText]}>‹</Text>
       </TouchableOpacity>
 
       {/* Month/Year Title */}
       <View style={styles.titleContainer}>
         <TouchableOpacity onPress={handleDatePickerOpen} style={styles.titleButton}>
-          <Text style={styles.monthTitle}>
+          <Text style={[styles.text, styles.titleText]}>
             {currentViewData?.title || 'Calendar'}
           </Text>
         </TouchableOpacity>
         
-        <View style={styles.actionButtons}>
+        <View style={[styles.row, styles.actionButtons]}>
           <TouchableOpacity 
-            style={styles.todayButton}
+            style={[styles.button, { backgroundColor: colors.primary + '20' }]}
             onPress={navigateToToday}
             accessibilityLabel="Go to today"
             accessibilityRole="button"
           >
-            <Text style={styles.todayText}>Today</Text>
+            <Text style={[styles.buttonText, { color: colors.primary }]}>Today</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={styles.pickerButton}
+            style={[styles.button, { backgroundColor: colors.borderDefault + '30' }]}
             onPress={handleDatePickerOpen}
             accessibilityLabel="Open date picker"
             accessibilityRole="button"
           >
-            <Text style={styles.pickerText}>📅</Text>
+            <Text style={styles.buttonText}>📅</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <TouchableOpacity
-        style={styles.navButton}
+        style={[styles.button, styles.navButton]}
         onPress={navigateToNextMonth}
         accessibilityLabel="Next month"
         accessibilityRole="button"
       >
-        <Text style={styles.navText}>›</Text>
+        <Text style={[styles.text, styles.navText]}>›</Text>
       </TouchableOpacity>
 
       {/* Date Picker Modal */}
@@ -93,66 +94,5 @@ const CalendarHeader = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-  },
-  navButton: {
-    padding: spacing.md,
-    minWidth: 44,
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  navText: {
-    fontSize: 28,
-    color: colors.textPrimary,
-    fontWeight: 'bold',
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  titleButton: {
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  monthTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  todayButton: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    backgroundColor: colors.primary + '20',
-    borderRadius: 12,
-  },
-  todayText: {
-    fontSize: 12,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  pickerButton: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    backgroundColor: colors.border + '30',
-    borderRadius: 12,
-  },
-  pickerText: {
-    fontSize: 12,
-  },
-});
 
 export default CalendarHeader;

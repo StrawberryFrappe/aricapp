@@ -12,13 +12,12 @@ import React, { useState, useRef } from 'react';
 import { 
   View, 
   Text, 
-  StyleSheet, 
   TouchableOpacity, 
   Alert, 
   Animated 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useCalendar } from '../../../hooks/useCalendar';
 import { CalendarCategory } from '../../../models/CalendarModels';
 import EditEvent from './EditEvent';
@@ -31,6 +30,7 @@ const EventCard = ({
   enableDragReschedule = true,
   onDragReschedule = null 
 }) => {
+  const { styles, colors } = useThemedStyles();
   const navigation = useNavigation();
   const { updateEvent, deleteEvent } = useCalendar();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -47,9 +47,9 @@ const EventCard = ({
   // Priority colors
   const getPriorityColor = () => {
     switch (event.priority) {
-      case 'high': return colors.semanticRed;
-      case 'medium': return colors.semanticYellow;
-      case 'low': return colors.semanticGreen;
+      case 'high': return colors.error;
+      case 'medium': return colors.warning;
+      case 'low': return colors.success;
       default: return colors.textSecondary;
     }
   };
@@ -189,21 +189,23 @@ const EventCard = ({
           onLongPress={enableDragReschedule ? handleLongPress : undefined}
           delayLongPress={500}
           style={[
-            styles.container,
-            event.completed && styles.completedContainer,
-            isDragging && styles.draggingContainer
+            styles.eventCardContainer,
+            { backgroundColor: colors.background, borderColor: colors.borderDefault + '30' },
+            event.completed && { opacity: 0.7, backgroundColor: colors.background + 'F0' },
+            isDragging && { borderColor: colors.primary, borderWidth: 2 }
           ]}
           disabled={isUpdating}
         >
       {/* Category indicator */}
       <View style={[styles.categoryIndicator, { backgroundColor: categoryColor }]} />
       
-      <View style={styles.content}>
+      <View style={styles.eventCardContent}>
         {/* Main content */}
         <View style={styles.mainContent}>
           {/* Time and priority */}
-          <View style={styles.timeSection}>
+          <View style={[styles.row, styles.timeSection]}>
             <Text style={[
+              styles.smallText,
               styles.timeText,
               event.completed && styles.completedText
             ]}>
@@ -218,6 +220,7 @@ const EventCard = ({
           {/* Title and description */}
           <View style={styles.eventDetails}>
             <Text style={[
+              styles.text,
               styles.titleText,
               event.completed && styles.completedText
             ]}>
@@ -225,6 +228,7 @@ const EventCard = ({
             </Text>
             {event.description && (
               <Text style={[
+                styles.smallText,
                 styles.descriptionText,
                 event.completed && styles.completedText
               ]} numberOfLines={2}>
@@ -236,6 +240,7 @@ const EventCard = ({
           {/* Date (if shown) */}
           {showDate && (
             <Text style={[
+              styles.smallText,
               styles.dateText,
               event.completed && styles.completedText
             ]}>
@@ -246,26 +251,26 @@ const EventCard = ({
 
         {/* Quick actions */}
         {showQuickActions && (
-          <View style={styles.quickActions}>
+          <View style={[styles.row, styles.quickActions]}>
             <TouchableOpacity
               onPress={handleToggleComplete}
               style={[
                 styles.actionButton,
-                event.completed ? styles.undoButton : styles.completeButton
+                { backgroundColor: event.completed ? (colors.warning + '30') : (colors.success + '30') }
               ]}
               disabled={isUpdating}
             >
-              <Text style={styles.actionButtonText}>
+              <Text style={[styles.text, styles.actionButtonText]}>
                 {event.completed ? '↶' : '✓'}
               </Text>
             </TouchableOpacity>
             
             <TouchableOpacity
               onPress={handleDelete}
-              style={[styles.actionButton, styles.deleteButton]}
+              style={[styles.actionButton, { backgroundColor: colors.error + '30' }]}
               disabled={isUpdating}
             >
-              <Text style={styles.actionButtonText}>×</Text>
+              <Text style={[styles.text, styles.actionButtonText]}>×</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -284,109 +289,5 @@ const EventCard = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: colors.background,
-    marginVertical: spacing.xs,
-    marginHorizontal: spacing.md,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border + '30',
-    elevation: 2,
-    shadowColor: colors.textPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  completedContainer: {
-    opacity: 0.7,
-    backgroundColor: colors.background + 'F0',
-  },
-  draggingContainer: {
-    borderColor: colors.primary,
-    borderWidth: 2,
-    shadowOpacity: 0.2,
-  },
-  categoryIndicator: {
-    width: 4,
-  },
-  content: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-  },
-  mainContent: {
-    flex: 1,
-  },
-  timeSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  timeText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    fontWeight: '600',
-    marginRight: spacing.sm,
-  },
-  priorityIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  eventDetails: {
-    marginBottom: spacing.xs,
-  },
-  titleText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs / 2,
-  },
-  descriptionText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    lineHeight: 16,
-  },
-  dateText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-  completedText: {
-    textDecorationLine: 'line-through',
-    opacity: 0.6,
-  },
-  quickActions: {
-    flexDirection: 'row',
-    marginLeft: spacing.sm,
-  },
-  actionButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: spacing.xs,
-  },
-  completeButton: {
-    backgroundColor: colors.semanticGreen + '30',
-  },
-  undoButton: {
-    backgroundColor: colors.semanticYellow + '30',
-  },
-  deleteButton: {
-    backgroundColor: colors.semanticRed + '30',
-  },
-  actionButtonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});
 
 export default EventCard;

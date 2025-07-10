@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../../styles/commonStyles';
+import { spacing } from '../../../styles/commonStyles';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import CalendarHeader from './CalendarHeader';
 import MonthGrid from './MonthGrid';
 
@@ -14,8 +15,13 @@ import MonthGrid from './MonthGrid';
  * @param {Function} onDateSelect - Callback when a date is selected
  */
 const Calendar = ({ onDateSelect }) => {
+    const { colors } = useThemedStyles();
+    
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { 
+            backgroundColor: colors.background,
+            borderColor: colors.border 
+        }]}>
             {/* Calendar Header with navigation */}
             <CalendarHeader />
             
@@ -27,9 +33,12 @@ const Calendar = ({ onDateSelect }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.background,
+        flex: 1, // Use all available space
         paddingHorizontal: spacing.lg,
-        alignSelf: 'stretch',
+        borderWidth: 1, // Subtle border for definition
+        borderRadius: 8,
+        margin: 10,
+        padding: spacing.md,
     },
 });
 

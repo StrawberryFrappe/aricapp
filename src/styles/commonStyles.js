@@ -314,6 +314,440 @@ export const createStyles = (themeColors) => StyleSheet.create({
     flex: 1,
     backgroundColor: themeColors.background,
   },
+
+  // Calendar Header styles
+  headerContainer: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+  },
+  navButton: {
+    padding: 10,
+    minWidth: 44,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  navText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleButton: {
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: themeColors.textPrimary,
+  },
+  actionButtons: {
+    alignItems: 'center',
+    gap: 5,
+  },
+
+  // Common button styles
+  button: {
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // Text styles
+  text: {
+    color: themeColors.textPrimary,
+  },
+
+  // MonthGrid styles
+  monthGridHeader: {
+    marginBottom: 5,
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.borderDefault + '30',
+  },
+  dayOfWeekContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 2,
+  },
+  dayOfWeekText: {
+    fontSize: 14,
+    color: themeColors.textSecondary,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  calendarGrid: {
+    flexDirection: 'column',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: themeColors.borderDefault,
+    paddingVertical: 5,
+    alignSelf: 'stretch',
+  },
+  weekRow: {
+    marginBottom: 2,
+    paddingHorizontal: 2,
+  },
+  gridInfo: {
+    alignItems: 'center',
+    paddingVertical: 2,
+  },
+
+  // DayCell styles
+  dayContainer: {
+    flex: 1,
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 44,
+    margin: 1,
+    borderRadius: 8,
+    position: 'relative',
+  },
+  dayText: {
+    fontSize: 16,
+    color: themeColors.textPrimary,
+    fontWeight: '500',
+  },
+  eventIndicatorContainer: {
+    position: 'absolute',
+    bottom: 4,
+    alignItems: 'center',
+  },
+  eventIndicator: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  multipleEventsIndicator: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  eventCount: {
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+
+  // EventsList styles
+  eventsHeader: {
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.borderDefault + '30',
+  },
+  dateTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  eventCount: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  categorySection: {
+    marginBottom: 15,
+  },
+  categoryHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: themeColors.textSecondary,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  eventsSection: {
+    paddingTop: 5,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    opacity: 0.7,
+    textAlign: 'center',
+  },
+
+  // EventCard styles
+  eventCardContainer: {
+    flexDirection: 'row',
+    marginVertical: 2,
+    marginHorizontal: 10,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  categoryIndicator: {
+    width: 4,
+  },
+  eventCardContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  mainContent: {
+    flex: 1,
+  },
+  timeSection: {
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  timeText: {
+    fontSize: 12,
+    color: themeColors.textSecondary,
+    fontWeight: '600',
+    marginRight: 5,
+  },
+  priorityIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  eventDetails: {
+    marginBottom: 2,
+  },
+  titleText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 1,
+  },
+  descriptionText: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  dateText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    opacity: 0.6,
+  },
+  quickActions: {
+    marginLeft: 5,
+  },
+  actionButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 2,
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+
+  // EditEvent styles
+  editEventHeader: {
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.borderDefault + '30',
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  editEventContent: {
+    flex: 1,
+  },
+  eventInfoSection: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.borderDefault + '30',
+  },
+  eventTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  eventDescription: {
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 5,
+  },
+  eventMeta: {
+    marginTop: 5,
+  },
+  eventMetaText: {
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  bulkSection: {
+    padding: 10,
+  },
+  bulkControls: {
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  bulkControlButton: {
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    backgroundColor: themeColors.surface,
+    borderRadius: 8,
+  },
+  actionsSection: {
+    padding: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: themeColors.textSecondary,
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  actionButton: {
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: themeColors.surface,
+    borderRadius: 12,
+    marginBottom: 5,
+  },
+  actionButtonContent: {
+    alignItems: 'center',
+  },
+  actionButtonText: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  separator: {
+    height: 1,
+    marginVertical: 10,
+  },
+
+  // DatePicker styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  datePickerModal: {
+    borderRadius: 16,
+    padding: 15,
+    margin: 15,
+    width: '85%',
+    maxHeight: '80%',
+  },
+  datePickerHeader: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  datePickerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  dateDisplay: {
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingVertical: 15,
+    backgroundColor: themeColors.primary + '10',
+    borderRadius: 12,
+  },
+  selectedDateText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  selectors: {
+    marginBottom: 20,
+    gap: 10,
+  },
+  selector: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 15,
+    alignItems: 'center',
+  },
+  selectorLabel: {
+    fontSize: 12,
+    color: themeColors.textSecondary,
+    marginBottom: 2,
+    textTransform: 'uppercase',
+    fontWeight: '600',
+  },
+  selectorValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quickActions: {
+    gap: 10,
+  },
+  pickerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pickerContent: {
+    borderRadius: 12,
+    padding: 15,
+    width: '80%',
+    maxHeight: '60%',
+  },
+  pickerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  pickerScroll: {
+    maxHeight: 200,
+  },
+  pickerItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginVertical: 2,
+  },
 });
 
 // Create backward-compatible commonStyles using default colors
